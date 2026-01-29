@@ -4,8 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Rankings - Zenoa</title>
+    <title>Leaderboard - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
+    <style>
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,7 +20,6 @@
             <a href="index.html" class="nav-logo">ZENOA</a>
             <div class="flex items-center gap-4">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="profile.html" class="avatar">VP</a>
             </div>
         </div>
     </nav>
@@ -23,64 +28,62 @@
         <div class="flex justify-between items-end mb-8">
             <div>
                 <h1 class="mb-2">Leaderboard</h1>
-                <p>Global Season 3 Rankings</p>
-            </div>
-            <div class="flex">
-                <button class="btn btn-primary mr-2">Global</button>
-                <button class="btn btn-secondary mr-2">Friends</button>
-                <button class="btn btn-secondary">Local</button>
+                <p>Global Rankings (Top 10)</p>
             </div>
         </div>
 
         <div class="card p-0 overflow-hidden">
-            <table class="table">
+            <table class="table" id="leaderboardTable">
                 <thead>
                     <tr>
                         <th class="w-12">Rank</th>
-                        <th>Player</th>
-                        <th>Tier</th>
+                        <th>Player ID</th>
+                        <th>Matches</th>
                         <th class="text-right">SR (Skill Rating)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="background: rgba(220, 38, 38, 0.05);">
-                        <td class="font-bold text-lg">1</td>
-                        <td>
-                            <div class="flex items-center gap-3">
-                                <div class="avatar bg-red-600 text-white w-8 h-8 text-xs">M</div>
-                                <span>Maverick</span>
-                            </div>
-                        </td>
-                        <td><span class="badge tier-apex">Apex</span></td>
-                        <td class="text-right font-mono font-bold">4,850</td>
-                    </tr>
+                <tbody id="leaderboardBody">
                     <tr>
-                        <td class="font-bold text-lg">2</td>
-                        <td>
-                            <div class="flex items-center gap-3">
-                                <div class="avatar bg-gray-600 text-white w-8 h-8 text-xs">A</div>
-                                <span>AceLine</span>
-                            </div>
-                        </td>
-                        <td><span class="badge tier-architect">Architect</span></td>
-                        <td class="text-right font-mono font-bold">4,420</td>
-                    </tr>
-                    <!-- User Row -->
-                    <tr style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primary-color);">
-                        <td class="font-bold">422</td>
-                        <td>
-                            <div class="flex items-center gap-3">
-                                <div class="avatar w-8 h-8 text-xs">VP</div>
-                                <span>Vedant P. (You)</span>
-                            </div>
-                        </td>
-                        <td><span class="badge tier-strategist">Strategist</span></td>
-                        <td class="text-right font-mono font-bold">1,850</td>
+                        <td colspan="4" class="text-center p-8">Loading rankings...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </main>
+
+    <script type="module">
+        import { getLeaderboard } from './js/data.js';
+
+        async function loadLeaderboard() {
+            const data = await getLeaderboard();
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8">No ranked players yet. Be the first!</td></tr>';
+                return;
+            }
+
+            data.forEach((user, index) => {
+                let tierClass = "tier-rookie";
+                if (user.sr > 1500) tierClass = "tier-strategist";
+                if (user.sr > 2000) tierClass = "tier-apex";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="font-bold text-lg">${index + 1}</td>
+                        <td>${user.id.substring(0, 6)}...</td>
+                        <td>${user.matchesPlayed}</td>
+                        <td class="text-right font-mono font-bold">
+                            <span class="badge ${tierClass}">${user.sr || 0}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        loadLeaderboard();
+    </script>
 </body>
 
 </html>

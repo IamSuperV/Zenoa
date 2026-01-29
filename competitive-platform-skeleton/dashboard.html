@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
+    <style>
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,105 +27,192 @@
                 <a href="dashboard.html" class="nav-link active">Dashboard</a>
                 <a href="rooms.html" class="nav-link">Rooms</a>
                 <a href="leaderboard.html" class="nav-link">Leaderboard</a>
-                <a href="profile.html" class="avatar">VP</a>
+                <a href="profile.html" class="avatar" id="navAvatar">...</a>
             </div>
         </div>
     </nav>
 
-    <main class="container p-8">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 style="font-size: 2rem;">Overview</h1>
-                <p>Decision Intelligence Platform</p>
-            </div>
-            <div class="flex gap-4">
-                <a href="categories.html" class="btn btn-primary">Start Assessment</a>
-            </div>
+    <main class="container p-8" id="mainContent">
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center p-8">
+            <p>Loading your profile...</p>
         </div>
 
-        <div class="grid grid-3 mb-8">
-            <!-- Rank Card -->
-            <div class="card" style="grid-column: span 2;">
-                <div class="flex justify-between items-center mb-4">
-                    <h3>Current Status</h3>
-                    <span class="badge tier-strategist">Strategist</span>
-                </div>
-                <div class="flex items-center gap-8 mb-6">
-                    <div>
-                        <div class="text-sm text-muted uppercase">Global Rank</div>
-                        <div style="font-size: 2.5rem; font-weight: 700;">#422</div>
-                    </div>
-                    <div>
-                        <div class="text-sm text-muted uppercase">Recent Trend</div>
-                        <div style="color: var(--primary-color); font-weight: 700; font-size: 1.2rem;">Increasing
-                            Consistency</div>
-                    </div>
-                </div>
-                <div class="progress-track">
-                    <div class="progress-fill" style="width: 75%; background: var(--tier-strategist);"></div>
-                </div>
-                <div class="flex justify-between text-xs text-muted mt-2">
-                    <span>Strategist Tier</span>
-                    <span>Architect Tier</span>
-                </div>
+        <!-- NEW USER STATE (Empty) -->
+        <div id="newUserState" class="hidden text-center p-8">
+            <div class="badge tier-rookie mb-4">Welcome to Zenoa</div>
+            <h1 class="mb-4">Begin Your Assessment</h1>
+            <p class="mb-8" style="max-width: 600px; margin: 0 auto 2rem auto; color: var(--text-muted);">
+                Your cognitive profile is currently empty. Complete your first scenario to unlock your Skill Rating (SR)
+                and Tier.
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="play.html" class="btn btn-primary" style="padding: 1rem 3rem;">Start First Scenario</a>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="card">
-                <h3>Decision Pattern</h3>
-                <div class="mt-4 flex flex-col gap-3">
-                    <div class="flex justify-between items-center">
-                        <span class="tag-decision">Analytical</span>
-                        <span class="font-bold">62%</span>
-                    </div>
-                    <div class="progress-track h-2">
-                        <div class="progress-fill" style="width: 62%; background: var(--tier-architect);"></div>
-                    </div>
-
-                    <div class="flex justify-between items-center mt-2">
-                        <span class="tag-decision">Intuitive</span>
-                        <span class="font-bold">38%</span>
-                    </div>
-                    <div class="progress-track h-2">
-                        <div class="progress-fill" style="width: 38%; background: var(--tier-rookie);"></div>
-                    </div>
+            <div class="grid grid-3 mt-12 opacity-50">
+                <div class="card p-4">
+                    <h3>?</h3>
+                    <p class="text-sm">Analytic Style</p>
+                </div>
+                <div class="card p-4">
+                    <h3>?</h3>
+                    <p class="text-sm">Skill Rating</p>
+                </div>
+                <div class="card p-4">
+                    <h3>?</h3>
+                    <p class="text-sm">Global Rank</p>
                 </div>
             </div>
+            <p class="text-xs text-muted mt-4">Stats unlock after 1 match.</p>
         </div>
 
-        <div class="grid grid-2">
-            <div class="card">
-                <h3>Active Zones</h3>
-                <div class="grid grid-2 mt-4 gap-4">
-                    <a href="play.html" class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
-                        <span class="text-2xl">⚖️</span>
-                        <span>Risk & Uncertainty</span>
-                    </a>
-                    <a href="categories.html"
-                        class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
-                        <span class="text-2xl">🧠</span>
-                        <span>Situational Logic</span>
-                    </a>
+        <!-- ACTIVE USER STATE (Stats) -->
+        <div id="activeUserState" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 style="font-size: 2rem;">Overview</h1>
+                    <p id="welcomeMsg">Welcome back.</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="play.html" class="btn btn-primary">Start Assessment</a>
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Recent Analysis</h3>
-                <table class="table mt-4">
-                    <tr>
-                        <td>Supply Chain Crisis</td>
-                        <td><span class="tag-decision highlight">Pragmatic</span></td>
-                        <td class="text-muted text-right text-xs">Today</td>
-                    </tr>
-                    <tr>
-                        <td>Ethical Dilemma #4</td>
-                        <td><span class="tag-decision">Idealist</span></td>
-                        <td class="text-muted text-right text-xs">Yesterday</td>
-                    </tr>
-                </table>
+            <div class="grid grid-3 mb-8">
+                <!-- Rank Card -->
+                <div class="card" style="grid-column: span 2;">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3>Current Status</h3>
+                        <span class="badge" id="tierBadge">...</span>
+                    </div>
+                    <div class="flex items-center gap-8 mb-6">
+                        <div>
+                            <div class="text-sm text-muted uppercase">Skill Rating</div>
+                            <div style="font-size: 2.5rem; font-weight: 700;" id="userSR">...</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-muted uppercase">Total Matches</div>
+                            <div style="color: var(--primary-color); font-weight: 700; font-size: 1.2rem;"
+                                id="totalMatches">...</div>
+                        </div>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="tierProgressFill"
+                            style="width: 0%; background: var(--primary-color);"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-muted mt-2">
+                        <span id="currentTierName">Rookie</span>
+                        <span id="nextTierName">Challenger</span>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="card">
+                    <h3>Decision Style</h3>
+                    <div class="mt-4 flex flex-col gap-3" id="decisionStylesList">
+                        <!-- Dynamic Tags -->
+                        <p class="text-sm text-muted">Play more to generate a profile.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>Active Zones</h3>
+                    <div class="grid grid-2 mt-4 gap-4">
+                        <a href="play.html"
+                            class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
+                            <span class="text-2xl">⚖️</span>
+                            <span>Risk & Uncertainty</span>
+                        </a>
+                        <a href="categories.html"
+                            class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
+                            <span class="text-2xl">🧠</span>
+                            <span>Situational Logic</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Recent Analysis</h3>
+                    <table class="table mt-4" id="recentActivityTable">
+                        <!-- Dynamic Content -->
+                        <tr>
+                            <td colspan="3" class="text-muted text-center text-sm">No recent data.</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { getUserStats, getUserProfile } from './js/data.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const loadingState = document.getElementById('loadingState');
+        const newUserState = document.getElementById('newUserState');
+        const activeUserState = document.getElementById('activeUserState');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const stats = await getUserStats(user.uid);
+                const profile = await getUserProfile(user.uid);
+
+                // Update Nav Avatar
+                const initials = (profile?.displayName || user.email || "??").substring(0, 2).toUpperCase();
+                document.getElementById('navAvatar').textContent = initials;
+
+                loadingState.classList.add('hidden');
+
+                if (!stats || stats.matchesPlayed === 0) {
+                    // NEW USER
+                    newUserState.classList.remove('hidden');
+                } else {
+                    // ACTIVE USER
+                    activeUserState.classList.remove('hidden');
+
+                    document.getElementById('welcomeMsg').textContent = `Decision Intelligence Platform • ${profile?.displayName || user.email}`;
+                    document.getElementById('userSR').textContent = stats.sr || 1000;
+                    document.getElementById('totalMatches').textContent = stats.matchesPlayed;
+
+                    // Simple Tier Logic for Demo
+                    let tier = "Rookie";
+                    let tierColor = "var(--tier-rookie)";
+                    if (stats.sr > 1200) { tier = "Challenger"; tierColor = "var(--tier-challenger)"; }
+                    if (stats.sr > 1500) { tier = "Strategist"; tierColor = "var(--tier-strategist)"; }
+                    if (stats.sr > 2000) { tier = "Architect"; tierColor = "var(--tier-architect)"; }
+
+                    const badge = document.getElementById('tierBadge');
+                    badge.textContent = tier;
+                    badge.className = `badge tier-${tier.toLowerCase()}`;
+
+                    const progress = Math.min((stats.sr % 500) / 500 * 100, 100);
+                    document.getElementById('tierProgressFill').style.width = `${progress}%`;
+                    document.getElementById('tierProgressFill').style.background = tierColor;
+                    document.getElementById('currentTierName').textContent = tier;
+
+                    // Decision Styles
+                    if (stats.decisionStyles && stats.decisionStyles.length > 0) {
+                        const styleContainer = document.getElementById('decisionStylesList');
+                        styleContainer.innerHTML = '';
+                        // Unique styles
+                        const uniqueStyles = [...new Set(stats.decisionStyles)].slice(0, 3);
+                        uniqueStyles.forEach(style => {
+                            styleContainer.innerHTML += `
+                                <div class="flex justify-between items-center">
+                                    <span class="tag-decision capitalize">${style}</span>
+                                </div>`;
+                        });
+                    }
+                }
+            } else {
+                // Not logged in handled by guard.js
+            }
+        });
+    </script>
 </body>
 
 </html>

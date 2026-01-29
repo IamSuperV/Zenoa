@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Simulation - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
     <style>
         .timer-bar {
             position: fixed;
@@ -20,20 +21,26 @@
         .timer-value {
             height: 100%;
             background: var(--primary-color);
-            width: 65%;
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .selected {
+            border-color: var(--primary-color) !important;
+            background-color: #f0f9ff !important;
         }
     </style>
 </head>
 
 <body>
     <div class="timer-bar">
-        <div class="timer-value"></div>
+        <div class="timer-value" id="timerBar"></div>
     </div>
 
     <nav class="navbar border-b-0">
         <div class="container flex justify-between items-center">
-            <div class="font-bold text-muted">Scenario 1 / 5</div>
-            <div class="font-mono text-xl font-bold">00:42</div>
+            <div class="font-bold text-muted">Scenario 1</div>
+            <div class="font-mono text-xl font-bold" id="timerDisplay">00:00</div>
             <div class="badge tier-architect">Risk & Uncertainty</div>
         </div>
     </nav>
@@ -49,43 +56,102 @@
                 What is your immediate order?
             </h1>
 
-            <div class="grid grid-2">
-                <a href="results.html"
-                    class="btn btn-secondary text-left justify-start p-4 hover:border-primary-color transition-colors h-auto">
+            <div class="grid grid-2" id="optionsGrid">
+                <button class="btn btn-secondary text-left justify-start p-4 h-auto option-btn" data-value="A"
+                    data-style="Idealist">
                     <span class="font-bold mr-2">A.</span> Full Recall. Zero tolerance for contamination risk,
                     regardless of supply gaps.
-                </a>
-                <a href="results.html"
-                    class="btn btn-secondary text-left justify-start p-4 hover:border-primary-color transition-colors h-auto">
+                </button>
+                <button class="btn btn-secondary text-left justify-start p-4 h-auto option-btn" data-value="B"
+                    data-style="Pragmatic">
                     <span class="font-bold mr-2">B.</span> Issue Warning. Inform doctors of the risk but allow usage for
                     critical cases.
-                </a>
-                <a href="results.html"
-                    class="btn btn-secondary text-left justify-start p-4 hover:border-primary-color transition-colors h-auto">
+                </button>
+                <button class="btn btn-secondary text-left justify-start p-4 h-auto option-btn" data-value="C"
+                    data-style="Risk-Aware">
                     <span class="font-bold mr-2">C.</span> Selective Hold. Quarantine the specific batch but release
                     reserves, rationing heavily.
-                </a>
-                <a href="results.html"
-                    class="btn btn-secondary text-left justify-start p-4 hover:border-primary-color transition-colors h-auto">
+                </button>
+                <button class="btn btn-secondary text-left justify-start p-4 h-auto option-btn" data-value="D"
+                    data-style="Aggressive">
                     <span class="font-bold mr-2">D.</span> Delay Recall. Wait 48 hours for definitive toxicology knowing
                     exposure increases.
-                </a>
+                </button>
             </div>
 
             <div class="mt-8 text-center">
-                <a href="results.html" class="btn btn-primary w-full max-w-xs">Lock Answer</a>
-            </div>
-        </div>
-
-        <div class="flex gap-8 text-sm text-muted">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-green-500"></div> 2 Evaluated
-            </div>
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-gray-300"></div> 1 Deciding
+                <button id="lockAnswer" class="btn btn-primary w-full max-w-xs" disabled>Lock Answer</button>
             </div>
         </div>
     </main>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { saveGameResult } from './js/data.js';
+
+        let selectedOption = null;
+        let selectedStyle = null;
+        let startTime = Date.now();
+
+        // Timer Logic
+        let timeLeft = 60;
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBar = document.getElementById('timerBar');
+        function updateTimer() {
+            timeLeft--;
+            timerDisplay.textContent = `00:${timeLeft.toString().padStart(2, '0')}`;
+            timerBar.style.width = `${(timeLeft / 60) * 100}%`;
+            if (timeLeft <= 0) document.getElementById('lockAnswer').click(); // Auto submit
+        }
+        setInterval(updateTimer, 1000);
+
+        // Selection Logic
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedOption = btn.dataset.value;
+                selectedStyle = btn.dataset.style;
+                document.getElementById('lockAnswer').disabled = false;
+            });
+        });
+
+        // Submit Logic
+        document.getElementById('lockAnswer').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const btn = document.getElementById('lockAnswer');
+            btn.textContent = "Analyzing...";
+            btn.disabled = true;
+
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+
+            try {
+                // Save to Firebase
+                await saveGameResult(user.uid, {
+                    questionId: "sc-01",
+                    selectedOption: selectedOption,
+                    decisionStyle: selectedStyle,
+                    timeTaken: timeTaken,
+                    category: "Risk & Uncertainty"
+                });
+
+                // Store result briefly in local storage for the results page to read immediately
+                localStorage.setItem('lastResult', JSON.stringify({
+                    style: selectedStyle,
+                    option: selectedOption,
+                    time: timeTaken
+                }));
+
+                window.location.href = "results.html";
+            } catch (e) {
+                console.error(e);
+                alert("Error saving result.");
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 
 </html>

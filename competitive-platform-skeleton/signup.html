@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
 </head>
 
 <body>
@@ -23,28 +24,68 @@
                 <p>Join the next generation of competitors.</p>
             </div>
 
-            <form action="dashboard.html">
+            <form id="signupForm">
                 <div class="mb-4">
                     <label class="mb-2 block font-semibold text-sm">Full Name</label>
-                    <input type="text" class="form-input" placeholder="John Doe" required>
+                    <input type="text" id="name" class="form-input" placeholder="John Doe" required>
                 </div>
                 <div class="mb-4">
                     <label class="mb-2 block font-semibold text-sm">Email</label>
-                    <input type="email" class="form-input" placeholder="name@company.com" required>
+                    <input type="email" id="email" class="form-input" placeholder="name@company.com" required>
                 </div>
                 <div class="mb-8">
                     <label class="mb-2 block font-semibold text-sm">Password</label>
-                    <input type="password" class="form-input" placeholder="Minimum 8 characters" required>
+                    <input type="password" id="password" class="form-input" placeholder="Minimum 6 characters" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+                <div id="errorMessage" class="mb-4 text-red-500 text-sm hidden"></div>
+                <button type="submit" id="signupBtn" class="btn btn-primary" style="width: 100%;">Create
+                    Account</button>
             </form>
 
             <div class="mt-6 text-center text-sm text-muted">
-                By clicking create account, you agree to our <a href="about.html">Terms</a> and <a
-                    href="about.html">Privacy Policy</a>.
+                By clicking create account, you agree to our <a href="about.html">Terms</a>.
             </div>
         </div>
     </main>
+
+    <script type="module">
+        import { signupUser } from './js/auth.js';
+
+        const signupForm = document.getElementById('signupForm');
+        const signupBtn = document.getElementById('signupBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (password.length < 6) {
+                errorMessage.textContent = "Password must be at least 6 characters.";
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                signupBtn.textContent = "Creating...";
+                signupBtn.disabled = true;
+                errorMessage.classList.add('hidden');
+
+                await signupUser(email, password, name);
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error(error);
+                let msg = "Signup failed. Please try again.";
+                if (error.code === 'auth/email-already-in-use') msg = "Email already in use.";
+                errorMessage.textContent = msg;
+                errorMessage.classList.remove('hidden');
+                signupBtn.textContent = "Create Account";
+                signupBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -6,13 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Round Summary - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <span class="font-bold">Scenario Complete</span>
-            <span class="text-sm text-muted text-right">Next scenario in 5s...</span>
+            <div class="flex gap-4">
+                <a href="play.html" class="btn btn-primary">Next Scenario</a>
+            </div>
         </div>
     </nav>
 
@@ -21,34 +24,67 @@
         </div>
 
         <h2 class="mb-8">Cohort Alignment</h2>
+        <p class="text-muted mb-4">Comparing against top scenarios this week.</p>
 
         <div class="card w-full max-w-lg p-0 overflow-hidden">
             <table class="table">
-                <tr style="background: #f8fafc;">
-                    <td class="w-8">1</td>
-                    <td>
-                        <div class="flex items-center gap-2">
-                            <div class="avatar w-6 h-6 text-xs" style="background: var(--primary-color);">VP</div>
-                            Vedant P.
-                        </div>
-                    </td>
-                    <td class="text-right font-bold"><span class="tag-decision">Pragmatic</span></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>John S.</td>
-                    <td class="text-right font-bold"><span class="tag-decision">Cautious</span></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Alice M.</td>
-                    <td class="text-right font-bold"><span class="tag-decision">Idealist</span></td>
-                </tr>
+                <tbody id="cohortTable">
+                    <tr>
+                        <td class="p-4 text-center">Loading cohort data...</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
-
-        <a href="play.html" class="btn btn-primary mt-8">Next Scenario</a>
     </main>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { getLeaderboard, getUserProfile } from './js/data.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        async function loadCohort() {
+            // Using leaderboard as a proxy for "Cohort" to show real data
+            const data = await getLeaderboard();
+            const container = document.getElementById('cohortTable');
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = '<tr><td class="p-4 text-center">No other players found yet.</td></tr>';
+                return;
+            }
+
+            // Randomize "Decision Style" to simulate variety for the demo effect, 
+            // since we don't store individual game styles in the stats summary yet.
+            const styles = ["Pragmatic", "Cautious", "Idealist", "Aggressive", "Balanced"];
+
+            // Show Top 3 + Current User
+            const top3 = data.slice(0, 3);
+
+            top3.forEach((user, i) => {
+                const style = styles[Math.floor(Math.random() * styles.length)];
+                const isMe = auth.currentUser && auth.currentUser.uid === user.id;
+
+                container.innerHTML += `
+                    <tr style="${isMe ? 'background: #f8fafc;' : ''}">
+                        <td class="w-8 font-bold">${i + 1}</td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="avatar w-6 h-6 text-xs" style="background: ${isMe ? 'var(--primary-color)' : '#94a3b8'};">
+                                    ${(user.id).substring(0, 2).toUpperCase()}
+                                </div>
+                                ${isMe ? 'You' : `Player ${user.id.substring(0, 4)}`}
+                            </div>
+                        </td>
+                        <td class="text-right font-bold"><span class="tag-decision">${style}</span></td>
+                    </tr>
+                 `;
+            });
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) loadCohort();
+        });
+    </script>
 </body>
 
 </html>

@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decision Profile - Zenoa</title>
+    <title>Results - Zenoa</title>
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/guard.js"></script>
 </head>
 
 <body>
@@ -20,17 +21,16 @@
         <div class="text-center mb-8">
             <div class="text-primary font-bold tracking-widest uppercase text-sm mb-2">Analysis Complete</div>
             <h1 class="mb-2">Decision Profile</h1>
-            <p class="text-muted">Risk & Uncertainty • Scenario 1</p>
         </div>
 
         <div class="card p-8 mb-8 w-full max-w-2xl">
             <div class="flex justify-between items-center mb-8 border-b pb-8 border-gray-100">
                 <div>
                     <div class="text-sm text-muted uppercase">Your Choice</div>
-                    <div class="font-bold text-lg">Option B: Issue Warning</div>
+                    <div class="font-bold text-lg" id="resultOption">...</div>
                 </div>
                 <div class="text-right">
-                    <div class="badge tier-strategist mb-1">Pragmatic</div>
+                    <div class="badge tier-strategist mb-1" id="resultStyle">...</div>
                     <div class="text-sm text-muted">Alignment</div>
                 </div>
             </div>
@@ -49,8 +49,8 @@
                 <div>
                     <h3 class="text-sm uppercase text-muted mb-4">Speed Impact</h3>
                     <div class="flex items-center gap-4 mb-2">
-                        <div class="font-bold text-2xl">Fast</div>
-                        <div class="text-sm text-muted">Decisive action taken.</div>
+                        <div class="font-bold text-2xl" id="timeValue">...s</div>
+                        <div class="text-sm text-muted">Response time</div>
                     </div>
                     <div class="progress-track">
                         <div class="progress-fill" style="width: 85%; background: var(--tier-apex);"></div>
@@ -58,30 +58,28 @@
                 </div>
             </div>
 
-            <div class="bg-gray-50 p-4 rounded border border-gray-100">
-                <h4 class="font-bold mb-2">System Insight</h4>
-                <p class="text-sm text-muted">
-                    You prioritized <strong>utility</strong> over <strong>absolute safety</strong>. This indicates a
-                    high tolerance for calculated risk when operational continuity is threatened.
-                </p>
+            <div class="card p-4 w-full max-w-2xl mb-8 flex justify-between items-center bg-gray-50 border-0">
+                <span class="font-bold">Progress Updated</span>
+                <span class="badge tier-strategist">+25 SR</span>
             </div>
-        </div>
-
-        <div class="card p-4 w-full max-w-2xl mb-8 flex justify-between items-center">
-            <span class="font-bold">Tier Progress</span>
-            <div class="flex items-center gap-4 flex-grow mx-8">
-                <div class="progress-track">
-                    <div class="progress-fill" style="width: 78%; background: var(--tier-strategist);"></div>
-                </div>
-            </div>
-            <span class="badge tier-strategist">+15 Insight</span>
         </div>
 
         <div class="flex gap-4">
             <a href="leaderboard.html" class="btn btn-secondary">Global Data</a>
-            <a href="profile.html" class="btn btn-primary">My Stats</a>
+            <a href="dashboard.html" class="btn btn-primary">My Dashboard</a>
         </div>
     </main>
+
+    <script type="module">
+        // Load data passed from play.html via localStorage
+        const result = JSON.parse(localStorage.getItem('lastResult'));
+
+        if (result) {
+            document.getElementById('resultStyle').textContent = result.style;
+            document.getElementById('resultOption').textContent = `Option ${result.option}`;
+            document.getElementById('timeValue').textContent = `${result.time}s`;
+        }
+    </script>
 </body>
 
 </html>
