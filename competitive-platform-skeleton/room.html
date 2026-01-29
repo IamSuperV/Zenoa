@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby - Zenoa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="rooms.html" class="nav-link">← Leave Lobby</a>
+            <div class="font-bold">Strategy Alpha</div>
+        </div>
+    </nav>
+
+    <main class="container p-8">
+        <div class="grid grid-3">
+            <div class="card" style="grid-column: span 2;">
+                <div class="flex justify-between items-center mb-8">
+                    <h1>Waiting for players...</h1>
+                    <div class="badge tier-strategist">3/5 Ready</div>
+                </div>
+
+                <div class="flex gap-8 justify-center items-center py-8">
+                    <!-- Player 1 -->
+                    <div class="text-center">
+                        <div class="avatar mb-4"
+                            style="width: 80px; height: 80px; font-size: 1.5rem; border: 3px solid var(--primary-color);">
+                            VP</div>
+                        <div class="font-bold">Vedant P.</div>
+                        <span class="text-xs badge tier-apex mt-2">Host</span>
+                    </div>
+                    <!-- Player 2 -->
+                    <div class="text-center">
+                        <div class="avatar mb-4"
+                            style="width: 80px; height: 80px; font-size: 1.5rem; background: #e2e8f0; color: #64748b;">
+                            JS</div>
+                        <div class="font-bold">John S.</div>
+                        <span class="text-xs text-muted mt-2">Ready</span>
+                    </div>
+                    <!-- Slot -->
+                    <div class="text-center opacity-50">
+                        <div class="avatar mb-4"
+                            style="width: 80px; height: 80px; border: 2px dashed #cbd5e1; background: transparent;">+
+                        </div>
+                        <div class="font-bold">Waiting...</div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <a href="play.html" class="btn btn-primary"
+                        style="padding: 1rem 3rem; font-size: 1.2rem;">Initialize Match</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Match Settings</h3>
+                <ul class="mt-4 text-sm text-muted">
+                    <li class="flex justify-between py-2 border-b border-gray-100">
+                        <span>Mode</span>
+                        <span class="font-bold text-main">Ranked</span>
+                    </li>
+                    <li class="flex justify-between py-2 border-b border-gray-100">
+                        <span>Category</span>
+                        <span class="font-bold text-main">Negotiation</span>
+                    </li>
+                    <li class="flex justify-between py-2 border-b border-gray-100">
+                        <span>Round Limit</span>
+                        <span class="font-bold text-main">5 Rounds</span>
+                    </li>
+                    <li class="flex justify-between py-2">
+                        <span>Time/Round</span>
+                        <span class="font-bold text-main">60s</span>
+                    </li>
+                </ul>
+
+                <h3 class="mt-8 mb-4">Share</h3>
+                <input type="text" class="form-input text-center text-sm" value="zenoa.gg/lobby/x92f" readonly>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

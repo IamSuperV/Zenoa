@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Zenoa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="nav-logo">ZENOA</a>
+        </div>
+    </nav>
+
+    <main class="container p-8 flex justify-center">
+        <div class="card p-8 w-full max-w-lg">
+            <h1 class="mb-4">Contact Support</h1>
+            <p class="mb-8 text-muted">Please fill out the form below. We respond within 24 hours.</p>
+
+            <form>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">Subject</label>
+                    <select class="form-input">
+                        <option>General Inquiry</option>
+                        <option>Technical Support</option>
+                        <option>Enterprise Sales</option>
+                        <option>Report a Bug</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">Email Address</label>
+                    <input type="email" class="form-input" placeholder="you@example.com">
+                </div>
+                <div class="mb-8">
+                    <label class="block text-sm font-bold mb-2">Message</label>
+                    <textarea class="form-input" rows="5" placeholder="Describe your issue..."></textarea>
+                </div>
+                <button class="btn btn-primary w-full">Submit Ticket</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center text-muted text-sm">
+            &copy; 2024 Zenoa Inc.
+        </div>
+    </footer>
+</body>
+
+</html>

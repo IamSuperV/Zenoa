@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms - Zenoa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="nav-logo">ZENOA</a>
+            <div class="flex items-center gap-4">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="profile.html" class="avatar">VP</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container p-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 style="font-size: 2rem;">Active Sessions</h1>
+            <a href="room.html" class="btn btn-primary">+ Create Room</a>
+        </div>
+
+        <div class="grid grid-3">
+            <!-- Room 1 -->
+            <div class="card">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg">Strategy Alpha</h3>
+                        <span class="text-sm text-muted">Host: Vedant P.</span>
+                    </div>
+                    <span class="badge tier-apex">Ranked</span>
+                </div>
+                <div class="flex justify-between items-center text-sm mb-4">
+                    <span>Business Logic</span>
+                    <span>3/5 Players</span>
+                </div>
+                <div class="progress-track mb-4" style="height: 4px;">
+                    <div class="progress-fill" style="width: 60%; background: var(--primary-color);"></div>
+                </div>
+                <a href="room.html" class="btn btn-secondary" style="width: 100%;">Join Lobby</a>
+            </div>
+
+            <!-- Room 2 -->
+            <div class="card" style="border-left: 4px solid var(--tier-strategist);">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg">Quickfire Logic</h3>
+                        <span class="text-sm text-muted">Host: System</span>
+                    </div>
+                    <span class="badge tier-rookie">Casual</span>
+                </div>
+                <div class="flex justify-between items-center text-sm mb-4">
+                    <span>Abstract</span>
+                    <span>1/10 Players</span>
+                </div>
+                <div class="progress-track mb-4" style="height: 4px;">
+                    <div class="progress-fill" style="width: 10%; background: var(--secondary-color);"></div>
+                </div>
+                <a href="room.html" class="btn btn-secondary" style="width: 100%;">Join Lobby</a>
+            </div>
+
+            <!-- Room 3 -->
+            <div class="card">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-lg">Ethics Debate</h3>
+                        <span class="text-sm text-muted">Host: Sarah J.</span>
+                    </div>
+                    <span class="badge tier-architect">Private</span>
+                </div>
+                <div class="flex justify-between items-center text-sm mb-4">
+                    <span>Philosophy</span>
+                    <span>Full</span>
+                </div>
+                <div class="progress-track mb-4" style="height: 4px;">
+                    <div class="progress-fill" style="width: 100%; background: var(--text-muted);"></div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%; opacity: 0.5; cursor: not-allowed;">Spectate
+                    Only</button>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

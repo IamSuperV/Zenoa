@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Zenoa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="nav-logo">ZENOA</a>
+            <div class="flex items-center gap-4">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="rooms.html" class="nav-link">Rooms</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="profile.html" class="avatar">VP</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 style="font-size: 2rem;">Overview</h1>
+                <p>Decision Intelligence Platform</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="categories.html" class="btn btn-primary">Start Assessment</a>
+            </div>
+        </div>
+
+        <div class="grid grid-3 mb-8">
+            <!-- Rank Card -->
+            <div class="card" style="grid-column: span 2;">
+                <div class="flex justify-between items-center mb-4">
+                    <h3>Current Status</h3>
+                    <span class="badge tier-strategist">Strategist</span>
+                </div>
+                <div class="flex items-center gap-8 mb-6">
+                    <div>
+                        <div class="text-sm text-muted uppercase">Global Rank</div>
+                        <div style="font-size: 2.5rem; font-weight: 700;">#422</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-muted uppercase">Recent Trend</div>
+                        <div style="color: var(--primary-color); font-weight: 700; font-size: 1.2rem;">Increasing
+                            Consistency</div>
+                    </div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width: 75%; background: var(--tier-strategist);"></div>
+                </div>
+                <div class="flex justify-between text-xs text-muted mt-2">
+                    <span>Strategist Tier</span>
+                    <span>Architect Tier</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card">
+                <h3>Decision Pattern</h3>
+                <div class="mt-4 flex flex-col gap-3">
+                    <div class="flex justify-between items-center">
+                        <span class="tag-decision">Analytical</span>
+                        <span class="font-bold">62%</span>
+                    </div>
+                    <div class="progress-track h-2">
+                        <div class="progress-fill" style="width: 62%; background: var(--tier-architect);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="tag-decision">Intuitive</span>
+                        <span class="font-bold">38%</span>
+                    </div>
+                    <div class="progress-track h-2">
+                        <div class="progress-fill" style="width: 38%; background: var(--tier-rookie);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h3>Active Zones</h3>
+                <div class="grid grid-2 mt-4 gap-4">
+                    <a href="play.html" class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
+                        <span class="text-2xl">⚖️</span>
+                        <span>Risk & Uncertainty</span>
+                    </a>
+                    <a href="categories.html"
+                        class="btn btn-secondary text-center justify-center py-4 flex-col gap-2 h-auto">
+                        <span class="text-2xl">🧠</span>
+                        <span>Situational Logic</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Recent Analysis</h3>
+                <table class="table mt-4">
+                    <tr>
+                        <td>Supply Chain Crisis</td>
+                        <td><span class="tag-decision highlight">Pragmatic</span></td>
+                        <td class="text-muted text-right text-xs">Today</td>
+                    </tr>
+                    <tr>
+                        <td>Ethical Dilemma #4</td>
+                        <td><span class="tag-decision">Idealist</span></td>
+                        <td class="text-muted text-right text-xs">Yesterday</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

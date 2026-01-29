@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Zenoa</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <a href="index.html" class="nav-logo">ZENOA</a>
+            <div class="flex items-center gap-4">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="rooms.html" class="nav-link">Rooms</a>
+                <a href="profile.html" class="avatar">VP</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container p-8">
+        <div class="grid grid-3">
+            <!-- User Info -->
+            <div class="card text-center p-8">
+                <div class="avatar mx-auto mb-4" style="width: 100px; height: 100px; font-size: 2rem;">VP</div>
+                <h1 style="font-size: 1.5rem;">Vedant P.</h1>
+                <p class="mb-4 text-muted">Strategist • Level 42</p>
+                <div class="badge tier-strategist mb-8">Top 15%</div>
+
+                <h4 class="text-left text-sm uppercase text-muted mb-4">Decision Style</h4>
+                <div class="flex flex-wrap gap-2 justify-center mb-8">
+                    <span class="tag-decision highlight">Risk-Aware</span>
+                    <span class="tag-decision">Fast Decider</span>
+                    <span class="tag-decision">Utilitarian</span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <a href="settings.html" class="btn btn-secondary w-full justify-center">Edit Profile</a>
+                </div>
+            </div>
+
+            <!-- Detailed Stats -->
+            <div class="card" style="grid-column: span 2;">
+                <h3 class="mb-6">Cognitive Metrics</h3>
+
+                <div class="grid grid-2 gap-8 mb-8">
+                    <div>
+                        <div class="meter-container">
+                            <span class="meter-label">Consistency</span>
+                            <div class="meter-track">
+                                <div class="meter-fill" style="width: 85%; background: var(--tier-apex);"></div>
+                            </div>
+                        </div>
+                        <div class="meter-container">
+                            <span class="meter-label">Adaptability</span>
+                            <div class="meter-track">
+                                <div class="meter-fill" style="width: 65%; background: var(--tier-strategist);"></div>
+                            </div>
+                        </div>
+                        <div class="meter-container">
+                            <span class="meter-label">Speed</span>
+                            <div class="meter-track">
+                                <div class="meter-fill" style="width: 92%; background: var(--primary-color);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded border border-gray-100">
+                        <h4 class="text-sm font-bold mb-2">Category Strengths</h4>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm">Strategic Thinking</span>
+                            <span class="badge tier-apex">S Tier</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Social Intelligence</span>
+                            <span class="badge tier-rookie">C Tier</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="mb-4">Historical Performance</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-xs">Scenario</th>
+                            <th class="text-xs">Category</th>
+                            <th class="text-xs">Date</th>
+                            <th class="text-xs text-right">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Supply Chain Crisis</td>
+                            <td><span class="badge tier-architect">Risk</span></td>
+                            <td class="text-muted text-sm">2h ago</td>
+                            <td class="text-right"><span class="tag-decision">Pragmatic</span></td>
+                        </tr>
+                        <tr>
+                            <td>Merger Negotiation</td>
+                            <td><span class="badge tier-strategist">Strategy</span></td>
+                            <td class="text-muted text-sm">Yesterday</td>
+                            <td class="text-right"><span class="tag-decision">Aggressive</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
