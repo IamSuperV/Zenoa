@@ -7,9 +7,10 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Users can read/write their own stats
+    // Users can read/write their own stats AND read others for leaderboard
     match /stats/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
     
     // Users can create responses where userId matches their own ID
@@ -17,12 +18,12 @@ service cloud.firestore {
       allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
     }
-    
-    // Leaderboard queries require reading stats of others, 
-    // but for strict privacy, we might use a dedicated 'public profiles' collection.
-    // For this app, we'll allow authenticated users to read stats for the leaderboard.
-    match /stats/{userId} {
-       allow read: if request.auth != null;
+
+    // Rooms: Authenticated users can create, read, and update (join) rooms
+    match /rooms/{roomId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null; 
+      allow update: if request.auth != null; // In real app, create stricter rules (e.g. only add self to players array)
     }
   }
 }

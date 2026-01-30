@@ -11,6 +11,7 @@ import {
     query,
     orderBy,
     limit,
+    where,
     getDocs,
     increment,
     arrayUnion,
@@ -78,13 +79,13 @@ export async function saveGameResult(uid, responseData) {
 
         // 3. Update User Stats
         const statsRef = doc(db, "stats", uid);
-        await updateDoc(statsRef, {
+        await setDoc(statsRef, {
             matchesPlayed: increment(1),
             tierProgress: increment(xpGain),
             sr: increment(25), // Placeholder SR gain
             decisionStyles: arrayUnion(newDecisionStyle),
             lastPlayed: serverTimestamp()
-        });
+        }, { merge: true });
 
         // 4. Update 'isNew' flag on user doc if it's the first match
         const userRef = doc(db, "users", uid);
@@ -123,5 +124,30 @@ export async function getLeaderboard() {
     } catch (error) {
         console.error("Error fetching leaderboard:", error);
         return [];
+    }
+}
+
+/**
+ * Get aggregated stats for a specific question
+ * @param {string} questionId 
+ */
+export async function getQuestionStats(questionId) {
+    try {
+        const q = query(collection(db, "responses"),
+            where("questionId", "==", questionId));
+        const querySnapshot = await getDocs(q);
+
+        const total = querySnapshot.size;
+        const counts = {};
+
+        querySnapshot.forEach((doc) => {
+            const opt = doc.data().selectedOption;
+            counts[opt] = (counts[opt] || 0) + 1;
+        });
+
+        return { total, counts };
+    } catch (error) {
+        console.error("Error fetching question stats:", error);
+        return { total: 0, counts: {} };
     }
 }

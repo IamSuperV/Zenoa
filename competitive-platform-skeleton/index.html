@@ -15,54 +15,75 @@
             <a href="index.html" class="nav-logo">ZENOA</a>
             <div class="flex items-center gap-4" id="navLinks">
                 <a href="login.html" class="nav-link">Login</a>
-                <a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Sign
-                    Up</a>
+                <a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.9rem;">
+                    Sign Up
+                </a>
             </div>
         </div>
     </nav>
 
     <main>
-        <div class="container mt-8 text-center p-8">
-            <div class="badge tier-strategist mb-4">New Season Live</div>
-            <h1 class="mb-4" style="max-width: 800px; margin-left: auto; margin-right: auto;">
-                Same questions. <span style="color: var(--primary-color);">Different minds.</span>
-            </h1>
-            <p class="mb-8" style="max-width: 600px; margin-left: auto; margin-right: auto;">
-                The competitive platform for social strategy, negotiation, and logic.
-                Rank up from Rookie to Apex in live, interactive scenarios.
-            </p>
-            <div class="flex justify-center gap-4">
-                <a href="signup.html" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Start
-                    Playing</a>
-            </div>
-        </div>
+        <!-- HERO SECTION -->
+        <section class="container mt-8 text-center p-8 flex flex-col items-center justify-center"
+            style="min-height: 70vh;">
+            <div class="badge tier-strategist mb-8">Season 1: Awakening</div>
 
-        <div class="container grid grid-3 mb-8 p-8">
-            <div class="card">
-                <div class="actions mb-4 text-3xl">🎯</div>
-                <h3>Precision Skills</h3>
-                <p class="mt-2 text-sm">Measure soft skills with hard data. Negotiation, logic, and rapid decision
-                    making.</p>
+            <h1 class="mb-4 text-glow" style="max-width: 900px;">
+                Same questions. <br>
+                <span class="text-gradient">Different minds.</span>
+            </h1>
+
+            <p class="mb-8" style="max-width: 600px; font-size: 1.25rem; color: var(--text-muted);">
+                The competitive platform for social strategy, negotiation, and logic.
+                Rank up from <span style="color: var(--tier-rookie)">Rookie</span> to <span
+                    style="color: var(--tier-apex)">Apex</span> in live scenarios.
+            </p>
+
+            <div class="flex justify-center gap-4">
+                <a href="signup.html" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">
+                    PLAY NOW
+                </a>
+                <a href="methodology.html" class="btn btn-secondary">
+                    LEARN MORE
+                </a>
             </div>
+        </section>
+
+        <!-- FEATURES GRID -->
+        <section class="container grid grid-3 mb-8 p-8">
             <div class="card">
-                <div class="actions mb-4 text-3xl">🏆</div>
-                <h3>Global Ranks</h3>
-                <p class="mt-2 text-sm">Climb the tiered ladder. Earn the Apex badge and showcase your profile.</p>
+                <div class="mb-4 text-4xl">🎯</div>
+                <h3 class="mb-2">Precision Skills</h3>
+                <p class="text-sm">Measure soft skills with hard data. Negotiation, logic, and rapid decision making
+                    under pressure.</p>
             </div>
+
+            <div class="card" style="background: rgba(59, 130, 246, 0.05); border-color: var(--primary-glow);">
+                <div class="mb-4 text-4xl">🏆</div>
+                <h3 class="mb-2" style="color: var(--primary);">Global Ranks</h3>
+                <p class="text-sm">Climb the tiered ladder. Earn the Apex badge and showcase your competitive profile to
+                    the world.</p>
+            </div>
+
             <div class="card">
-                <div class="actions mb-4 text-3xl">⚡</div>
-                <h3>Live Matches</h3>
-                <p class="mt-2 text-sm">Compete in real-time rooms. 5-minute rounds. Instant feedback.</p>
+                <div class="mb-4 text-4xl">⚡</div>
+                <h3 class="mb-2">Live Matches</h3>
+                <p class="text-sm">Compete in real-time rooms. Short 5-minute rounds. Instant feedback. Zero downtime.
+                </p>
             </div>
-        </div>
+        </section>
     </main>
 
     <footer class="footer">
-        <div class="container flex justify-between items-center">
-            <span class="font-bold">ZENOA</span>
-            <div class="flex gap-4 text-sm text-muted">
-                <a href="methodology.html">Methodology</a>
-                <a href="contact.html">Contact</a>
+        <div class="container flex justify-between items-center flex-col md:flex-row gap-4">
+            <div class="flex flex-col gap-1">
+                <span class="font-bold text-lg text-white">ZENOA</span>
+                <span class="text-xs text-muted">© 2026 Competitive Intelligence Inc.</span>
+            </div>
+            <div class="flex gap-8 text-sm text-muted">
+                <a href="methodology.html" class="hover:text-white">Methodology</a>
+                <a href="contact.html" class="hover:text-white">Contact</a>
+                <a href="privacy.html" class="hover:text-white">Privacy</a>
             </div>
         </div>
     </footer>
@@ -73,9 +94,12 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('navLinks').innerHTML = `
-                    <a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>
-                `;
+                const navLinks = document.getElementById('navLinks');
+                if (navLinks) {
+                    navLinks.innerHTML = `
+                        <a href="dashboard.html" class="btn btn-primary">ENTER APP</a>
+                    `;
+                }
             }
         });
     </script>

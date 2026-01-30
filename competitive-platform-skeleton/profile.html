@@ -11,6 +11,10 @@
         .hidden {
             display: none !important;
         }
+
+        .meter-container {
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 
@@ -18,86 +22,101 @@
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <a href="index.html" class="nav-logo">ZENOA</a>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-6">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
                 <a href="rooms.html" class="nav-link">Rooms</a>
-                <div class="flex gap-4 ml-4">
-                    <button id="logoutBtn" class="text-sm text-red-500 font-bold hover:underline">Logout</button>
-                </div>
+                <button id="logoutBtn"
+                    class="text-sm text-danger font-bold hover:text-white transition-colors border-l border-glass pl-6">LOGOUT</button>
             </div>
         </div>
     </nav>
 
-    <main class="container p-8">
-        <div id="loadingState" class="text-center p-8">Loading profile...</div>
+    <main class="container p-4 mt-8">
+        <div id="loadingState" class="text-center p-12 text-muted animate-pulse">Retrieving personnel file...</div>
 
         <!-- PROFILE CONTENT -->
         <div id="profileContent" class="grid grid-3 hidden">
-            <!-- User Info -->
-            <div class="card text-center p-8">
-                <div class="avatar mx-auto mb-4" id="profileAvatar"
-                    style="width: 100px; height: 100px; font-size: 2rem;">--</div>
-                <h1 style="font-size: 1.5rem;" id="profileName">...</h1>
-                <p class="mb-4 text-muted" id="profileMeta">Rookie • Level 1</p>
-                <div class="badge tier-rookie mb-8" id="profileTierBadge">Rookie</div>
-
-                <h4 class="text-left text-sm uppercase text-muted mb-4">Decision Style</h4>
-                <div class="flex flex-wrap gap-2 justify-center mb-8" id="decisionTags">
-                    <span class="text-sm text-muted">No data yet.</span>
+            <!-- User Info Sidebar -->
+            <div class="card text-center p-8 border-glass bg-opacity-40">
+                <div class="avatar mx-auto mb-6 shadow-lg shadow-primary/20" id="profileAvatar"
+                    style="width: 120px; height: 120px; font-size: 2.5rem; border: 4px solid rgba(255,255,255,0.1);">--
                 </div>
 
-                <div class="flex flex-col gap-2">
-                    <a href="settings.html" class="btn btn-secondary w-full justify-center">Edit Profile</a>
+                <h1 class="text-2xl mb-1 text-glow" id="profileName">...</h1>
+                <p class="mb-4 text-primary text-sm uppercase tracking-wider font-bold" id="profileMeta">--</p>
+
+                <div class="badge tier-rookie mb-8 scale-110" id="profileTierBadge">--</div>
+
+                <div class="border-t border-glass pt-6 mb-6">
+                    <h4 class="text-left text-xs uppercase text-muted mb-4 tracking-widest">Decision DNA</h4>
+                    <div class="flex flex-wrap gap-2 justify-center" id="decisionTags">
+                        <span class="text-xs text-muted italic">Awaiting assessment data...</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 mt-auto">
+                    <a href="settings.html" class="btn btn-secondary w-full justify-center text-xs">Edit Settings</a>
                 </div>
             </div>
 
             <!-- Detailed Stats -->
-            <div class="card" style="grid-column: span 2;">
-                <h3 class="mb-6">Cognitive Metrics</h3>
+            <div class="card p-8" style="grid-column: span 2;">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl">Cognitive Metrics</h3>
+                    <div class="text-xs text-success" id="systemOnline" class="hidden">● System Online</div>
+                </div>
 
                 <div id="metricsContainer" class="hidden">
-                    <div class="grid grid-2 gap-8 mb-8">
-                        <div>
+                    <div class="grid grid-2 gap-12 mb-12">
+                        <div class="p-6 bg-white bg-opacity-5 rounded-lg border border-glass">
+                            <h4 class="text-sm text-muted uppercase mb-6">Performance Indices</h4>
+
                             <div class="meter-container">
-                                <span class="meter-label">Consistency</span>
-                                <div class="meter-track">
-                                    <div class="meter-fill" style="width: 85%; background: var(--tier-apex);"></div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm font-bold">Consistency</span>
+                                    <span class="text-xs text-muted">Calculating...</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill" style="width: 0%; background: var(--tier-apex);"></div>
                                 </div>
                             </div>
-                            <div class="meter-container">
-                                <span class="meter-label">Adaptability</span>
-                                <div class="meter-track">
-                                    <div class="meter-fill" style="width: 65%; background: var(--tier-strategist);">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="meter-container">
-                                <span class="meter-label">Speed</span>
-                                <div class="meter-track">
-                                    <div class="meter-fill" style="width: 92%; background: var(--primary-color);"></div>
-                                </div>
-                            </div>
+
+                            <!-- More meters can be added when backend supports them -->
+                            <p class="text-xs text-muted italic mt-4">* Meters calibrate after 5 matches.</p>
+                        </div>
+
+                        <div
+                            class="flex flex-col justify-center items-center p-6 bg-white bg-opacity-5 rounded-lg border border-glass text-center">
+                            <div class="text-4xl mb-4">💎</div>
+                            <h4 class="text-lg font-bold mb-2">Premium Status</h4>
+                            <p class="text-sm text-muted">Unlock Pro features to view advanced analytics and deep-dive
+                                comparisons.</p>
+                            <button class="btn btn-secondary mt-4 text-xs" disabled>Coming Soon</button>
                         </div>
                     </div>
 
-                    <h3 class="mb-4">Historical Performance</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-xs">Scenario</th>
-                                <th class="text-xs">Category</th>
-                                <th class="text-xs text-right">Result</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
+                    <h3 class="mb-6 text-lg">Mission History</h3>
+                    <div class="overflow-hidden rounded-lg border border-glass">
+                        <table class="table">
+                            <thead>
+                                <tr class="bg-white bg-opacity-5">
+                                    <th class="text-xs pl-6">Scenario</th>
+                                    <th class="text-xs">Category</th>
+                                    <th class="text-xs text-right pr-6">Result</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div id="emptyMetrics" class="text-center p-8 border border-dashed border-gray-200 rounded">
-                    <p class="text-muted">Metrics unlock after completing assessments.</p>
-                    <a href="play.html" class="btn btn-primary mt-4">Play Now</a>
+                <div id="emptyMetrics"
+                    class="text-center p-12 border border-glass border-dashed rounded-lg bg-white bg-opacity-5 hidden">
+                    <div class="text-4xl mb-4 grayscale opacity-50">📊</div>
+                    <p class="text-muted mb-6">No data available. Complete your first assessment to unlock metrics.</p>
+                    <a href="play.html" class="btn btn-primary">Start Assessment</a>
                 </div>
             </div>
         </div>
@@ -120,7 +139,7 @@
                 document.getElementById('profileContent').classList.remove('hidden');
 
                 // Basic Info
-                const name = profile?.displayName || user.email;
+                const name = profile?.displayName || user.email.split('@')[0];
                 document.getElementById('profileName').textContent = name;
                 document.getElementById('profileAvatar').textContent = name.substring(0, 2).toUpperCase();
 
@@ -128,30 +147,39 @@
                 if (stats && stats.matchesPlayed > 0) {
                     document.getElementById('metricsContainer').classList.remove('hidden');
                     document.getElementById('emptyMetrics').classList.add('hidden');
+                    if (document.getElementById('systemOnline')) document.getElementById('systemOnline').classList.remove('hidden');
 
                     let tier = "Rookie";
-                    if (stats.sr > 1200) tier = "Challenger";
-                    if (stats.sr > 1500) tier = "Strategist";
+                    let tierColor = "var(--tier-rookie)";
+                    if (stats.sr > 1200) { tier = "Challenger"; tierColor = "var(--tier-challenger)"; }
+                    if (stats.sr > 1500) { tier = "Strategist"; tierColor = "var(--tier-strategist)"; }
+                    if (stats.sr > 2000) { tier = "Architect"; tierColor = "var(--tier-architect)"; }
 
-                    document.getElementById('profileMeta').textContent = `${tier} • Assessment ${stats.matchesPlayed}`;
-                    document.getElementById('profileTierBadge').textContent = tier;
-                    document.getElementById('profileTierBadge').className = `badge tier-${tier.toLowerCase()} mb-8`;
+                    document.getElementById('profileMeta').textContent = `${tier} • Level ${Math.floor(stats.matchesPlayed / 5) + 1}`;
+                    document.getElementById('profileMeta').style.color = tierColor;
+
+                    const tierBadge = document.getElementById('profileTierBadge');
+                    tierBadge.textContent = tier;
+                    tierBadge.className = `badge tier-${tier.toLowerCase()} mb-8 scale-110`;
+                    tierBadge.style.boxShadow = `0 0 15px ${tierColor}`;
 
                     // Populate Decision Tags
                     if (stats.decisionStyles) {
                         const container = document.getElementById('decisionTags');
                         container.innerHTML = '';
                         [...new Set(stats.decisionStyles)].forEach(style => {
-                            container.innerHTML += `<span class="tag-decision highlight capitalize">${style}</span>`;
+                            container.innerHTML += `<span class="tag-decision highlight capitalize bg-white bg-opacity-10 border-glass">${style}</span>`;
                         });
                     }
 
-                    // Dummy History (In real app, fetch from 'responses' collection)
+                    // Dummy History (Ideally this should be fetched too, but for now we are rigorous about stats)
+                    // If no history collection exists, we can leave this empty or show the last played style
+                    const lastStyle = stats.decisionStyles[stats.decisionStyles.length - 1] || 'Unknown';
                     document.getElementById('historyTableBody').innerHTML = `
-                         <tr>
-                            <td>Last Assessment</td>
-                            <td><span class="badge tier-architect">General</span></td>
-                            <td class="text-right"><span class="tag-decision capitalize">${stats.decisionStyles[stats.decisionStyles.length - 1] || 'Pending'}</span></td>
+                         <tr class="hover:bg-white hover:bg-opacity-5 transition-colors">
+                            <td class="pl-6 font-bold">Latest Assessment</td>
+                            <td><span class="badge tier-architect text-[0.65rem] opacity-70">General</span></td>
+                            <td class="text-right pr-6"><span class="tag-decision capitalize text-xs">${lastStyle}</span></td>
                         </tr>
                     `;
 
@@ -159,6 +187,9 @@
                     // Empty User
                     document.getElementById('metricsContainer').classList.add('hidden');
                     document.getElementById('emptyMetrics').classList.remove('hidden');
+                    document.getElementById('profileMeta').textContent = "Cadet";
+                    document.getElementById('profileTierBadge').textContent = "Unranked";
+                    document.getElementById('profileTierBadge').className = `badge tier-rookie mb-8 scale-110`;
                 }
             }
         });

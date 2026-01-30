@@ -19,33 +19,86 @@
         </div>
     </nav>
 
-    <main class="container p-8">
-        <div class="flex justify-between items-center mb-8">
-            <h1 style="font-size: 2rem;">Lobby</h1>
-            <a href="play.html" class="btn btn-primary">Quick Match</a>
+    <main class="container p-8 mt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <div>
+                <h1 class="text-4xl mb-2 text-glow">Multiplayer Lobby</h1>
+                <p class="text-muted">Join existing scenarios or host your own private room.</p>
+            </div>
+
+            <div class="card p-2 flex gap-2 border-primary bg-opacity-20 bg-black">
+                <input type="text" id="joinRoomId" placeholder="ENTER ROOM ID"
+                    class="form-input text-sm p-3 w-48 font-mono tracking-widest uppercase border-0 bg-transparent focus:ring-0">
+                <button id="joinBtn" class="btn btn-primary text-sm px-6">JOIN</button>
+            </div>
         </div>
 
-        <div class="card text-center p-12">
-            <div class="text-4xl mb-4">🏠</div>
-            <h3>No Custom Rooms Active</h3>
-            <p class="text-muted mb-8">There are no public custom lobbies open right now. Start a Quick Match to improve
-                your SR.</p>
-            <a href="play.html" class="btn btn-primary" style="padding: 1rem 3rem;">Find Match</a>
-        </div>
+        <div class="grid grid-2 gap-8">
+            <!-- Create Room Hero -->
+            <div
+                class="card p-12 text-center flex flex-col items-center justify-center border-glass hover:border-primary transition-colors cursor-pointer group bg-gradient-to-br from-white/5 to-transparent">
+                <div class="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">🏰</div>
+                <h3 class="text-2xl mb-2">Create Custom Room</h3>
+                <p class="text-muted mb-8 max-w-sm">Host a private lobby. Invite up to 5 friends. Compete in real-time
+                    scenarios with live ranking.</p>
+                <button id="createRoomBtn" class="btn btn-primary px-8 py-3 text-lg shadow-glow">
+                    + HOST SESSION
+                </button>
+            </div>
 
-        <div class="mt-8">
-            <h3 class="mb-4">Recent Activity</h3>
-            <div class="grid grid-3 opacity-50">
-                <!-- Placeholders -->
-                <div class="card p-4">
-                    <span class="text-xs text-muted">Waiting for data...</span>
+            <!-- Quick Match / Info -->
+            <div class="flex flex-col gap-6">
+                <div class="card p-8 border-glass hover:bg-white/5 transition-colors">
+                    <div class="badge tier-architect mb-4">Ranked Play</div>
+                    <h3 class="text-xl mb-2">Solo Queue</h3>
+                    <p class="text-muted text-sm mb-6">Matchmaking is currently disabled for maintenance. You can still
+                        play solo ranked scenarios to improve your SR.</p>
+                    <a href="play.html" class="btn btn-secondary w-full justify-center">ENTER SOLO QUEUE</a>
                 </div>
-                <div class="card p-4">
-                    <span class="text-xs text-muted">Waiting for data...</span>
+
+                <div class="card p-8 border-glass bg-gradient-to-r from-primary/10 to-transparent">
+                    <div class="flex items-center gap-4">
+                        <div class="text-3xl">🏆</div>
+                        <div>
+                            <h3 class="text-lg font-bold">Season 1 Live</h3>
+                            <p class="text-xs text-primary font-bold uppercase tracking-widest">Ends in 14 days</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="mt-12 text-center">
+            <h4 class="text-sm text-muted uppercase tracking-widest mb-6">Active Rooms (Public)</h4>
+            <div class="text-center opacity-30 text-sm">No public rooms visible. Use a Room ID to join.</div>
+        </div>
     </main>
+
+    <script type="module">
+        import { createRoom } from './js/rooms.js';
+
+        document.getElementById('createRoomBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('createRoomBtn');
+            btn.textContent = "INITIALIZING...";
+            btn.disabled = true;
+
+            try {
+                const roomId = await createRoom();
+                window.location.href = `room.html?id=${roomId}`;
+            } catch (e) {
+                console.error(e);
+                alert("Failed to create room: " + e.message);
+                btn.textContent = "+ HOST SESSION";
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('joinBtn').addEventListener('click', () => {
+            const id = document.getElementById('joinRoomId').value.trim();
+            if (id) window.location.href = `room.html?id=${id}`;
+            else alert("Please enter a valid Room ID.");
+        });
+    </script>
 </body>
 
 </html>
