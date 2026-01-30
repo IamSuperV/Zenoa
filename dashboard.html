@@ -96,30 +96,37 @@
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                // Fetch full profile for username
-                userProfile = await getUserProfile(user.uid);
-
-                // DATA REPAIR: If Guest has no profile, create it now
-                if (!userProfile && user.isAnonymous) {
-                    console.log("Guest profile missing. Auto-creating...");
-                    userProfile = await createGuestProfile(user);
+                // OPTIMISTIC RENDER: Show Guest UI immediately without waiting for db
+                if (user.isAnonymous) {
+                    document.getElementById('display-name').textContent = "Guest (Loading...)";
+                    const nav = document.getElementById('nav-dynamic');
+                    nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
                 }
 
-                console.log("Profile Loaded:", userProfile);
+                // Background Data Fetch & Sync
+                try {
+                    userProfile = await getUserProfile(user.uid);
 
-                if (userProfile) {
-                    document.getElementById('display-name').textContent = userProfile.username;
-
-                    const nav = document.getElementById('nav-dynamic');
-                    if (userProfile.isGuest) {
-                        nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
-                        const dn = document.getElementById('display-name');
-                        if (!dn.textContent.includes("(Guest)")) {
-                            dn.textContent += " (Guest)";
-                        }
-                    } else {
-                        nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
+                    // DATA REPAIR: If Guest has no profile, create it now
+                    if (!userProfile && user.isAnonymous) {
+                        console.log("Guest profile missing. Auto-creating...");
+                        userProfile = await createGuestProfile(user);
                     }
+
+                    // Final UI Update (in case name changed or non-guest)
+                    if (userProfile) {
+                        document.getElementById('display-name').textContent = userProfile.username;
+                        const nav = document.getElementById('nav-dynamic');
+                        if (userProfile.isGuest) {
+                            nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
+                            const dn = document.getElementById('display-name');
+                            if (!dn.textContent.includes("(Guest)")) dn.textContent += " (Guest)";
+                        } else {
+                            nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Background profile sync failed:", e);
                 }
             }
         });

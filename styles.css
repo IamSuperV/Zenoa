@@ -175,3 +175,71 @@ input:focus {
     text-align: center;
     padding: 4rem 0;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+
+    /* Responsive Grid for Results & Dashboards */
+    div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Global Container */
+    .container {
+        width: 95%;
+        padding: var(--spacing-sm);
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    /* Play Area */
+    #question-text {
+        font-size: 1.4rem !important;
+    }
+
+    /* Navigation Stack */
+    nav.flex-center {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0 !important;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.8rem 1.5rem;
+        /* Larger touch targets */
+        width: 100%;
+        /* Full width buttons on mobile usually better for CTA */
+    }
+
+    .cta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    /* Adjust Card padding */
+    .card {
+        padding: var(--spacing-lg);
+    }
+
+    /* Room Code */
+    #room-code-display {
+        font-size: 3rem !important;
+    }
+
+    .filter-btn {
+        padding: 0.5rem !important;
+        font-size: 0.8rem !important;
+        width: auto !important;
+        flex: 1;
+    }
+}

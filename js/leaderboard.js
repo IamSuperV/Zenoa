@@ -108,14 +108,8 @@ export const calculateAndSaveResults = async (roomId, userId) => {
     };
 };
 
-export const getRoomLeaderboard = async (roomId) => {
-    // Helper used for Result Screen (Session based)
-    // Re-using logic to parse room data locally
-    const roomRef = doc(db, "rooms", roomId);
-    const roomSnap = await getDoc(roomRef);
-    if (!roomSnap.exists()) return [];
-    const roomData = roomSnap.data();
-
+// Helper: Calculate Leaderboard from Data (Sync)
+export const calculateRoomLeaderboard = (roomData) => {
     const leaderboard = [];
     const players = roomData.players || [];
     const allAnswers = roomData.answers || {};
@@ -159,6 +153,14 @@ export const getRoomLeaderboard = async (roomId) => {
     });
 
     return leaderboard.sort((a, b) => b.score - a.score);
+};
+
+export const getRoomLeaderboard = async (roomId) => {
+    // Helper used for Result Screen (Session based)
+    const roomRef = doc(db, "rooms", roomId);
+    const roomSnap = await getDoc(roomRef);
+    if (!roomSnap.exists()) return [];
+    return calculateRoomLeaderboard(roomSnap.data());
 };
 
 // NEW: Global Leaderboard Fetcher

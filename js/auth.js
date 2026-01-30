@@ -66,10 +66,21 @@ export const loginUser = async (email, password) => {
 
 // Helper: Create Guest Doc
 export const createGuestProfile = async (user) => {
-    const guestName = "Guest-" + user.uid.substring(0, 4).toUpperCase();
+    const GUEST_NAMES = [
+        "Thor", "Tony Stark", "Natasha", "Hulk", "Steve",
+        "Nick Fury", "Peter Parker", "Ben Tennesson", "Gwen Stacy"
+    ];
+    const randomName = GUEST_NAMES[Math.floor(Math.random() * GUEST_NAMES.length)];
+
+    // Append small suffix to ensure uniqueness in room if needed, or just keep name
+    // User asked for "just these names". But collision might be confusing in lobby.
+    // I will add a small ID to be safe: "Thor (8F)"
+    const suffix = user.uid.substring(0, 2).toUpperCase();
+    const finalName = `${randomName} ${suffix}`;
+
     const headers = {
         uid: user.uid,
-        username: guestName,
+        username: finalName,
         email: "guest@zenoa.app",
         college: "N/A",
         city: "Unknown",
@@ -88,8 +99,7 @@ export const createGuestProfile = async (user) => {
 // Guest Login
 export const loginAsGuest = async () => {
     try {
-        const result = await signInAnonymously(auth);
-        await createGuestProfile(result.user);
+        await signInAnonymously(auth);
         window.location.href = 'dashboard.html';
     } catch (error) {
         handleError(error);

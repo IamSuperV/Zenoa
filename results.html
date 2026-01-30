@@ -83,9 +83,10 @@
     </style>
 
     <script type="module">
-        import { auth } from './js/firebase.js';
+        import { auth, db } from './js/firebase.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-        import { calculateAndSaveResults, getRoomLeaderboard } from './js/leaderboard.js';
+        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+        import { calculateAndSaveResults, calculateRoomLeaderboard } from './js/leaderboard.js';
 
         const urlParams = new URLSearchParams(window.location.search);
         const roomId = urlParams.get('roomId');
@@ -98,11 +99,12 @@
             if (user && !hasCalculated) {
                 hasCalculated = true; // Prevent double calc
 
-                // 1. Calculate & Save My Results
+                // 1. Calculate & Save My Results (Once)
                 const myResults = await calculateAndSaveResults(roomId, user.uid);
 
                 if (myResults) {
                     document.getElementById('dominant-hero').textContent = myResults.dominantType;
+                    // stats display...
                     document.getElementById('r-logical').textContent = myResults.stats.logical || 0;
                     document.getElementById('r-strategic').textContent = myResults.stats.strategic || 0;
                     document.getElementById('r-social').textContent = myResults.stats.social || 0;
@@ -124,36 +126,44 @@
                     }
                 }
 
-                // 2. Fetch Leaderboard
-                const leaderboard = await getRoomLeaderboard(roomId);
-                const list = document.getElementById('leaderboard-list');
-                list.innerHTML = '';
-
-                leaderboard.forEach((p, idx) => {
-                    const div = document.createElement('div');
-                    div.className = 'rank-item';
-
-                    // Highlight self
-                    if (p.uid === user.uid) {
-                        div.style.border = '1px solid var(--accent-color)';
+                // 2. Real-time Leaderboard Listener
+                const roomRef = doc(db, "rooms", roomId);
+                onSnapshot(roomRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const roomData = docSnap.data();
+                        const leaderboard = calculateRoomLeaderboard(roomData);
+                        renderLeaderboard(leaderboard, user.uid);
                     }
-
-                    div.innerHTML = `
-                        <div style="display:flex; align-items:center;">
-                            <span class="rank-pos">#${idx + 1}</span>
-                            <div>
-                                <div style="font-weight:600;">${p.username}</div>
-                                <div style="font-size:0.8rem; color:var(--text-secondary);">${p.dominantType}</div>
-                            </div>
-                        </div>
-                        <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                            <div style="font-weight:700;">${p.score} pts</div>
-                        </div>
-                    `;
-                    list.appendChild(div);
                 });
             }
         });
+
+        function renderLeaderboard(leaderboard, currentUid) {
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '';
+
+            leaderboard.forEach((p, idx) => {
+                const div = document.createElement('div');
+                div.className = 'rank-item';
+                // Highlight self
+                if (p.uid === currentUid) {
+                    div.style.border = '1px solid var(--accent-color)';
+                }
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center;">
+                        <span class="rank-pos">#${idx + 1}</span>
+                        <div>
+                            <div style="font-weight:600;">${p.username}</div>
+                            <div style="font-size:0.8rem; color:var(--text-secondary);">${p.dominantType}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                        <div style="font-weight:700;">${p.score} pts</div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
     </script>
 </body>
 
