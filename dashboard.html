@@ -147,53 +147,31 @@
                             style="padding: 1rem; font-size: 1.1rem;">CONFIRM & PROCEED</button>
                     </form>
                 </div>
-            </div>
-
         </main>
 
         <script>
             // Simple interactions for the new dashboard
-            // We intercept clicks to show Identity Modal first instead of direct action
-            let pendingAction = null; // 'join', 'host', 'solo'
+            // Direct actions restored
 
-            // EXPOSE TO WINDOW for Module access
-            window.executeAction = (action) => {
-                if (action === 'join') {
-                    document.getElementById('join-section').classList.remove('hidden');
-                    document.getElementById('host-section').classList.add('hidden');
-                    document.getElementById('join-section').scrollIntoView({ behavior: 'smooth' });
-                } else if (action === 'host') {
-                    document.getElementById('host-section').classList.remove('hidden');
-                    document.getElementById('join-section').classList.add('hidden');
-                    document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
-                } else if (action === 'solo') {
-                    // Logic handled in module, trigger button click as fallback or custom event?
-                    // Better: We'll export usage or handle in module.
-                    // Actually, Module can't easily see this without window.
-                    // Let's fire a click on the hidden button which the module is listening to
-                    document.getElementById('solo-btn').click();
-                }
+            document.getElementById('join-card-trigger').onclick = () => {
+                document.getElementById('join-section').classList.remove('hidden');
+                document.getElementById('host-section').classList.add('hidden');
+                document.getElementById('join-section').scrollIntoView({ behavior: 'smooth' });
             };
 
-            // EXPOSE to window
-            window.showIdentityModal = (action) => {
-                pendingAction = action;
-                document.getElementById('identity-modal').style.display = 'flex';
-                document.getElementById('identity-modal').classList.remove('hidden');
-
-                // Pre-fill logic is in module via data binding, or we can try to grab from DOM if rendered
-                const dispName = document.getElementById('display-name').textContent;
-                if (dispName && !dispName.includes("Loading") && !dispName.includes("Guest")) {
-                    document.getElementById('id-username').value = dispName;
-                }
+            document.getElementById('host-card-trigger').onclick = () => {
+                document.getElementById('host-section').classList.remove('hidden');
+                document.getElementById('join-section').classList.add('hidden');
+                document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
             };
 
-            document.getElementById('join-card-trigger').onclick = () => { showIdentityModal('join'); };
-            document.getElementById('host-card-trigger').onclick = () => { showIdentityModal('host'); };
-            document.getElementById('solo-card-trigger').onclick = () => { showIdentityModal('solo'); };
-            document.getElementById('quick-play-btn').onclick = () => { showIdentityModal('solo'); };
+            document.getElementById('solo-card-trigger').onclick = () => {
+                document.getElementById('solo-btn').click();
+            };
 
-            // Close modal if needed? No, forced flow.
+            document.getElementById('quick-play-btn').onclick = () => {
+                document.getElementById('solo-btn').click();
+            };
         </script>
 
         <!-- Hidden legacy button for binding -->
@@ -205,35 +183,11 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
         import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
         import { logoutUser, getUserProfile, createGuestProfile } from './js/auth.js';
-        import { createRoom, joinRoom, startGame } from './js/rooms.js';
+        import { createRoom, joinRoom, startGame } from './js/rooms.对了
 
         let currentUser = null;
         let userProfile = null;
         let profileUnsubscribe = null;
-
-        // INTERCEPT LOGIC: We overwrite the onclicks HERE because we have access to userProfile
-        function setupSmartClicks() {
-            const handleSmartClick = (action) => {
-                // If profile is fully complete (Name + College), skip modal
-                if (userProfile && userProfile.username && userProfile.college && !userProfile.username.includes("Guest")) {
-                    window.executeAction(action);
-                } else {
-                    // Show modal (using the global function defined above)
-                    // We need to trigger the global 'pendingAction' update. 
-                    // Let's reuse the element click simulation or just call the global logic if we can access 'showIdentityModal'.
-                    // Actually, simpler: The global onclick calls showIdentityModal.
-                    // We can just manually call it. But 'showIdentityModal' is not on window.
-
-                    // Hack/Fix: let's put showIdentityModal on window too.
-                    window.showIdentityModal(action);
-                }
-            };
-
-            document.getElementById('join-card-trigger').onclick = () => handleSmartClick('join');
-            document.getElementById('host-card-trigger').onclick = () => handleSmartClick('host');
-            document.getElementById('solo-card-trigger').onclick = () => handleSmartClick('solo');
-            document.getElementById('quick-play-btn').onclick = () => handleSmartClick('solo');
-        }
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
@@ -256,15 +210,6 @@
                     if (docSnap.exists()) {
                         userProfile = docSnap.data();
                         updateUI(userProfile);
-
-                        // Prefill Identity Modal
-                        document.getElementById('id-username').value = userProfile.username || '';
-                        document.getElementById('id-institution').value = userProfile.college || userProfile.school || ''; // college field stores institution
-                        // Radio select
-                        // Default to College if not set
-
-                        // Setup clicks now that we have profile
-                        setupSmartClicks();
 
                     } else {
                         // Create profile if missing
@@ -321,49 +266,6 @@
                 nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
             }
         }
-
-        // --- IDENTITY FORM HANDLER ---
-        document.getElementById('identity-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.textContent;
-            btn.textContent = "Updating Identity...";
-            btn.disabled = true;
-
-            const newName = document.getElementById('id-username').value.trim();
-            const newInst = document.getElementById('id-institution').value.trim();
-            const type = document.querySelector('input[name="id-type"]:checked').value; // College or School
-
-            try {
-                // Update Firestore
-                const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, {
-                    username: newName,
-                    college: newInst,
-                    affiliationType: type
-                });
-
-                // IMPORTANT: Manually update local state immediately to avoid race condition with onSnapshot
-                if (userProfile) {
-                    userProfile.username = newName;
-                    userProfile.college = newInst;
-                }
-
-                // Hide Modal
-                document.getElementById('identity-modal').classList.add('hidden');
-                document.getElementById('identity-modal').style.display = 'none';
-
-                // Proceed with Pending Action
-                window.executeAction(pendingAction);
-
-            } catch (err) {
-                console.error(err);
-                alert("Update failed: " + err.message);
-            } finally {
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-        });
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', logoutUser);
