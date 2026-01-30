@@ -156,14 +156,23 @@ export const calculateAndSaveResults = async (roomId, userId) => {
 
 // Helper: Calculate Leaderboard from Data (Sync)
 export const calculateRoomLeaderboard = (roomData) => {
+    console.log("Calculated Room Leaderboard for data:", roomData);
     const leaderboard = [];
     const players = roomData.players || [];
     const allAnswers = roomData.answers || {};
+
+    console.log(`Players found: ${players.length}, Answers keys: ${Object.keys(allAnswers).length}`);
 
     players.forEach(p => {
         const pAnswers = allAnswers[p.uid];
         let totalScore = 0;
         let pStats = { logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0 };
+
+        if (!pAnswers) {
+            console.warn(`No answers for player ${p.username} (${p.uid})`);
+        } else {
+            console.log(`Processing answers for ${p.username}:`, pAnswers);
+        }
 
         if (pAnswers) {
             roomData.questionQueue.forEach(qId => {
@@ -198,6 +207,7 @@ export const calculateRoomLeaderboard = (roomData) => {
         });
     });
 
+    console.log("Final Leaderboard to Render:", leaderboard);
     return leaderboard.sort((a, b) => b.score - a.score);
 };
 
@@ -211,13 +221,12 @@ export const getRoomLeaderboard = async (roomId) => {
 
 // NEW: Global Leaderboard Fetcher
 // NEW: Global Leaderboard Fetcher
-export const getGlobalLeaderboard = async (type = 'Global', filterValue = null, categoryField = 'totalScore') => {
+// NEW: Real-time Global Leaderboard Listener
+export const subscribeToGlobalLeaderboard = (type = 'Global', filterValue = null, categoryField = 'totalScore', callback) => {
     const usersRef = collection(db, "users");
     let q;
 
     // Mapping categoryField to Firestore field
-    // 'totalScore' -> 'totalScore'
-    // 'Logical' -> 'intelligence.logical'
     let dbField = categoryField;
     if (categoryField !== 'totalScore') {
         dbField = `intelligence.${categoryField.toLowerCase()}`;
@@ -232,62 +241,39 @@ export const getGlobalLeaderboard = async (type = 'Global', filterValue = null, 
             q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
         }
 
-        const querySnapshot = await getDocs(q);
-        const users = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
+        // Return unsubscribe function
+        return onSnapshot(q, (querySnapshot) => {
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
 
-            // Get the specific score we are sorting by for display
-            let displayScore = 0;
-            if (categoryField === 'totalScore') {
-                displayScore = data.totalScore || 0;
-            } else {
-                displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
-            }
+                let displayScore = 0;
+                if (categoryField === 'totalScore') {
+                    displayScore = data.totalScore || 0;
+                } else {
+                    displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
+                }
 
-            users.push({
-                uid: data.uid,
-                username: data.username,
-                college: data.college,
-                city: data.city,
-                displayScore: displayScore, // Generalize the score
-                dominantType: data.dominantType
+                users.push({
+                    uid: data.uid,
+                    username: data.username,
+                    college: data.college,
+                    city: data.city,
+                    displayScore: displayScore,
+                    dominantType: data.dominantType
+                });
             });
+            callback(users);
+        }, (error) => {
+            console.error("Leaderboard Sync Error:", error);
+            // Fallback to empty array or handle error
+            callback([]);
         });
-        return users;
 
     } catch (e) {
-        console.error("Firestore Index / Query Error:", e);
-        console.warn("Falling back to client-side sort due to missing index.");
-
-        const fallbackQ = query(usersRef, where("isGuest", "==", false), limit(100));
-        const snap = await getDocs(fallbackQ);
-        let users = [];
-        snap.forEach(doc => {
-            const data = doc.data();
-            let score = 0;
-            if (categoryField === 'totalScore') {
-                score = data.totalScore || 0;
-            } else {
-                score = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
-            }
-
-            users.push({
-                ...data,
-                displayScore: score
-            });
-        });
-
-        // Manual Filter
-        if (type === 'College') {
-            users = users.filter(u => u.college === filterValue);
-        } else if (type === 'City') {
-            users = users.filter(u => u.city === filterValue);
-        }
-
-        // Manual Sort
-        users.sort((a, b) => b.displayScore - a.displayScore);
-
-        return users.slice(0, 50);
+        console.error("Firestore Query Setup Error:", e);
+        // Fallback for missing index not easily done with snapshots without complex client-side logic
+        callback([]);
+        return () => { }; // Return dummy unsubscribe
     }
 };
