@@ -301,13 +301,15 @@
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, {
                     username: newName,
-                    college: newInst, // We store institution in 'college' field for now as primary affiliation
-                    // Or we could separate fields, but leaderboard uses 'college'
-                    // If School selected, we might want to tag it? 
-                    // Let's just store it in 'college' for simpler leaderboard filtering for now
-                    // Or add an 'affiliationType' field
+                    college: newInst,
                     affiliationType: type
                 });
+
+                // IMPORTANT: Manually update local state immediately to avoid race condition with onSnapshot
+                if (userProfile) {
+                    userProfile.username = newName;
+                    userProfile.college = newInst;
+                }
 
                 // Hide Modal
                 document.getElementById('identity-modal').classList.add('hidden');
@@ -323,8 +325,9 @@
                     document.getElementById('join-section').classList.add('hidden');
                     document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
                 } else if (pendingAction === 'solo') {
-                    // Trigger solo logic
-                    document.getElementById('solo-btn').click();
+                    // Trigger solo logic DIRECTLY
+                    // We call the logic manually here instead of clicking button to ensure variables are passed
+                    startSoloGame();
                 }
 
             } catch (err) {
@@ -339,7 +342,7 @@
         // Logout
         document.getElementById('logout-btn').addEventListener('click', logoutUser);
 
-        // Create Room
+        // CREATE ROOM Logic
         document.getElementById('create-room-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || !userProfile) return;
@@ -362,21 +365,25 @@
             }
         });
 
-        // Solo Mode
-        document.getElementById('solo-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('solo-btn'); // hidden btn
-            // Note: identity update already happened
+        // SOLO GAME Logic (extracted)
+        async function startSoloGame() {
+            const btn = document.getElementById('solo-btn'); // reusing UI state if needed
 
             try {
+                // Use 'Mix' to include all categories: Logical, Strategic, Social, Political, Adaptive
+                // These are defined in js/rooms.js inside createRoom
                 const roomId = await createRoom(currentUser.uid, userProfile.username, 'Solo', 'Mix');
                 await startGame(roomId);
                 window.location.href = `play.html?roomId=${roomId}`;
             } catch (e) {
                 alert("Error starting solo: " + e.message);
             }
-        });
+        }
 
-        // Join Room
+        // Solo Mode Button Click (Legacy binding)
+        document.getElementById('solo-btn').addEventListener('click', startSoloGame);
+
+        // Join Room Logic
         document.getElementById('join-room-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || !userProfile) return;
