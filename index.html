@@ -61,6 +61,13 @@
                 window.location.href = 'dashboard.html';
             }
         });
+
+        const guestBtn = document.getElementById('home-guest-btn');
+        if (guestBtn) {
+            guestBtn.addEventListener('click', () => {
+                loginAsGuest();
+            });
+        }
     </script>
 </body>
 

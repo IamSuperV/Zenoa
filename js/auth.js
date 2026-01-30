@@ -4,7 +4,8 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateProfile
+    updateProfile,
+    signInAnonymously
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 import {
     doc,
@@ -62,8 +63,6 @@ export const loginUser = async (email, password) => {
         handleError(error);
     }
 };
-
-import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
 // Guest Login
 export const loginAsGuest = async () => {
