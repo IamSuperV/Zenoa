@@ -104,49 +104,59 @@
                         against AI</p>
                 </div>
             </div>
+            <!-- JOIN SECTION (Hidden by default) -->
+            <div id="join-section" class="hidden"
+                style="margin-top: 2rem; animation: fadeIn 0.3s; background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2rem;">🚪</span> Join Room
+                </h2>
+                <form id="join-room-form" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="room-code" placeholder="ENTER ROOM CODE" required
+                        style="flex: 1; padding: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; border: 2px solid var(--accent-color); background: rgba(0,0,0,0.3); color: #fff; border-radius: 8px;">
+                    <button type="submit" id="join-btn" class="btn btn-primary"
+                        style="padding: 1rem 2rem; font-size: 1.2rem;">JOIN GAME</button>
+                </form>
+            </div>
 
-            <!-- IDENTITY MODAL (New Request) -->
-            <div id="identity-modal" class="hidden"
-                style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
-                <div class="card"
-                    style="width: 90%; max-width: 500px; animation: slideDown 0.3s ease-out; border: 1px solid var(--accent-color);">
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div style="font-size: 3rem;">🆔</div>
-                        <h2>Operative Identity</h2>
-                        <p style="color: var(--text-secondary);">Confirm your details for the official record.</p>
+            <!-- HOST SECTION (Hidden by default) -->
+            <div id="host-section" class="hidden"
+                style="margin-top: 2rem; animation: fadeIn 0.3s; background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <span style="font-size: 2rem;">📡</span> Create Room
+                </h2>
+                <form id="create-room-form">
+                    <!-- Context Selection -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Select
+                            Context</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <label
+                                style="flex: 1; cursor: pointer; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
+                                <input type="radio" name="context" value="Social" checked> Social
+                            </label>
+                            <label
+                                style="flex: 1; cursor: pointer; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
+                                <input type="radio" name="context" value="Professional"> Professional
+                            </label>
+                        </div>
                     </div>
 
-                    <form id="identity-form">
-                        <div class="form-group">
-                            <label>Codename (Your Name)</label>
-                            <input type="text" id="id-username" required
-                                style="background: rgba(255,255,255,0.05); font-weight: 700; text-align: center;">
-                        </div>
+                    <!-- Game Mode -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Game
+                            Mode</label>
+                        <select id="game-mode"
+                            style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid var(--border-color); border-radius: 8px;">
+                            <option value="Mix">Mix (All Types)</option>
+                            <option value="Logical">Logical Drill</option>
+                            <option value="Social">Social Drill</option>
+                        </select>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Affiliation Type</label>
-                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                                <label
-                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
-                                    <input type="radio" name="id-type" value="College" checked> College
-                                </label>
-                                <label
-                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
-                                    <input type="radio" name="id-type" value="School"> School
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Institution Name</label>
-                            <input type="text" id="id-institution" placeholder="e.g. Harvard, MIT, DPS" required
-                                style="background: rgba(255,255,255,0.05); font-weight: 700; text-align: center;">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block"
-                            style="padding: 1rem; font-size: 1.1rem;">CONFIRM & PROCEED</button>
-                    </form>
-                </div>
+                    <button type="submit" id="create-btn" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; font-size: 1.1rem;">HOST ROOM</button>
+                </form>
+            </div>
         </main>
 
         <script>
@@ -183,7 +193,7 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
         import { doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
         import { logoutUser, getUserProfile, createGuestProfile } from './js/auth.js';
-        import { createRoom, joinRoom, startGame } from './js/rooms.对了
+        import { createRoom, joinRoom, startGame } from './js/rooms.js';
 
         let currentUser = null;
         let userProfile = null;
