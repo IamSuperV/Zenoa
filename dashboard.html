@@ -23,67 +23,94 @@
             </nav>
         </header>
 
-        <main style="padding-top: 4rem; max-width: 600px; margin: 0 auto;">
-            <h1 style="text-align: center; margin-bottom: 3rem;">Ready, <span id="display-name">...</span>?</h1>
+        <main style="padding-top: 2rem; max-width: 800px; margin: 0 auto;">
 
-            <div class="card" style="margin-bottom: 2rem; border-color: var(--accent-color);">
-                <h2 style="color: var(--accent-color);">Start Solo Assessment</h2>
-                <p>Take the assessment by yourself to analyze your intelligence type.</p>
-                <button id="solo-btn" class="btn btn-primary btn-block">Play Solo</button>
+            <!-- PLAYER PROFILE CARD -->
+            <div class="card"
+                style="margin-bottom: 3rem; display: flex; align-items: center; gap: 2rem; border: 1px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <span class="tier-badge tier-gold" id="user-tier-badge">GOLD TIER</span>
+                        <span style="color: var(--text-secondary); font-size: 0.8rem;">LEVEL 12</span>
+                    </div>
+                    <h1 style="text-align: left; margin: 0; font-size: 2.5rem; text-shadow: none;">
+                        <span id="display-name" style="color: #fff;">Loading...</span>
+                    </h1>
+
+                    <!-- XP BAR -->
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 1rem; color: var(--text-secondary);">
+                        <span>XP Progress</span>
+                        <span>2400 / 5000</span>
+                    </div>
+                    <div class="xp-container">
+                        <div class="xp-fill" style="width: 48%;"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="card" style="margin-bottom: 2rem;">
-                <h2 style="font-size: 1.4rem;">Create a Room</h2>
-                <form id="create-room-form">
-                    <div class="form-group">
-                        <label style="margin-bottom: 0.5rem; display: block;">Context</label>
-                        <div style="display: flex; gap: 1rem;">
-                            <label
-                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="College" checked
-                                    style="width: auto; margin-right: 0.5rem;"> College
-                            </label>
-                            <label
-                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="School"
-                                    style="width: auto; margin-right: 0.5rem;"> School
-                            </label>
+            <div class="card"
+                style="margin-bottom: 2rem; border-color: var(--tier-champion); position: relative; overflow: visible;">
+                <div
+                    style="position: absolute; top: -10px; right: 20px; background: var(--tier-champion); color: #fff; padding: 2px 10px; font-size: 0.7rem; font-weight: bold; border-radius: 4px;">
+                    RANKED MODE</div>
+                <h2 style="color: var(--tier-champion);">Start Solo Assessment</h2>
+                <p>Analyze your intelligence type in a private calibrated session.</p>
+                <button id="solo-btn" class="btn btn-primary btn-block"
+                    style="background: linear-gradient(135deg, var(--tier-champion), #6a00ff);">BEGIN
+                    ASSESSMENT</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+
+                <!-- HOST CARD -->
+                <div class="card">
+                    <h2>Host Match</h2>
+                    <form id="create-room-form">
+                        <div class="form-group">
+                            <label>Lobby Context</label>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <label
+                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
+                                    <input type="radio" name="context" value="College" checked style="display: none;">
+                                    College
+                                </label>
+                                <label
+                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
+                                    <input type="radio" name="context" value="School" style="display: none;">
+                                    School
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="game-mode">Game Mode</label>
-                        <select id="game-mode"
-                            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
-                            <option value="Mix">Full Assessment (Mixed)</option>
-                            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
-                            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
-                            <option value="Social Intelligence">Drill: Social Intelligence</option>
-                            <option value="Political Intelligence">Drill: Political Intelligence</option>
-                            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="game-mode">Mode</label>
+                            <select id="game-mode">
+                                <option value="Mix">Ranked Mix (All Types)</option>
+                                <option value="Logical Intelligence">Drill: Logical</option>
+                                <option value="Strategic Intelligence">Drill: Strategic</option>
+                                <option value="Social Intelligence">Drill: Social</option>
+                                <option value="Political Intelligence">Drill: Political</option>
+                                <option value="Adaptive Intelligence">Drill: Adaptive</option>
+                            </select>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
-                </form>
-            </div>
+                        <button type="submit" class="btn btn-primary btn-block" id="create-btn">CREATE LOBBY</button>
+                    </form>
+                </div>
 
-            <div style="text-align: center; position: relative; margin: 2rem 0;">
-                <hr style="border: 0; border-top: 1px solid var(--border-color);">
-                <span
-                    style="position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--bg-color); padding: 0 1rem; color: var(--text-secondary); font-size: 0.9rem;">OR</span>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.4rem;">Join a Room</h2>
-                <form id="join-room-form">
-                    <div class="form-group">
-                        <label for="room-code">Room Code</label>
-                        <input type="text" id="room-code" placeholder="ABC123" required
-                            style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;">
-                    </div>
-                    <button type="submit" class="btn btn-secondary btn-block" id="join-btn">Join Game</button>
-                </form>
+                <!-- JOIN CARD -->
+                <div class="card">
+                    <h2>Join Match</h2>
+                    <p style="font-size: 0.9rem;">Enter the 6-digit lobby code to join an active session.</p>
+                    <form id="join-room-form">
+                        <div class="form-group">
+                            <input type="text" id="room-code" placeholder="CODE" required
+                                style="text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; font-size: 1.5rem; background: rgba(0,0,0,0.5);">
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-block" id="join-btn">CONNECT</button>
+                    </form>
+                </div>
             </div>
         </main>
     </div>
