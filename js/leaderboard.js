@@ -16,75 +16,78 @@ export const calculateAndSaveResults = async (roomId, userId) => {
     const roomData = roomSnap.data();
 
     // 2. Identify Player's Answers
-    // answers structure: { uid: { qId: optionIndex } }
     const allAnswers = roomData.answers || {};
     const playerAnswers = allAnswers[userId];
 
-    if (!playerAnswers) return null; // No answers?
+    if (!playerAnswers) return null;
 
-    // 3. Calculate Stats
+    // 3. Calculate Stats - NEW 5 PILLARS
     let sessionStats = {
+        logical: 0,
+        strategic: 0,
         social: 0,
-        logic: 0,
-        risk: 0,
-        consistency: 0, // Simplified for now as just another stat
-        adaptability: 0,
-        decision: 0,
-        leadership: 0
+        political: 0,
+        adaptive: 0
     };
 
     roomData.questionQueue.forEach(qId => {
-        const ansIdx = playerAnswers[qId];
+        // qId is likely number in DB but key is string in Map.
+        // Try both or ensure string.
+        let ansIdx = playerAnswers[qId];
+        if (ansIdx === undefined) ansIdx = playerAnswers[String(qId)];
+
         if (ansIdx !== undefined) {
             const question = QUESTIONS_DB.find(q => q.id === qId);
-            const weights = question.weights[ansIdx] || {};
-            // Accumulate
-            Object.keys(weights).forEach(stat => {
-                // Map disparate stats to core 4 if needed, or just track all
-                // Profile shows: Consistency, Speed, Adaptability, Social
-                // We will map 'logic' -> Adaptability, 'risk' -> Consistency (inverse?) or just keep raw.
-                // For simplicity of v0.1 Profile mapping:
-                // logic -> adaptability
-                // strategy -> adaptability
-                // decision -> consistency
-                // risk -> speed (proxy for bold decision)
-                // social -> social
-
-                let mappedStat = stat;
-                if (stat === 'logic' || stat === 'strategy') mappedStat = 'adaptability';
-                if (stat === 'decision' || stat === 'integrity') mappedStat = 'consistency';
-                if (stat === 'risk' || stat === 'survival') mappedStat = 'speed'; // Loose mapping
-
-                if (sessionStats[mappedStat] !== undefined) {
-                    sessionStats[mappedStat] += weights[stat];
-                } else if (sessionStats[stat] !== undefined) {
-                    sessionStats[stat] += weights[stat];
-                }
-            });
+            if (question) {
+                const weights = question.weights[ansIdx] || {};
+                Object.keys(weights).forEach(stat => {
+                    // Accumulate raw weights into the 5 buckets
+                    if (sessionStats[stat] !== undefined) {
+                        sessionStats[stat] += weights[stat];
+                    }
+                });
+            }
         }
     });
 
-    // 4. Update User Profile
+    // 4. Determine Dominant Type
+    let maxVal = -999;
+    let dominantType = "Balanced";
+
+    Object.entries(sessionStats).forEach(([type, val]) => {
+        if (val > maxVal) {
+            maxVal = val;
+            dominantType = type.charAt(0).toUpperCase() + type.slice(1); // Capitalize
+        } else if (val === maxVal) {
+            dominantType = "Multi-Faceted"; // Tie
+        }
+    });
+
+    // Add "Thinker" or similar suffix if not tie
+    if (dominantType !== "Multi-Faceted" && dominantType !== "Balanced") {
+        dominantType += " Thinker";
+    }
+
+    // 5. Update User Profile
     const userRef = doc(db, "users", userId);
 
-    // Check for Badges
+    // Badges based on dominant performance
     const newBadges = [];
-    if (sessionStats.social > 5) newBadges.push("Socialite");
-    if (sessionStats.adaptability > 5) newBadges.push("Strategist");
-    if (sessionStats.speed > 5) newBadges.push("Risk Taker");
-    if (sessionStats.consistency > 5) newBadges.push("Iron Will");
-
-    // Perform Update
-    // We only want to update ONCE per game. 
-    // Ideally we check if we already processed this room ID in user's history, but for v0.1 we rely on UI not calling this twice or idempotency logic if possible.
-    // We'll just update blindly for now.
+    // Only award badges for significant scores (> 5 in a session is high)
+    if (sessionStats.logical > 5) newBadges.push("Master Logician");
+    if (sessionStats.strategic > 5) newBadges.push("Grand Strategist");
+    if (sessionStats.social > 5) newBadges.push("Social Architect");
+    if (sessionStats.political > 5) newBadges.push("Power Player");
+    if (sessionStats.adaptive > 5) newBadges.push("Chaos Surfer");
 
     const updatePayload = {
         matchesPlayed: increment(1),
-        "stats.social": increment(sessionStats.social),
-        "stats.adaptability": increment(sessionStats.adaptability),
-        "stats.speed": increment(sessionStats.speed), // Using 'speed' bucket for risk/boldness
-        "stats.consistency": increment(sessionStats.consistency)
+        "intelligence.logical": increment(sessionStats.logical),
+        "intelligence.strategic": increment(sessionStats.strategic),
+        "intelligence.social": increment(sessionStats.social),
+        "intelligence.political": increment(sessionStats.political),
+        "intelligence.adaptive": increment(sessionStats.adaptive),
+        "dominantType": dominantType // Update latest dominant type
     };
 
     if (newBadges.length > 0) {
@@ -95,16 +98,12 @@ export const calculateAndSaveResults = async (roomId, userId) => {
 
     return {
         stats: sessionStats,
+        dominantType: dominantType,
         badges: newBadges
     };
 };
 
 export const getRoomLeaderboard = async (roomId) => {
-    // Fetch room again to get everyone's latest state?
-    // Actually, we need to calculate scores for EVERYONE to rank them.
-    // In a real app, backend triggers this.
-    // Here, we can just compute scores from the 'answers' map locally for display.
-
     const roomRef = doc(db, "rooms", roomId);
     const roomSnap = await getDoc(roomRef);
     if (!roomSnap.exists()) return [];
@@ -116,24 +115,42 @@ export const getRoomLeaderboard = async (roomId) => {
 
     players.forEach(p => {
         const pAnswers = allAnswers[p.uid];
-        let score = 0; // "Score" for ranking - maybe sum of all positive attributes?
+        let totalScore = 0;
+        let pStats = { logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0 };
 
         if (pAnswers) {
             roomData.questionQueue.forEach(qId => {
-                const aIdx = pAnswers[qId];
+                let aIdx = pAnswers[qId];
+                if (aIdx === undefined) aIdx = pAnswers[String(qId)];
+
                 if (aIdx !== undefined) {
                     const q = QUESTIONS_DB.find(qu => qu.id === qId);
-                    const w = q.weights[aIdx] || {};
-                    Object.values(w).forEach(val => score += val);
+                    if (q) {
+                        const w = q.weights[aIdx] || {};
+                        Object.entries(w).forEach(([k, v]) => {
+                            totalScore += v;
+                            if (pStats[k] !== undefined) pStats[k] += v;
+                        });
+                    }
                 }
             });
         }
 
+        // Quick Dominant Type Calc for Display
+        let dom = "Balanced";
+        let max = -999;
+        Object.entries(pStats).forEach(([k, v]) => {
+            if (v > max) { max = v; dom = k; }
+        });
+
+        // Capitalize
+        dom = dom.charAt(0).toUpperCase() + dom.slice(1);
+
         leaderboard.push({
             uid: p.uid,
             username: p.username,
-            score: score,
-            badges: [] // Need to fetch user profile for real badges, or just show session performance
+            score: totalScore,
+            dominantType: dom
         });
     });
 

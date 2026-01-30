@@ -24,29 +24,31 @@ import { QUESTIONS_DB } from './data.js';
 export const createRoom = async (hostUid, username, roomType) => {
     const roomId = GENERATE_ROOM_ID();
 
-    // Default categories for v0.1
+    // Updated Categories for v0.2
     const categories = [
-        "Situational Reasoning",
-        "Decision Under Pressure",
+        "Logical Intelligence",
+        "Strategic Intelligence",
         "Social Intelligence",
-        "Logical Adaptability"
+        "Political Intelligence",
+        "Adaptive Intelligence"
     ];
 
     try {
         await setDoc(doc(db, "rooms", roomId), {
             roomId: roomId,
             hostId: hostUid,
-            roomContext: roomType, // 'School' or 'College'
-            status: 'waiting',     // waiting, playing, finished
+            roomContext: roomType,
+            status: 'waiting',
             categories: categories,
             currentCategoryIndex: 0,
             currentQuestionIndex: 0,
             answers: {},
             questionQueue: [
-                ...QUESTIONS_DB.filter(q => q.category === "Situational Reasoning").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Decision Under Pressure").slice(0, 2).map(q => q.id),
+                ...QUESTIONS_DB.filter(q => q.category === "Logical Intelligence").slice(0, 2).map(q => q.id),
+                ...QUESTIONS_DB.filter(q => q.category === "Strategic Intelligence").slice(0, 2).map(q => q.id),
                 ...QUESTIONS_DB.filter(q => q.category === "Social Intelligence").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Logical Adaptability").slice(0, 2).map(q => q.id)
+                ...QUESTIONS_DB.filter(q => q.category === "Political Intelligence").slice(0, 2).map(q => q.id),
+                ...QUESTIONS_DB.filter(q => q.category === "Adaptive Intelligence").slice(0, 2).map(q => q.id)
             ],
             createdAt: serverTimestamp(),
             players: [

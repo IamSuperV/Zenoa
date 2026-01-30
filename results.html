@@ -9,38 +9,78 @@
 </head>
 
 <body>
-    <div class="container" style="max-width: 800px; padding-top: 4rem;">
-        <h1 style="text-align: center;">Session Complete</h1>
+    <div class="container" style="max-width: 900px; padding-top: 3rem;">
+        <h1 style="text-align: center; margin-bottom: 2rem;">Match Report</h1>
 
-        <div class="card" style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.2rem; color: var(--text-secondary);">Your Performance</h2>
-            <div id="my-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                <!-- Stats injected here -->
-                <p>Calculating...</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+            <!-- Personal Card -->
+            <div class="card">
+                <h2>Your Analysis</h2>
+                <div id="dominant-hero"
+                    style="font-size: 2rem; color: var(--accent-color); font-weight: 700; margin-bottom: 0.5rem;">
+                    Calculating...</div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Based on your decisions in this session.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="stat-row">
+                        <span>Logical</span> <span id="r-logical">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Strategic</span> <span id="r-strategic">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Social</span> <span id="r-social">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Political</span> <span id="r-political">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Adaptive</span> <span id="r-adaptive">0</span>
+                    </div>
+                </div>
+
+                <div id="new-badges" style="margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
             </div>
-            <div id="new-badges" style="margin-top: 1rem; color: var(--accent-color); font-weight: 600;"></div>
+
+            <!-- Leaderboard Card -->
+            <div class="card">
+                <h2>Room Rankings</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Relative performance.</p>
+                <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- List items -->
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Room Leaderboard</h2>
-            <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 1rem;">
-                <thead>
-                    <tr style="border-bottom: 2px solid var(--border-color);">
-                        <th style="padding: 0.5rem;">Rank</th>
-                        <th style="padding: 0.5rem;">Player</th>
-                        <th style="padding: 0.5rem;">Impact Score</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboard-body">
-                    <!-- Rows injected here -->
-                </tbody>
-            </table>
-        </div>
-
-        <div style="text-align: center; margin-top: 3rem;">
+        <div style="text-align: center;">
             <a href="dashboard.html" class="btn btn-primary">Return to Dashboard</a>
         </div>
     </div>
+
+    <style>
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .rank-item {
+            background: var(--surface-hover);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-pos {
+            font-weight: 700;
+            margin-right: 1rem;
+            color: var(--text-secondary);
+        }
+    </style>
 
     <script type="module">
         import { auth } from './js/firebase.js';
@@ -52,68 +92,68 @@
 
         if (!roomId) window.location.href = 'dashboard.html';
 
-        let processed = false;
+        let hasCalculated = false;
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-            } else {
-                if (!processed) {
-                    processed = true;
-                    // 1. Calculate & Save My Results
-                    try {
-                        const results = await calculateAndSaveResults(roomId, user.uid);
-                        renderMyStats(results);
-                    } catch (e) {
-                        console.error("Error saving results:", e);
+            if (user && !hasCalculated) {
+                hasCalculated = true; // Prevent double calc
+
+                // 1. Calculate & Save My Results
+                const myResults = await calculateAndSaveResults(roomId, user.uid);
+
+                if (myResults) {
+                    document.getElementById('dominant-hero').textContent = myResults.dominantType;
+                    document.getElementById('r-logical').textContent = myResults.stats.logical || 0;
+                    document.getElementById('r-strategic').textContent = myResults.stats.strategic || 0;
+                    document.getElementById('r-social').textContent = myResults.stats.social || 0;
+                    document.getElementById('r-political').textContent = myResults.stats.political || 0;
+                    document.getElementById('r-adaptive').textContent = myResults.stats.adaptive || 0;
+
+                    if (myResults.badges.length > 0) {
+                        const bag = document.getElementById('new-badges');
+                        myResults.badges.forEach(b => {
+                            const sp = document.createElement('span');
+                            sp.textContent = `+ ${b}`;
+                            sp.style.background = 'var(--success-color)';
+                            sp.style.color = 'black';
+                            sp.style.padding = '2px 8px';
+                            sp.style.borderRadius = '4px';
+                            sp.style.fontSize = '0.8rem';
+                            bag.appendChild(sp);
+                        });
+                    }
+                }
+
+                // 2. Fetch Leaderboard
+                const leaderboard = await getRoomLeaderboard(roomId);
+                const list = document.getElementById('leaderboard-list');
+                list.innerHTML = '';
+
+                leaderboard.forEach((p, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'rank-item';
+
+                    // Highlight self
+                    if (p.uid === user.uid) {
+                        div.style.border = '1px solid var(--accent-color)';
                     }
 
-                    // 2. Load Leaderboard
-                    const leaderboard = await getRoomLeaderboard(roomId);
-                    renderLeaderboard(leaderboard, user.uid);
-                }
+                    div.innerHTML = `
+                        <div style="display:flex; align-items:center;">
+                            <span class="rank-pos">#${idx + 1}</span>
+                            <div>
+                                <div style="font-weight:600;">${p.username}</div>
+                                <div style="font-size:0.8rem; color:var(--text-secondary);">${p.dominantType}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; align-items:flex-end;">
+                            <div style="font-weight:700;">${p.score} pts</div>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
             }
         });
-
-        function renderMyStats(results) {
-            const container = document.getElementById('my-stats');
-            container.innerHTML = '';
-
-            if (!results) {
-                container.innerHTML = '<p>No participation data found.</p>';
-                return;
-            }
-
-            Object.entries(results.stats).forEach(([key, val]) => {
-                if (val === 0) return;
-                const div = document.createElement('div');
-                div.innerHTML = `<span style="text-transform: capitalize; color: var(--text-secondary);">${key}:</span> <strong>${val > 0 ? '+' : ''}${val}</strong>`;
-                container.appendChild(div);
-            });
-
-            if (results.badges.length > 0) {
-                document.getElementById('new-badges').textContent = `New Badge Unlocked: ${results.badges.join(', ')}!`;
-            }
-        }
-
-        function renderLeaderboard(leaderboard, currentUid) {
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
-
-            leaderboard.forEach((p, i) => {
-                const tr = document.createElement('tr');
-                if (p.uid === currentUid) {
-                    tr.style.backgroundColor = 'var(--surface-hover)';
-                    tr.style.fontWeight = 'bold';
-                }
-                tr.innerHTML = `
-                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${i + 1}</td>
-                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${p.username}</td>
-                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${p.score}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
     </script>
 </body>
 
