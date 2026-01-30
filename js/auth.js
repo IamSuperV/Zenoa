@@ -20,7 +20,7 @@ const handleError = (error) => {
 };
 
 // Sign Up Function
-export const signUpUser = async (email, password, username, college) => {
+export const signUpUser = async (email, password, username, college, city) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
@@ -34,6 +34,7 @@ export const signUpUser = async (email, password, username, college) => {
             username: username,
             email: email,
             college: college,
+            city: city || "Unknown",
             createdAt: serverTimestamp(),
             matchesPlayed: 0,
             badges: [],
@@ -43,12 +44,13 @@ export const signUpUser = async (email, password, username, college) => {
                 adaptability: 0,
                 social: 0
             }
+        }
         });
 
-        window.location.href = 'dashboard.html';
-    } catch (error) {
-        handleError(error);
-    }
+    window.location.href = 'dashboard.html';
+} catch (error) {
+    handleError(error);
+}
 };
 
 // Login Function
