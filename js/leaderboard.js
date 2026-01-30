@@ -180,11 +180,11 @@ export const getGlobalLeaderboard = async (type = 'Global', filterValue = null) 
 
     try {
         if (type === 'Global') {
-            q = query(usersRef, orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
         } else if (type === 'College') {
-            q = query(usersRef, where("college", "==", filterValue), orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
         } else if (type === 'City') {
-            q = query(usersRef, where("city", "==", filterValue), orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
         }
 
         const querySnapshot = await getDocs(q);

@@ -35,6 +35,7 @@ export const signUpUser = async (email, password, username, college, city) => {
             email: email,
             college: college,
             city: city || "Unknown",
+            isGuest: false,
             createdAt: serverTimestamp(),
             matchesPlayed: 0,
             badges: [],
@@ -56,6 +57,36 @@ export const signUpUser = async (email, password, username, college, city) => {
 export const loginUser = async (email, password) => {
     try {
         await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = 'dashboard.html';
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+// Guest Login
+export const loginAsGuest = async () => {
+    try {
+        const result = await signInAnonymously(auth);
+        const user = result.user;
+        const guestName = "Guest-" + user.uid.substring(0, 4).toUpperCase();
+
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            username: guestName,
+            email: "guest@zenoa.app",
+            college: "N/A",
+            city: "Unknown",
+            isGuest: true,
+            createdAt: serverTimestamp(),
+            matchesPlayed: 0,
+            badges: [],
+            stats: {
+                logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0
+            }
+        });
+
         window.location.href = 'dashboard.html';
     } catch (error) {
         handleError(error);

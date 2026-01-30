@@ -27,6 +27,12 @@
                 New here? <a href="signup.html" style="color: var(--text-primary);">Create Account</a>
             </p>
             <div style="text-align: center; margin-top: 2rem;">
+                <button id="guest-btn"
+                    style="background: transparent; border: 1px solid var(--text-secondary); color: var(--text-secondary); padding: 0.5rem 1rem; border-radius: var(--radius-sm); cursor: pointer;">
+                    Play as Guest (No Save)
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
                 <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">←
                     Back to Home</a>
             </div>
@@ -35,7 +41,7 @@
 
     <script type="module" src="./js/firebase.js"></script>
     <script type="module">
-        import { loginUser } from './js/auth.js';
+        import { loginUser, loginAsGuest } from './js/auth.js';
 
         const loginForm = document.getElementById('login-form');
 
@@ -45,6 +51,10 @@
             const password = document.getElementById('password').value;
 
             loginUser(email, password);
+        });
+
+        document.getElementById('guest-btn').addEventListener('click', () => {
+            loginAsGuest();
         });
     </script>
 </body>

@@ -16,8 +16,7 @@
             <nav style="display: flex; gap: 1rem;">
                 <a href="leaderboard.html" class="btn btn-secondary"
                     style="padding: 0.5rem 1rem; font-size: 0.9rem;">Rankings</a>
-                <a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My
-                    Profile</a>
+                <div id="nav-dynamic"></div>
                 <button id="logout-btn" class="btn btn-secondary"
                     style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--danger-color); color: var(--danger-color);">Log
                     Out</button>
@@ -101,6 +100,14 @@
                 userProfile = await getUserProfile(user.uid);
                 if (userProfile) {
                     document.getElementById('display-name').textContent = userProfile.username;
+
+                    const nav = document.getElementById('nav-dynamic');
+                    if (userProfile.isGuest) {
+                        nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
+                        document.getElementById('display-name').textContent += " (Guest)";
+                    } else {
+                        nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
+                    }
                 }
             }
         });

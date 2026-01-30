@@ -45,9 +45,31 @@
         </div>
     </div>
 
+    <!-- City Prompt Modal -->
+    <div id="city-modal" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: flex; align-items: center; justify-content: center;">
+        <div class="card" style="width: 90%; max-width: 400px; text-align: center;">
+            <h2 style="margin-bottom: 1rem;">One last thing...</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">To rank you on the City Leaderboard, we need
+                to know where you represent.</p>
+            <input type="text" id="city-input" placeholder="Enter your City (e.g. New York)"
+                style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: var(--surface-hover); border: 1px solid var(--border-color); color: white; border-radius: 4px;">
+            <button id="save-city-btn" class="btn btn-primary btn-block">Save & Join</button>
+        </div>
+    </div>
+
+    <!-- Countdown Overlay -->
+    <div id="countdown-overlay" class="hidden"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <h1 style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 2rem;">Let's see who is smartest in
+            your group...</h1>
+        <div id="countdown-timer" style="font-size: 6rem; font-weight: 800; color: white;">3</div>
+    </div>
+
     <script type="module">
-        import { auth } from './js/firebase.js';
+        import { auth, db } from './js/firebase.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
         import { subscribeToRoom, startGame } from './js/rooms.js';
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -72,20 +94,40 @@
 
         let currentUser = null;
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                // If not logged in, redirect to login with return URL
-                // For now, just login
                 window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
             } else {
                 currentUser = user;
+                await checkCity(user.uid);
                 initRoomListener();
             }
         });
 
+        async function checkCity(uid) {
+            const userRef = doc(db, "users", uid);
+            const snap = await getDoc(userRef);
+            if (snap.exists()) {
+                const data = snap.data();
+                if (!data.city || data.city === "Unknown") {
+                    // Show Modal
+                    const modal = document.getElementById('city-modal');
+                    modal.classList.remove('hidden');
+                    modal.style.display = 'flex'; // Override hidden class styles if needed or just use flex
+
+                    document.getElementById('save-city-btn').addEventListener('click', async () => {
+                        const cityVal = document.getElementById('city-input').value.trim();
+                        if (cityVal) {
+                            await updateDoc(userRef, { city: cityVal });
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        }
+
         function initRoomListener() {
             subscribeToRoom(roomId, (roomData) => {
-                console.log("Room Update:", roomData);
                 if (!roomData) {
                     alert("Room does not exist or was deleted.");
                     window.location.href = 'dashboard.html';
@@ -94,8 +136,8 @@
 
                 // Redirect if game started
                 if (roomData.status === 'playing') {
-                    console.log("Game started! Redirecting...");
-                    window.location.href = `play.html?roomId=${roomId}`;
+                    // Start Countdown Sequence
+                    launchCountdown();
                     return;
                 }
 
@@ -130,6 +172,33 @@
                     document.getElementById('waiting-msg').classList.remove('hidden');
                 }
             });
+        }
+
+        let countdownTriggered = false;
+        function launchCountdown() {
+            if (countdownTriggered) return;
+            countdownTriggered = true;
+
+            const overlay = document.getElementById('countdown-overlay');
+            const timer = document.getElementById('countdown-timer');
+            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
+
+            let count = 3;
+            timer.textContent = count;
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    timer.textContent = count;
+                } else {
+                    clearInterval(interval);
+                    timer.textContent = "GO!";
+                    setTimeout(() => {
+                        window.location.href = `play.html?roomId=${roomId}`;
+                    }, 500);
+                }
+            }, 1000);
         }
 
         document.getElementById('start-game-btn').addEventListener('click', async () => {
