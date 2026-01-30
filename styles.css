@@ -108,6 +108,7 @@ h4 {
 h1 {
     font-size: 3rem;
     background: linear-gradient(to right, #fff, #8899ac);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -297,58 +298,180 @@ select:focus {
     transition: width 1s ease-out;
 }
 
-/* Option Buttons (Game) */
-.option-btn {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent);
+/* --- LOBBY STYLES --- */
+.room-code-display {
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 5px;
+    color: var(--accent-color);
+    text-shadow: 0 0 30px var(--accent-glow);
+    margin: 1rem 0;
+    line-height: 1;
+}
+
+.player-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.player-card {
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--surface-border);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 600;
+    padding: 1.5rem 1rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
 }
 
-.option-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+.player-card:hover {
+    transform: translateY(-5px) scale(1.05);
+    background: rgba(255, 255, 255, 0.05);
     border-color: var(--accent-color);
-    padding-left: 2rem;
-    /* Slide text effect */
+    box-shadow: 0 5px 15px rgba(0, 242, 255, 0.1);
+}
+
+.player-card.is-me {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.player-card.is-host::after {
+    content: 'HOST';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.6rem;
+    background: var(--tier-gold);
+    color: black;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+}
+
+/* --- PLAY / CINEMATIC STYLES --- */
+.cinematic-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 4vh;
+}
+
+.question-card {
+    background: rgba(10, 10, 15, 0.85);
+    /* Darker for focus */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.scenario-text {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.option-btn {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent);
+    border: 1px solid var(--surface-border);
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+}
+
+.option-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-secondary);
+    transform: translateX(5px);
 }
 
 .option-btn.selected {
     background: rgba(0, 242, 255, 0.1);
     border-color: var(--accent-color);
     box-shadow: 0 0 15px var(--accent-glow);
+    transform: translateX(10px);
 }
 
 .option-btn.selected::before {
-    content: '▶';
+    content: '';
     position: absolute;
-    left: 10px;
-    color: var(--accent-color);
-    animation: slideRight 0.2s ease-out forwards;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--accent-color);
 }
 
+/* --- RESULTS --- */
+.match-report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
 
-/* --- MOBILE Tweaks --- */
 @media (max-width: 768px) {
-    .card {
+    .match-report-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .room-code-display {
+        font-size: 3.5rem;
+    }
+
+    .scenario-text {
+        font-size: 1.4rem;
+    }
+
+    .question-card {
         padding: 1.5rem;
     }
+}
 
-    h1 {
-        font-size: 2.2rem;
-    }
+/* --- PROFILE STAT BARS --- */
+.stat-bar-container {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 5px;
+}
 
-    .btn {
-        width: 100%;
-    }
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
 
-    .container {
-        width: 100%;
-        padding: 1rem;
-    }
+/* Values */
+.val-logical {
+    background: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.val-strategic {
+    background: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.val-social {
+    background: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.val-political {
+    background: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+.val-adaptive {
+    background: #ec4899;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
 }

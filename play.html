@@ -4,66 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playing - ZENOA</title>
+    <title>Live Mission - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .option-btn {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 1rem;
-            text-align: left;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-primary);
-            font-size: 1rem;
-            user-select: none;
-            /* Prevent text selection on rapid clicks */
-        }
-
-        .option-btn:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--accent-color);
-        }
-
-        .option-btn.selected {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-            font-weight: 600;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container" style="max-width: 800px; padding-top: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <div style="font-weight: 700; color: var(--text-secondary);">ZENOA</div>
-            <div id="timer" style="font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.2rem;">Live</div>
-        </div>
+<body style="background: radial-gradient(circle at center, #111, #000); min-height: 100vh;">
 
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                <span id="category-badge"
-                    style="background: var(--surface-hover); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; text-transform: uppercase;">...</span>
-                <span id="progress-indicator">1 / 8</span>
+    <div class="cinematic-container">
+        <!-- TOP BAR -->
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding: 0 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span id="category-badge" class="tier-badge"
+                    style="background: rgba(255,255,255,0.1); border-color: var(--text-secondary); color: var(--text-primary);">LOADING...</span>
+                <div style="height: 4px; width: 100px; background: rgba(255,255,255,0.1); border-radius: 2px;">
+                    <div id="progress-bar-top"
+                        style="height: 100%; width: 0%; background: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow);">
+                    </div>
+                </div>
             </div>
 
-            <h2 id="scenario-text" style="font-size: 1.5rem; margin-bottom: 2rem; line-height: 1.4;">Loading scenario...
+            <div id="timer"
+                style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: var(--danger-color); text-shadow: 0 0 10px var(--danger-color);">
+                LIVE
+            </div>
+        </div>
+
+        <!-- MAIN CARD -->
+        <div class="question-card">
+            <h2 id="scenario-text" class="scenario-text" style="color: #fff; margin-bottom: 2.5rem;">
+                Initializing scenario parameters...
             </h2>
 
-            <div id="options-container" style="display: flex; flex-direction: column; gap: 1rem;">
-                <!-- Options injected here -->
+            <div id="options-container" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <!-- JS Injected -->
             </div>
-            <p id="error-msg" style="color: var(--danger-color); text-align: center; margin-top: 1rem;"></p>
+
+            <p id="error-msg"
+                style="color: var(--danger-color); text-align: center; margin-top: 1rem; font-weight: 700;"></p>
         </div>
 
-        <div id="next-btn-container" style="margin-top: 2rem; text-align: center;">
-            <button id="next-btn" class="btn btn-primary" style="padding: 0.5rem 2rem;">Next Question</button>
+        <!-- CONTROLS -->
+        <div id="next-btn-container"
+            style="margin-top: 2rem; text-align: center; opacity: 0; transition: opacity 0.5s;">
+            <button id="next-btn" class="btn btn-primary"
+                style="padding: 1rem 4rem; font-size: 1.1rem; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);">
+                CONFIRM & PROCEED
+            </button>
         </div>
-        <p id="waiting-msg" class="hidden"
-            style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-style: italic;">Waiting for
-            host...</p>
+
     </div>
 
     <script type="module">
@@ -82,23 +71,13 @@
         let localCurrentIndex = 0;
         let totalQuestions = 0;
 
-        // 1. Start fetching room IMMEDIATELY (Do not wait for Auth)
         initGameListener();
 
-        // 2. Check Auth in parallel
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                // If not logged in, we can still show the question (read-only) 
-                // but eventually they need to login. 
-                // For now, let's redirect if strictly required, or better:
-                // Let them see the text, but clicking options redirects to login.
-                // But existing logic redirects. Let's keep redirect but maybe delay it?
-                // Actually, if they are mid-game, they should be logged in.
-                // Sticking to redirect providing safety, but the room load starts anyway.
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                // If room data is already here, re-render to show selected answers (if any)
                 if (currentRoomData) {
                     renderQuestion(currentRoomData);
                 }
@@ -106,17 +85,10 @@
         });
 
         function initGameListener() {
-            console.log("Fetching room...");
             subscribeToGame(roomId, (roomData) => {
-                if (!roomData) {
-                    console.error("Room not found or empty data");
-                    document.getElementById('scenario-text').textContent = "Error: Room not found.";
-                    return;
-                }
+                if (!roomData) return;
                 currentRoomData = roomData;
                 totalQuestions = roomData.questionQueue ? roomData.questionQueue.length : 0;
-
-                // Render immediately (even if user is null temporarily)
                 renderQuestion(roomData);
             });
         }
@@ -124,15 +96,14 @@
         function renderQuestion(roomData) {
             const index = localCurrentIndex;
 
-            // Debugging
             if (!roomData.questionQueue || roomData.questionQueue.length === 0) {
-                document.getElementById('scenario-text').textContent = "Error: This room has no questions.";
+                document.getElementById('scenario-text').textContent = "Error: Empty mission parameters.";
                 return;
             }
 
-            // Check if finished
             if (index >= totalQuestions) {
-                window.location.href = `results.html?roomId=${roomId}`;
+                document.body.style.opacity = '0';
+                setTimeout(() => { window.location.href = `results.html?roomId=${roomId}`; }, 500);
                 return;
             }
 
@@ -140,28 +111,25 @@
             const question = QUESTIONS_DB.find(q => q.id === qId);
 
             if (!question) {
-                console.error("Missing Question ID:", qId);
-                document.getElementById('scenario-text').textContent = `Error: Question details not found (${qId})`;
-                document.getElementById('category-badge').textContent = "Error";
-
-                // Auto-skip?
-                // document.getElementById('next-btn-container').classList.remove('hidden');
+                document.getElementById('scenario-text').textContent = "Data corruption detected. Skip to next.";
+                document.getElementById('next-btn-container').style.opacity = '1';
                 return;
             }
 
-            // Update UI Labels
-            document.getElementById('category-badge').textContent = question.category;
-            document.getElementById('progress-indicator').textContent = `${index + 1} / ${totalQuestions}`;
+            // Update UI
+            document.getElementById('category-badge').textContent = question.category || "GENERAL";
+            const progress = ((index + 1) / totalQuestions) * 100;
+            document.getElementById('progress-bar-top').style.width = `${progress}%`;
+
             document.getElementById('scenario-text').textContent = question.scenario;
 
-            // Determine Selected Answer
-            // If user is not loaded yet, we just don't show selection (it will update when Auth loads)
+            // Checked saved answer
             let savedAnswer = undefined;
             if (currentUser && roomData.answers && roomData.answers[currentUser.uid]) {
                 savedAnswer = roomData.answers[currentUser.uid][String(qId)];
             }
 
-            // Render Options
+            // Options
             const container = document.getElementById('options-container');
             container.innerHTML = '';
 
@@ -170,52 +138,48 @@
                 btn.className = 'option-btn';
                 btn.textContent = opt;
 
-                // Active State
                 if (savedAnswer === i) {
                     btn.classList.add('selected');
                 }
 
-                // Click Handler
                 btn.onclick = async () => {
-                    if (!currentUser) return; // Ignore clicks if auth not ready
+                    if (!currentUser) return;
 
-                    // Optimistic UI update
                     const allBtns = container.querySelectorAll('.option-btn');
                     allBtns.forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
 
                     try {
                         await submitAnswer(roomId, currentUser.uid, qId, i);
-                        document.getElementById('error-msg').textContent = '';
-
-                        // Auto-advance or Enable Next? 
-                        // Let's enable the Next button logic.
-                        // Actually, user clicked default next button before.
-                        // We will keep it simple.
-                        document.getElementById('next-btn-container').classList.remove('hidden');
+                        document.getElementById('next-btn-container').style.opacity = '1';
                     } catch (e) {
-                        document.getElementById('error-msg').textContent = "Failed to save answer. Try again.";
-                        btn.classList.remove('selected');
+                        document.getElementById('error-msg').textContent = "Transmission failed. Retry.";
                     }
                 };
-
                 container.appendChild(btn);
             });
 
-            // Show Next Button if already answered (or allow anyway)
-            document.getElementById('next-btn-container').classList.remove('hidden');
+            // Show next button if already answered, but here we can just hide/show based on interaction
+            if (savedAnswer !== undefined) {
+                document.getElementById('next-btn-container').style.opacity = '1';
+            } else {
+                document.getElementById('next-btn-container').style.opacity = '0';
+            }
         }
 
-        // Universal Next Button Logic
-        const nextBtn = document.getElementById('next-btn');
-        nextBtn.addEventListener('click', () => {
-            localCurrentIndex++;
-            // Force re-render with new index
-            renderQuestion(currentRoomData);
-            // Hide button until they answer next one (optional, but good UX)
-            // But existing code showed it always in host controls.
-            // We will keep it simple.
-            window.scrollTo(0, 0);
+        document.getElementById('next-btn').addEventListener('click', () => {
+            // Animate out?
+            const card = document.querySelector('.question-card');
+            card.style.transform = "translateX(-20px)";
+            card.style.opacity = "0";
+
+            setTimeout(() => {
+                localCurrentIndex++;
+                renderQuestion(currentRoomData);
+                card.style.transform = "translateX(0)";
+                card.style.opacity = "1";
+                window.scrollTo(0, 0);
+            }, 300);
         });
     </script>
 </body>

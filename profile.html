@@ -4,128 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - ZENOA</title>
+    <title>Operative Profile - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="container">
         <header
-            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border-color);">
-            <div style="font-weight: 700; font-size: 1.5rem;">ZENOA</div>
+            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--surface-border);">
+            <div style="font-weight: 900; font-size: 1.5rem; letter-spacing: 2px;">ZENOA</div>
             <nav style="display: flex; gap: 1rem;">
                 <a href="dashboard.html" class="btn btn-secondary"
-                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">Dashboard</a>
+                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">DASHBOARD</a>
                 <button id="logout-btn" class="btn btn-secondary"
-                    style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--danger-color); color: var(--danger-color);">Log
-                    Out</button>
+                    style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--danger-color); color: var(--danger-color);">LOG
+                    OUT</button>
             </nav>
         </header>
 
-        <main style="padding-top: 3rem; max-width: 900px; margin: 0 auto;">
+        <main style="padding-top: 3rem; max-width: 1000px; margin: 0 auto;">
 
-            <!-- Header Card -->
-            <div class="card"
-                style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                    <h1 id="user-name" style="margin-bottom: 0.5rem; font-size: 2.5rem;">...</h1>
-                    <p id="user-college" style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 0;">
-                        Loading profile...</p>
-                </div>
-                <div style="text-align: right;">
-                    <div id="dominant-type" style="font-size: 1.8rem; font-weight: 700; color: var(--accent-color);">
-                        Unknown Type</div>
-                    <div
-                        style="font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-secondary);">
-                        Dominant Intelligence</div>
+            <!-- DOSSIER HEADER -->
+            <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--accent-color); padding: 2.5rem;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem;">
+
+                    <div style="flex: 1;">
+                        <div
+                            style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px; margin-bottom: 0.5rem;">
+                            Operative Identity</div>
+                        <h1 id="user-name" style="margin: 0; font-size: 3rem; line-height: 1;">...</h1>
+                        <p id="user-college"
+                            style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                            Retrieving data...</p>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <div
+                            style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 2px;">
+                            Class Determination</div>
+                        <div id="dominant-type"
+                            style="font-size: 2rem; font-weight: 800; color: var(--accent-color); text-transform: uppercase; margin-top: 0.5rem; text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);">
+                            U/A
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-                <!-- Intelligence Breakdown -->
+
+                <!-- INTELLIGENCE PROFILE -->
                 <div class="card">
-                    <h2>Intelligence Profile</h2>
-                    <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Relative strength across 5 competence domains.
-                    </p>
+                    <h2 style="font-size: 1.3rem;">Intelligence Matrix</h2>
+                    <p style="font-size: 0.9rem; margin-bottom: 2rem; color: var(--text-secondary);">Quantitative
+                        aptitude analysis across 5 sectors.</p>
 
                     <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <!-- Logical -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Logical</span>
-                                <span id="val-logical" style="font-weight: 600;">0</span>
-                            </div>
-                            <div
-                                style="background: var(--surface-hover); height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="bar-logical" style="background: var(--text-primary); height: 100%; width: 0%;">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Strategic -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Strategic</span>
-                                <span id="val-strategic" style="font-weight: 600;">0</span>
-                            </div>
-                            <div
-                                style="background: var(--surface-hover); height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="bar-strategic"
-                                    style="background: var(--accent-color); height: 100%; width: 0%;"></div>
-                            </div>
-                        </div>
-                        <!-- Social -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Social</span>
-                                <span id="val-social" style="font-weight: 600;">0</span>
-                            </div>
-                            <div
-                                style="background: var(--surface-hover); height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="bar-social" style="background: var(--success-color); height: 100%; width: 0%;">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Political -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Political</span>
-                                <span id="val-political" style="font-weight: 600;">0</span>
-                            </div>
-                            <div
-                                style="background: var(--surface-hover); height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="bar-political" style="background: #a855f7; height: 100%; width: 0%;"></div>
-                            </div>
-                        </div>
-                        <!-- Adaptive -->
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Adaptive</span>
-                                <span id="val-adaptive" style="font-weight: 600;">0</span>
-                            </div>
-                            <div
-                                style="background: var(--surface-hover); height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="bar-adaptive" style="background: #f59e0b; height: 100%; width: 0%;"></div>
-                            </div>
+                        <div id="stats-container">
+                            <!-- Example Item (Injected via JS) -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Badges & Stats -->
+                <!-- CAREER DATA -->
                 <div style="display: flex; flex-direction: column; gap: 2rem;">
                     <div class="card">
-                        <h2>Career Data</h2>
-                        <div style="display: flex; gap: 2rem; margin-top: 1rem;">
-                            <div>
-                                <div id="matches-played" style="font-size: 2.5rem; font-weight: 700;">0</div>
-                                <div style="font-size: 0.8rem; text-transform: uppercase;">Matches</div>
+                        <h2 style="font-size: 1.3rem;">Service Record</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 4px;">
+                                <div id="matches-played" style="font-size: 2.5rem; font-weight: 700; color: #fff;">0
+                                </div>
+                                <div
+                                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">
+                                    Missions</div>
                             </div>
-                            <!-- Future: Add Win Rate or Average Rank here -->
+                            <div
+                                style="text-align: center; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 4px;">
+                                <div id="trophies-count"
+                                    style="font-size: 2.5rem; font-weight: 700; color: var(--tier-gold);">0</div>
+                                <div
+                                    style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">
+                                    Trophies</div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="card" style="flex: 1;">
-                        <h2>Badges</h2>
-                        <div id="badges-container" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+                        <h2 style="font-size: 1.3rem;">Badges & Commendations</h2>
+                        <div id="badges-container"
+                            style="display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.5rem;">
                             <!-- Badges -->
                         </div>
                     </div>
@@ -148,29 +116,37 @@
                 const profile = await getUserProfile(user.uid);
                 if (profile) {
                     document.getElementById('user-name').textContent = profile.username;
-                    document.getElementById('user-college').textContent = profile.college;
-                    document.getElementById('matches-played').textContent = profile.matchesPlayed;
-                    document.getElementById('dominant-type').textContent = profile.dominantType || "Unranked";
+                    document.getElementById('user-college').textContent = profile.college + (profile.city ? ` • ${profile.city}` : '');
+                    document.getElementById('matches-played').textContent = profile.matchesPlayed || 0;
+                    document.getElementById('dominant-type').textContent = profile.dominantType || "UNRANKED";
+                    document.getElementById('trophies-count').textContent = profile.trophies || 0;
 
                     // Stats
                     const stats = profile.intelligence || {};
-                    // Find Max for scaling bars
-                    const maxVal = Math.max(
-                        stats.logical || 0, stats.strategic || 0, stats.social || 0, stats.political || 0, stats.adaptive || 0, 1
-                    );
+                    const categories = ['logical', 'strategic', 'social', 'political', 'adaptive'];
+                    const container = document.getElementById('stats-container');
+                    container.innerHTML = '';
 
-                    const updateStat = (key) => {
+                    const maxVal = Math.max(...categories.map(k => stats[k] || 0), 10);
+
+                    categories.forEach(key => {
                         const val = stats[key] || 0;
-                        document.getElementById(`val-${key}`).textContent = val;
                         const pct = (val / maxVal) * 100;
-                        document.getElementById(`bar-${key}`).style.width = `${pct}%`;
-                    };
 
-                    updateStat('logical');
-                    updateStat('strategic');
-                    updateStat('social');
-                    updateStat('political');
-                    updateStat('adaptive');
+                        const row = document.createElement('div');
+                        row.style.marginBottom = '1.5rem';
+                        row.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                                <span style="text-transform: capitalize; font-weight: 600;">${key} Intelligence</span>
+                                <span style="font-family: monospace; color: var(--text-secondary);">${val}</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar-fill val-${key}" style="width: ${pct}%;"></div>
+                            </div>
+                        `;
+                        container.appendChild(row);
+                    });
+
 
                     // Badges
                     const badgesContainer = document.getElementById('badges-container');
@@ -178,17 +154,13 @@
                         badgesContainer.innerHTML = '';
                         profile.badges.forEach(badge => {
                             const badgeEl = document.createElement('span');
-                            badgeEl.style.padding = '0.5rem 1rem';
-                            badgeEl.style.backgroundColor = 'var(--surface-hover)';
-                            badgeEl.style.borderRadius = '20px';
-                            badgeEl.style.fontSize = '0.9rem';
-                            badgeEl.style.border = '1px solid var(--border-color)';
-                            badgeEl.style.fontWeight = '500';
+                            badgeEl.className = 'tier-badge tier-gold'; // Generic gold for badges for now
+                            badgeEl.style.fontSize = '0.7rem';
                             badgeEl.textContent = badge;
                             badgesContainer.appendChild(badgeEl);
                         });
                     } else {
-                        badgesContainer.innerHTML = '<p style="font-style: italic; opacity: 0.5;">No badges earned yet.</p>';
+                        badgesContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-secondary); opacity: 0.5;">No commendations on file.</p>';
                     }
                 }
             }
