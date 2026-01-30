@@ -44,6 +44,19 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="game-mode">Game Mode</label>
+                        <select id="game-mode"
+                            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="Mix">Full Assessment (Mixed)</option>
+                            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
+                            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
+                            <option value="Social Intelligence">Drill: Social Intelligence</option>
+                            <option value="Political Intelligence">Drill: Political Intelligence</option>
+                            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
+                        </select>
+                    </div>
+
                     <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
                 </form>
             </div>
@@ -103,9 +116,10 @@
             btn.disabled = true;
 
             const context = document.querySelector('input[name="context"]:checked').value;
+            const gameMode = document.getElementById('game-mode').value;
 
             try {
-                const roomId = await createRoom(currentUser.uid, userProfile.username, context);
+                const roomId = await createRoom(currentUser.uid, userProfile.username, context, gameMode);
                 window.location.href = `room.html?roomId=${roomId}`;
             } catch (error) {
                 console.error(error);
