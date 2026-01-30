@@ -4,22 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - ZENOA</title>
+    <title>Hall of Fame - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .filter-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .filter-btn.active {
+        .rank-item {
+            display: grid;
+            grid-template-columns: 50px 1fr auto;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--surface-border);
+            transition: all 0.2s;
+        }
+
+        .rank-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.01);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .rank-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+        }
+
+        .rank-1 .rank-number {
+            color: var(--tier-gold);
+            text-shadow: 0 0 10px var(--tier-gold);
+        }
+
+        .rank-2 .rank-number {
+            color: var(--text-primary);
+        }
+
+        .rank-3 .rank-number {
+            color: var(--tier-bronze);
+        }
+
+        .score-display {
+            font-family: monospace;
+            font-size: 1.2rem;
             color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -27,29 +62,49 @@
 <body>
     <div class="container">
         <header
-            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border-color);">
+            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1pill solid var(--border-color);">
             <div style="font-weight: 700; font-size: 1.5rem;">ZENOA</div>
             <nav style="display: flex; gap: 1rem;">
                 <a href="dashboard.html" class="btn btn-secondary"
-                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">Dashboard</a>
+                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">DASHBOARD</a>
             </nav>
         </header>
 
-        <main style="padding-top: 3rem; max-width: 800px; margin: 0 auto;">
-            <h1 style="text-align: center; margin-bottom: 2rem;">Global Rankings</h1>
-
-            <div
-                style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color);">
-                <button class="filter-btn active" id="tab-global" onclick="switchTab('Global')">Global</button>
-                <button class="filter-btn" id="tab-college" onclick="switchTab('College')">My College</button>
-                <button class="filter-btn" id="tab-city" onclick="switchTab('City')">My City</button>
+        <main style="padding-top: 3rem; max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <span class="tier-badge tier-champion">Live Rankings</span>
+                <h1 style="margin-top: 1rem;">Global Leaderboard</h1>
             </div>
 
-            <div class="card">
-                <div id="loading-msg" style="text-align: center; color: var(--text-secondary);">Loading rankings...
+            <!-- CONTROLS -->
+            <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+                <div class="filter-group">
+                    <button class="btn btn-primary" id="scope-global" onclick="setScope('Global')">Global</button>
+                    <button class="btn btn-secondary" id="scope-college" onclick="setScope('College')">My
+                        College</button>
+                    <button class="btn btn-secondary" id="scope-city" onclick="setScope('City')">My City</button>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Skill Category</label>
+                    <select id="skill-category" onchange="updateRankings()">
+                        <option value="totalScore">Total Intelligence Score</option>
+                        <option value="Logical">Logical Intelligence</option>
+                        <option value="Strategic">Strategic Intelligence</option>
+                        <option value="Social">Social Intelligence</option>
+                        <option value="Political">Political Intelligence</option>
+                        <option value="Adaptive">Adaptive Intelligence</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- LIST -->
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div id="loading-msg" style="padding: 3rem; text-align: center; color: var(--text-secondary);">
+                    Accessing Global Database...
                 </div>
                 <div id="leaderboard-list">
-                    <!-- Injected via JS -->
+                    <!-- JS Injected -->
                 </div>
             </div>
         </main>
@@ -63,29 +118,37 @@
 
         let currentUser = null;
         let userProfile = null;
-        let currentTab = 'Global';
+        let currentScope = 'Global';
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                userProfile = await getUserProfile(user.uid);
-                loadRankings('Global');
-            } else {
-                // Allow viewing global even if not logged in (optional, but let's encourage login for context)
-                loadRankings('Global');
+                try {
+                    userProfile = await getUserProfile(user.uid);
+                    // Update header if location known
+                } catch (e) { console.error(e); }
             }
+            // Load initial
+            updateRankings();
         });
 
-        window.switchTab = (tab) => {
-            currentTab = tab;
-            // UI Toggle
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${tab.toLowerCase()}`).classList.add('active');
-
-            loadRankings(tab);
+        window.setScope = (scope) => {
+            currentScope = scope;
+            // Update UI
+            document.querySelectorAll('.filter-group .btn').forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-secondary');
+            });
+            const activeBtn = document.getElementById(`scope-${scope.toLowerCase()}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('btn-secondary');
+                activeBtn.classList.add('btn-primary');
+            }
+            updateRankings();
         };
 
-        async function loadRankings(type) {
+        window.updateRankings = async () => {
+            const category = document.getElementById('skill-category').value;
             const list = document.getElementById('leaderboard-list');
             const loader = document.getElementById('loading-msg');
 
@@ -93,66 +156,59 @@
             loader.style.display = 'block';
 
             let filterValue = null;
-            if (type === 'College') {
-                if (!userProfile) {
-                    loader.textContent = "Log in to see College rankings.";
+            if (currentScope === 'College') {
+                if (!userProfile || !userProfile.college) {
+                    loader.innerHTML = "Login and update profile to see College rankings.";
                     return;
                 }
                 filterValue = userProfile.college;
-            } else if (type === 'City') {
-                if (!userProfile) {
-                    loader.textContent = "Log in to see City rankings.";
+            } else if (currentScope === 'City') {
+                if (!userProfile || !userProfile.city) {
+                    loader.innerHTML = "Login and update profile to see City rankings.";
                     return;
                 }
-                filterValue = userProfile.city || "Unknown";
+                filterValue = userProfile.city;
             }
 
             try {
-                const rankings = await getGlobalLeaderboard(type, filterValue);
+                const users = await getGlobalLeaderboard(currentScope, filterValue, category);
                 loader.style.display = 'none';
 
-                if (rankings.length === 0) {
-                    list.innerHTML = `<p style="text-align: center; color: var(--text-secondary);">No ranked players found in this category yet.</p>`;
+                if (users.length === 0) {
+                    list.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-secondary);">No ranked players found.</div>`;
                     return;
                 }
 
-                rankings.forEach((p, idx) => {
-                    const div = document.createElement('div');
-                    div.style.display = 'flex';
-                    div.style.justify - content = 'space-between';
-                    div.style.alignItems = 'center';
-                    div.style.padding = '1rem';
-                    div.style.borderBottom = '1px solid var(--border-color)';
+                users.forEach((u, i) => {
+                    const el = document.createElement('div');
+                    el.className = `rank-item rank-${i + 1}`;
 
-                    // Highlight self
-                    if (currentUser && p.uid === currentUser.uid) {
-                        div.style.background = 'var(--surface-hover)';
-                        div.style.borderLeft = '3px solid var(--accent-color)';
+                    // Highlight Self
+                    if (currentUser && u.uid === currentUser.uid) {
+                        el.style.background = 'rgba(0, 242, 255, 0.1)';
+                        el.style.borderLeft = '3px solid var(--accent-color)';
                     }
 
-                    div.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span style="font-weight: 700; color: var(--text-secondary); width: 30px;">#${idx + 1}</span>
-                            <div>
-                                <div style="font-weight: 600;">${p.username}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                                    ${p.dominantType || 'Unranked'} • ${p.college || 'Unknown'}
-                                </div>
+                    el.innerHTML = `
+                        <div class="rank-number">${i + 1}</div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: #fff;">${u.username}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">
+                                ${u.dominantType || 'Rookie'} <span style="opacity: 0.5;">|</span> ${u.college || u.city || 'Unknown'}
                             </div>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-weight: 700; color: var(--accent-color);">${p.totalScore}</div>
-                            <div style="font-size: 0.7rem; text-transform: uppercase;">Total Score</div>
+                        <div class="score-display">
+                            ${Math.round(u.displayScore)} XP
                         </div>
                     `;
-                    list.appendChild(div);
+                    list.appendChild(el);
                 });
 
-            } catch (error) {
-                console.error(error);
-                loader.textContent = "Failed to load rankings.";
+            } catch (e) {
+                console.error(e);
+                loader.textContent = "Error loading data.";
             }
-        }
+        };
     </script>
 </body>
 

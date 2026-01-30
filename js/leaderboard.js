@@ -164,44 +164,47 @@ export const getRoomLeaderboard = async (roomId) => {
 };
 
 // NEW: Global Leaderboard Fetcher
-export const getGlobalLeaderboard = async (type = 'Global', filterValue = null) => {
+// NEW: Global Leaderboard Fetcher
+export const getGlobalLeaderboard = async (type = 'Global', filterValue = null, categoryField = 'totalScore') => {
     const usersRef = collection(db, "users");
     let q;
 
-    // For MVP, we might not have composite indexes set up yet.
-    // Ideally: orderBy("totalScore", "desc").limit(50)
-
-    // If filtering by College/City, we need an index:
-    // users -> where("college", "==", X).orderBy("totalScore")
-
-    // To avoid index creation hassle for the user in v0.2, 
-    // we will fetch top users and filter client-side if the dataset is small,
-    // OR try specific queries and handle index errors gracefully.
-
-    // Let's try simple queries first. If they fail (index needed), we catch and maybe do a simpler fetch.
+    // Mapping categoryField to Firestore field
+    // 'totalScore' -> 'totalScore'
+    // 'Logical' -> 'intelligence.logical'
+    let dbField = categoryField;
+    if (categoryField !== 'totalScore') {
+        dbField = `intelligence.${categoryField.toLowerCase()}`;
+    }
 
     try {
         if (type === 'Global') {
-            q = query(usersRef, where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
         } else if (type === 'College') {
-            q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
         } else if (type === 'City') {
-            q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy("totalScore", "desc"), limit(50));
+            q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
         }
 
         const querySnapshot = await getDocs(q);
         const users = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            // Ensure totalScore exists
-            if (data.totalScore === undefined) data.totalScore = 0;
+
+            // Get the specific score we are sorting by for display
+            let displayScore = 0;
+            if (categoryField === 'totalScore') {
+                displayScore = data.totalScore || 0;
+            } else {
+                displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
+            }
 
             users.push({
                 uid: data.uid,
                 username: data.username,
                 college: data.college,
                 city: data.city,
-                totalScore: data.totalScore,
+                displayScore: displayScore, // Generalize the score
                 dominantType: data.dominantType
             });
         });
@@ -209,17 +212,24 @@ export const getGlobalLeaderboard = async (type = 'Global', filterValue = null) 
 
     } catch (e) {
         console.error("Firestore Index / Query Error:", e);
-        // Fallback: Fetch top 100 regardless and filter client side (Not scalable but robust for v0.2 demo)
-        // Only if specific index query failed
         console.warn("Falling back to client-side sort due to missing index.");
 
-        const fallbackQ = query(usersRef, limit(100)); // Just get 100 users
+        const fallbackQ = query(usersRef, where("isGuest", "==", false), limit(100));
         const snap = await getDocs(fallbackQ);
         let users = [];
         snap.forEach(doc => {
             const data = doc.data();
-            if (!data.totalScore) data.totalScore = 0;
-            users.push(data);
+            let score = 0;
+            if (categoryField === 'totalScore') {
+                score = data.totalScore || 0;
+            } else {
+                score = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
+            }
+
+            users.push({
+                ...data,
+                displayScore: score
+            });
         });
 
         // Manual Filter
@@ -230,7 +240,7 @@ export const getGlobalLeaderboard = async (type = 'Global', filterValue = null) 
         }
 
         // Manual Sort
-        users.sort((a, b) => b.totalScore - a.totalScore);
+        users.sort((a, b) => b.displayScore - a.displayScore);
 
         return users.slice(0, 50);
     }
