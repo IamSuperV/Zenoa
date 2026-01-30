@@ -79,45 +79,44 @@
 
         let currentUser = null;
         let currentRoomData = null;
+        let localCurrentIndex = 0;
+        let totalQuestions = 0;
 
+        // 1. Start fetching room IMMEDIATELY (Do not wait for Auth)
+        initGameListener();
+
+        // 2. Check Auth in parallel
         onAuthStateChanged(auth, (user) => {
             if (!user) {
+                // If not logged in, we can still show the question (read-only) 
+                // but eventually they need to login. 
+                // For now, let's redirect if strictly required, or better:
+                // Let them see the text, but clicking options redirects to login.
+                // But existing logic redirects. Let's keep redirect but maybe delay it?
+                // Actually, if they are mid-game, they should be logged in.
+                // Sticking to redirect providing safety, but the room load starts anyway.
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                initGameListener();
+                // If room data is already here, re-render to show selected answers (if any)
+                if (currentRoomData) {
+                    renderQuestion(currentRoomData);
+                }
             }
         });
 
         function initGameListener() {
+            console.log("Fetching room...");
             subscribeToGame(roomId, (roomData) => {
-                if (!roomData) return;
-                currentRoomData = roomData;
-
-                if (roomData.status === 'finished') {
-                    window.location.href = `results.html?roomId=${roomId}`;
+                if (!roomData) {
+                    console.error("Room not found or empty data");
+                    document.getElementById('scenario-text').textContent = "Error: Room not found.";
                     return;
                 }
-
-                renderQuestion(roomData);
-            });
-        }
-
-        let localCurrentIndex = 0;
-        let totalQuestions = 0;
-
-        function initGameListener() {
-            subscribeToGame(roomId, (roomData) => {
-                if (!roomData) return;
                 currentRoomData = roomData;
-                totalQuestions = roomData.questionQueue.length;
+                totalQuestions = roomData.questionQueue ? roomData.questionQueue.length : 0;
 
-                // Sync: If room is just starting, ensure we are at 0 (or recover if reloaded)
-                // We will use localCurrentIndex to drive the UI.
-
-                // If game detects "finished" globally for everyone, maybe force end? 
-                // No, let's keep it individual. 
-
+                // Render immediately (even if user is null temporarily)
                 renderQuestion(roomData);
             });
         }
@@ -156,9 +155,11 @@
             document.getElementById('scenario-text').textContent = question.scenario;
 
             // Determine Selected Answer
-            const userAnswers = roomData.answers && roomData.answers[currentUser.uid];
-            // Ensure ID is string for lookup
-            const savedAnswer = userAnswers ? userAnswers[String(qId)] : undefined;
+            // If user is not loaded yet, we just don't show selection (it will update when Auth loads)
+            let savedAnswer = undefined;
+            if (currentUser && roomData.answers && roomData.answers[currentUser.uid]) {
+                savedAnswer = roomData.answers[currentUser.uid][String(qId)];
+            }
 
             // Render Options
             const container = document.getElementById('options-container');
@@ -176,6 +177,8 @@
 
                 // Click Handler
                 btn.onclick = async () => {
+                    if (!currentUser) return; // Ignore clicks if auth not ready
+
                     // Optimistic UI update
                     const allBtns = container.querySelectorAll('.option-btn');
                     allBtns.forEach(b => b.classList.remove('selected'));
