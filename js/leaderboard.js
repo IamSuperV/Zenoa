@@ -71,18 +71,36 @@ export const calculateAndSaveResults = async (roomId, userId) => {
         dominantType += " Thinker";
     }
 
-    // 5. Update User Profile
+    // 5. Update User Profile & Calculate Progression
     const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.exists() ? userDoc.data() : {};
 
-    const newBadges = [];
-    if (sessionStats.logical > 5) newBadges.push("Master Logician");
-    if (sessionStats.strategic > 5) newBadges.push("Grand Strategist");
-    if (sessionStats.social > 5) newBadges.push("Social Architect");
-    if (sessionStats.political > 5) newBadges.push("Power Player");
-    if (sessionStats.adaptive > 5) newBadges.push("Chaos Surfer");
+    // TIER SYSTEM
+    const currentScore = userData.totalScore || 0;
+    // XP Gain = Total Session Score + 50 Bonus
+    const sessionScore = (sessionStats.logical + sessionStats.strategic + sessionStats.social + sessionStats.political + sessionStats.adaptive);
+    const totalGain = Math.max(0, sessionScore) + 50; // Ensure positive + bonus
+    const newTotalScore = currentScore + totalGain;
 
-    // NEW: Calculate Total Score Gain for Leaderboard
-    const totalGain = (sessionStats.logical + sessionStats.strategic + sessionStats.social + sessionStats.political + sessionStats.adaptive);
+    const getTier = (score) => {
+        if (score >= 5000) return "LEGEND";
+        if (score >= 3000) return "CHAMPION";
+        if (score >= 1500) return "PLATINUM";
+        if (score >= 500) return "GOLD";
+        return "BRONZE";
+    };
+
+    const oldTier = getTier(currentScore);
+    const newTier = getTier(newTotalScore);
+    const isPromoted = oldTier !== newTier;
+
+    // TROPHIES
+    // Award a trophy just for playing (Participation) or potentially for winning (if we knew rank here)
+    // Since this runs per user, we'll award a "Match Completion" trophy every time
+    // But store as simple count or distinct IDs? User asked "trophies after every match"
+    // Let's increment a "trophies" counter and maybe add a unique trophy ID
+    const trophyId = `trophy_${Date.now()}`;
 
     const updatePayload = {
         matchesPlayed: increment(1),
@@ -92,7 +110,8 @@ export const calculateAndSaveResults = async (roomId, userId) => {
         "intelligence.political": increment(sessionStats.political),
         "intelligence.adaptive": increment(sessionStats.adaptive),
         "totalScore": increment(totalGain), // Add to total Score
-        "dominantType": dominantType
+        "dominantType": dominantType,
+        "trophies": increment(1) // Simple count for now
     };
 
     if (newBadges.length > 0) {
@@ -104,7 +123,13 @@ export const calculateAndSaveResults = async (roomId, userId) => {
     return {
         stats: sessionStats,
         dominantType: dominantType,
-        badges: newBadges
+        badges: newBadges,
+        xpGained: totalGain,
+        newTotalScore: newTotalScore,
+        oldTier: oldTier,
+        newTier: newTier,
+        isPromoted: isPromoted,
+        trophyEarned: true
     };
 };
 

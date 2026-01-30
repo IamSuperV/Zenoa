@@ -38,14 +38,10 @@
                     </h1>
 
                     <!-- XP BAR -->
-                    <div
-                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 1rem; color: var(--text-secondary);">
-                        <span>XP Progress</span>
-                        <span>2400 / 5000</span>
-                    </div>
                     <div class="xp-container">
-                        <div class="xp-fill" style="width: 48%;"></div>
+                        <div class="xp-fill" style="width: 0%;"></div>
                     </div>
+                    <div><!-- Filled by JS --></div>
                 </div>
             </div>
 
@@ -148,11 +144,40 @@
 
                     // Final UI Update (in case name changed or non-guest)
                     if (userProfile) {
-                        document.getElementById('display-name').textContent = userProfile.username;
+                        const dn = document.getElementById('display-name');
+                        dn.textContent = userProfile.username;
+
+                        // --- GAMIFICATION SYNC ---
+                        const score = userProfile.totalScore || 0;
+                        let tier = "BRONZE";
+                        let progress = 0;
+                        let maxXP = 500;
+                        let currentLevelScore = score; // Score within current tier
+
+                        if (score >= 5000) { tier = "LEGEND"; maxXP = 10000; currentLevelScore = score - 5000; }
+                        else if (score >= 3000) { tier = "CHAMPION"; maxXP = 2000; currentLevelScore = score - 3000; } // 3000-5000
+                        else if (score >= 1500) { tier = "PLATINUM"; maxXP = 1500; currentLevelScore = score - 1500; } // 1500-3000
+                        else if (score >= 500) { tier = "GOLD"; maxXP = 1000; currentLevelScore = score - 500; } // 500-1500
+                        else { tier = "BRONZE"; maxXP = 500; currentLevelScore = score; }
+
+                        // Update Badge
+                        const badge = document.getElementById('user-tier-badge');
+                        badge.textContent = `${tier} TIER`;
+                        badge.className = `tier-badge tier-${tier.toLowerCase()}`;
+
+                        // Update Bar
+                        const percent = Math.min(100, Math.max(0, (currentLevelScore / maxXP) * 100));
+                        document.querySelector('.xp-fill').style.width = `${percent}%`;
+                        document.querySelector('.xp-container + div').innerHTML = `
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                <span>${Math.floor(score)} Total XP</span>
+                                <span>Next Tier: ${Math.floor(maxXP - currentLevelScore)} XP</span>
+                            </div>
+                        `; // Replace text below bar or adjust helper text
+
                         const nav = document.getElementById('nav-dynamic');
                         if (userProfile.isGuest) {
                             nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
-                            const dn = document.getElementById('display-name');
                             if (!dn.textContent.includes("(Guest)")) dn.textContent += " (Guest)";
                         } else {
                             nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
