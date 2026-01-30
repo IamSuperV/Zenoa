@@ -125,6 +125,12 @@
         function renderQuestion(roomData) {
             const index = localCurrentIndex;
 
+            // Debugging
+            if (!roomData.questionQueue || roomData.questionQueue.length === 0) {
+                document.getElementById('scenario-text').textContent = "Error: This room has no questions.";
+                return;
+            }
+
             // Check if finished
             if (index >= totalQuestions) {
                 window.location.href = `results.html?roomId=${roomId}`;
@@ -134,7 +140,15 @@
             const qId = roomData.questionQueue[index];
             const question = QUESTIONS_DB.find(q => q.id === qId);
 
-            if (!question) return;
+            if (!question) {
+                console.error("Missing Question ID:", qId);
+                document.getElementById('scenario-text').textContent = `Error: Question details not found (${qId})`;
+                document.getElementById('category-badge').textContent = "Error";
+
+                // Auto-skip?
+                // document.getElementById('next-btn-container').classList.remove('hidden');
+                return;
+            }
 
             // Update UI Labels
             document.getElementById('category-badge').textContent = question.category;
@@ -174,7 +188,7 @@
                         // Auto-advance or Enable Next? 
                         // Let's enable the Next button logic.
                         // Actually, user clicked default next button before.
-                        // We need a "Next" button for EVERYONE now.
+                        // We will keep it simple.
                         document.getElementById('next-btn-container').classList.remove('hidden');
                     } catch (e) {
                         document.getElementById('error-msg').textContent = "Failed to save answer. Try again.";
@@ -184,6 +198,9 @@
 
                 container.appendChild(btn);
             });
+
+            // Show Next Button if already answered (or allow anyway)
+            document.getElementById('next-btn-container').classList.remove('hidden');
         }
 
         // Universal Next Button Logic
