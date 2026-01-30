@@ -99,8 +99,7 @@ export const createGuestProfile = async (user) => {
 // Guest Login
 export const loginAsGuest = async () => {
     try {
-        const validUser = await signInAnonymously(auth);
-        await createGuestProfile(validUser.user);
+        await signInAnonymously(auth);
         window.location.href = 'dashboard.html';
     } catch (error) {
         handleError(error);
