@@ -44,13 +44,12 @@ export const signUpUser = async (email, password, username, college, city) => {
                 adaptability: 0,
                 social: 0
             }
-        }
         });
 
-    window.location.href = 'dashboard.html';
-} catch (error) {
-    handleError(error);
-}
+        window.location.href = 'dashboard.html';
+    } catch (error) {
+        handleError(error);
+    }
 };
 
 // Login Function
