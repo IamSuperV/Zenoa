@@ -22,6 +22,10 @@
                         style="width: auto; min-width: 300px; text-align: center;">
                     <button class="btn btn-secondary" id="copy-btn">Copy</button>
                 </div>
+                <div id="connection-status"
+                    style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.7;">
+                    Connecting to live updates...
+                </div>
             </div>
 
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
@@ -127,7 +131,11 @@
         }
 
         function initRoomListener() {
+            document.getElementById('connection-status').textContent = "🔴 Connecting...";
+
             subscribeToRoom(roomId, (roomData) => {
+                document.getElementById('connection-status').textContent = "🟢 Live Connected";
+
                 if (!roomData) {
                     alert("Room does not exist or was deleted.");
                     window.location.href = 'dashboard.html';

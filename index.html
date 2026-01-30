@@ -28,9 +28,8 @@
                 Test your reasoning, adaptability, and social intelligence.
             </p>
             <div class="cta-group">
-                <a href="signup.html" class="btn btn-primary">Start Assessment</a>
-                <a href="login.html" class="btn btn-secondary">Login</a>
-                <button id="home-guest-btn" class="btn btn-secondary" style="border-style: dashed;">Guest</button>
+                <a href="login.html" class="btn btn-primary">Login to Play</a>
+                <button id="home-guest-btn" class="btn btn-secondary">Play as Guest</button>
             </div>
         </main>
 
@@ -65,6 +64,8 @@
         const guestBtn = document.getElementById('home-guest-btn');
         if (guestBtn) {
             guestBtn.addEventListener('click', () => {
+                guestBtn.textContent = "Entering...";
+                guestBtn.disabled = true;
                 loginAsGuest();
             });
         }

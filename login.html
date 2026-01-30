@@ -54,6 +54,9 @@
         });
 
         document.getElementById('guest-btn').addEventListener('click', () => {
+            const btn = document.getElementById('guest-btn');
+            btn.textContent = "Entering...";
+            btn.disabled = true;
             loginAsGuest();
         });
     </script>
