@@ -127,16 +127,6 @@
                 console.log("User authenticated, starting calculation...", user.uid);
                 hasCalculated = true;
 
-                // 2. Real-time Leaderboard Listener (MOVED UP for instant load)
-                const roomRef = doc(db, "rooms", roomId);
-                onSnapshot(roomRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const roomData = docSnap.data();
-                        const leaderboard = calculateRoomLeaderboard(roomData);
-                        renderLeaderboard(leaderboard, user.uid);
-                    }
-                });
-
                 // 1. Calculate & Save My Results (Once)
                 let myResults = null;
                 try {
@@ -196,6 +186,16 @@
                         });
                     }
                 }
+
+                // 2. Real-time Leaderboard Listener
+                const roomRef = doc(db, "rooms", roomId);
+                onSnapshot(roomRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const roomData = docSnap.data();
+                        const leaderboard = calculateRoomLeaderboard(roomData);
+                        renderLeaderboard(leaderboard, user.uid);
+                    }
+                });
             }
         });
 
