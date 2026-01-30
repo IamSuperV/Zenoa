@@ -316,19 +316,7 @@
                 document.getElementById('identity-modal').style.display = 'none';
 
                 // Proceed with Pending Action
-                if (pendingAction === 'join') {
-                    document.getElementById('join-section').classList.remove('hidden');
-                    document.getElementById('host-section').classList.add('hidden');
-                    document.getElementById('join-section').scrollIntoView({ behavior: 'smooth' });
-                } else if (pendingAction === 'host') {
-                    document.getElementById('host-section').classList.remove('hidden');
-                    document.getElementById('join-section').classList.add('hidden');
-                    document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
-                } else if (pendingAction === 'solo') {
-                    // Trigger solo logic DIRECTLY
-                    // We call the logic manually here instead of clicking button to ensure variables are passed
-                    startSoloGame();
-                }
+                executeAction(pendingAction);
 
             } catch (err) {
                 console.error(err);
