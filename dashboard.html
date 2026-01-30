@@ -85,7 +85,7 @@
     <script type="module">
         import { auth } from './js/firebase.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-        import { logoutUser, getUserProfile } from './js/auth.js';
+        import { logoutUser, getUserProfile, createGuestProfile } from './js/auth.js';
         import { createRoom, joinRoom } from './js/rooms.js';
 
         let currentUser = null;
@@ -98,6 +98,13 @@
                 currentUser = user;
                 // Fetch full profile for username
                 userProfile = await getUserProfile(user.uid);
+
+                // DATA REPAIR: If Guest has no profile, create it now
+                if (!userProfile && user.isAnonymous) {
+                    console.log("Guest profile missing. Auto-creating...");
+                    userProfile = await createGuestProfile(user);
+                }
+
                 console.log("Profile Loaded:", userProfile);
 
                 if (userProfile) {
@@ -106,7 +113,10 @@
                     const nav = document.getElementById('nav-dynamic');
                     if (userProfile.isGuest) {
                         nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
-                        document.getElementById('display-name').textContent += " (Guest)";
+                        const dn = document.getElementById('display-name');
+                        if (!dn.textContent.includes("(Guest)")) {
+                            dn.textContent += " (Guest)";
+                        }
                     } else {
                         nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
                     }

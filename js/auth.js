@@ -64,28 +64,32 @@ export const loginUser = async (email, password) => {
     }
 };
 
+// Helper: Create Guest Doc
+export const createGuestProfile = async (user) => {
+    const guestName = "Guest-" + user.uid.substring(0, 4).toUpperCase();
+    const headers = {
+        uid: user.uid,
+        username: guestName,
+        email: "guest@zenoa.app",
+        college: "N/A",
+        city: "Unknown",
+        isGuest: true,
+        createdAt: serverTimestamp(),
+        matchesPlayed: 0,
+        badges: [],
+        stats: {
+            logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0
+        }
+    };
+    await setDoc(doc(db, "users", user.uid), headers);
+    return headers;
+};
+
 // Guest Login
 export const loginAsGuest = async () => {
     try {
         const result = await signInAnonymously(auth);
-        const user = result.user;
-        const guestName = "Guest-" + user.uid.substring(0, 4).toUpperCase();
-
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            username: guestName,
-            email: "guest@zenoa.app",
-            college: "N/A",
-            city: "Unknown",
-            isGuest: true,
-            createdAt: serverTimestamp(),
-            matchesPlayed: 0,
-            badges: [],
-            stats: {
-                logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0
-            }
-        });
-
+        await createGuestProfile(result.user);
         window.location.href = 'dashboard.html';
     } catch (error) {
         handleError(error);
