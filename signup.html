@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - ZENOA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container flex-center" style="min-height: 100vh;">
+        <div class="auth-container" style="width: 100%;">
+            <h2 style="text-align: center;">Join ZENOA</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required placeholder="e.g. Neo">
+                </div>
+                <div class="form-group">
+                    <label for="college">College / School</label>
+                    <input type="text" id="college" required placeholder="e.g. MIT, Hogwarts">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                Already have an account? <a href="login.html" style="color: var(--text-primary);">Log In</a>
+            </p>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">←
+                    Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { signUpUser } from './js/auth.js';
+
+        const signupForm = document.getElementById('signup-form');
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const college = document.getElementById('college').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signUpUser(email, password, username, college);
+        });
+    </script>
+</body>
+
+</html>

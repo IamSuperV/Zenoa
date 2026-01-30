@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZENOA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <nav class="flex-center" style="justify-content: space-between; padding: 2rem 0;">
+            <div style="font-weight: 700; font-size: 1.5rem; letter-spacing: -0.05em;">ZENOA</div>
+            <div>
+                <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Log
+                    In</a>
+            </div>
+        </nav>
+
+        <main class="hero-section">
+            <h1>Intelligence is Social.</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem auto;">
+                A room-based psychological strategy game for friends. <br>
+                Test your reasoning, adaptability, and social intelligence.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="signup.html" class="btn btn-primary">Start Playing</a>
+                <a href="#about" class="btn btn-secondary">How it Works</a>
+            </div>
+        </main>
+
+        <section id="about"
+            style="margin-top: 4rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            <div class="card">
+                <h3>Real Scenarios</h3>
+                <p>No trivia. Just difficult decisions that reveal who you really are.</p>
+            </div>
+            <div class="card">
+                <h3>Live Gameplay</h3>
+                <p>Join a room with friends or classmates. Compete in real-time.</p>
+            </div>
+            <div class="card">
+                <h3>Earn Badges</h3>
+                <p>Track your stats across 4 categories and unlock prestige.</p>
+            </div>
+        </section>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

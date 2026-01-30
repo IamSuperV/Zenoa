@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - ZENOA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container" style="max-width: 800px; padding-top: 4rem;">
+        <h1 style="text-align: center;">Session Complete</h1>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.2rem; color: var(--text-secondary);">Your Performance</h2>
+            <div id="my-stats" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                <!-- Stats injected here -->
+                <p>Calculating...</p>
+            </div>
+            <div id="new-badges" style="margin-top: 1rem; color: var(--accent-color); font-weight: 600;"></div>
+        </div>
+
+        <div class="card">
+            <h2>Room Leaderboard</h2>
+            <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="padding: 0.5rem;">Rank</th>
+                        <th style="padding: 0.5rem;">Player</th>
+                        <th style="padding: 0.5rem;">Impact Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <!-- Rows injected here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="dashboard.html" class="btn btn-primary">Return to Dashboard</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { calculateAndSaveResults, getRoomLeaderboard } from './js/leaderboard.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomId');
+
+        if (!roomId) window.location.href = 'dashboard.html';
+
+        let processed = false;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                if (!processed) {
+                    processed = true;
+                    // 1. Calculate & Save My Results
+                    try {
+                        const results = await calculateAndSaveResults(roomId, user.uid);
+                        renderMyStats(results);
+                    } catch (e) {
+                        console.error("Error saving results:", e);
+                    }
+
+                    // 2. Load Leaderboard
+                    const leaderboard = await getRoomLeaderboard(roomId);
+                    renderLeaderboard(leaderboard, user.uid);
+                }
+            }
+        });
+
+        function renderMyStats(results) {
+            const container = document.getElementById('my-stats');
+            container.innerHTML = '';
+
+            if (!results) {
+                container.innerHTML = '<p>No participation data found.</p>';
+                return;
+            }
+
+            Object.entries(results.stats).forEach(([key, val]) => {
+                if (val === 0) return;
+                const div = document.createElement('div');
+                div.innerHTML = `<span style="text-transform: capitalize; color: var(--text-secondary);">${key}:</span> <strong>${val > 0 ? '+' : ''}${val}</strong>`;
+                container.appendChild(div);
+            });
+
+            if (results.badges.length > 0) {
+                document.getElementById('new-badges').textContent = `New Badge Unlocked: ${results.badges.join(', ')}!`;
+            }
+        }
+
+        function renderLeaderboard(leaderboard, currentUid) {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+
+            leaderboard.forEach((p, i) => {
+                const tr = document.createElement('tr');
+                if (p.uid === currentUid) {
+                    tr.style.backgroundColor = 'var(--surface-hover)';
+                    tr.style.fontWeight = 'bold';
+                }
+                tr.innerHTML = `
+                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${i + 1}</td>
+                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${p.username}</td>
+                    <td style="padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--border-color);">${p.score}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+
+</html>

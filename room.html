@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Lobby - ZENOA</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container" style="max-width: 800px; padding-top: 4rem;">
+        <div class="card" style="text-align: center;">
+            <p style="text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);">Room Code</p>
+            <h1 id="room-code-display" style="font-size: 4rem; margin: 0.5rem 0 2rem 0; color: var(--accent-color);">...
+            </h1>
+
+            <div style="margin-bottom: 2rem;">
+                <p>Share this code with friends or copy the link:</p>
+                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <input type="text" id="share-link" readonly
+                        style="width: auto; min-width: 300px; text-align: center;">
+                    <button class="btn btn-secondary" id="copy-btn">Copy</button>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <div style="text-align: left;">
+                <h3 style="margin-bottom: 1rem;">Players <span id="player-count">(0)</span></h3>
+                <div id="players-list"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+                    <!-- Player Cards Injected Here -->
+                </div>
+            </div>
+
+            <div id="host-controls" class="hidden" style="margin-top: 3rem;">
+                <p style="margin-bottom: 1rem; font-style: italic;">Detailed rules will be shown in game.</p>
+                <button id="start-game-btn" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">Start
+                    Game</button>
+            </div>
+            <div id="waiting-msg" style="margin-top: 3rem; color: var(--text-secondary); font-style: italic;">
+                Waiting for host to start...
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/firebase.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+        import { subscribeToRoom, startGame } from './js/rooms.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomId');
+
+        if (!roomId) {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('room-code-display').textContent = roomId;
+        document.getElementById('share-link').value = window.location.href;
+
+        // Copy Link
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            const copyText = document.getElementById("share-link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            document.getElementById('copy-btn').textContent = "Copied!";
+            setTimeout(() => { document.getElementById('copy-btn').textContent = "Copy"; }, 2000);
+        });
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // If not logged in, redirect to login with return URL
+                // For now, just login
+                window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+            } else {
+                currentUser = user;
+                initRoomListener();
+            }
+        });
+
+        function initRoomListener() {
+            subscribeToRoom(roomId, (roomData) => {
+                if (!roomData) {
+                    alert("Room does not exist or was deleted.");
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                // Redirect if game started
+                if (roomData.status === 'playing') {
+                    window.location.href = `play.html?roomId=${roomId}`;
+                    return;
+                }
+
+                // Update Player List
+                const list = document.getElementById('players-list');
+                list.innerHTML = '';
+                document.getElementById('player-count').textContent = `(${roomData.players.length})`;
+
+                roomData.players.forEach(p => {
+                    const el = document.createElement('div');
+                    el.style.background = 'var(--surface-color)';
+                    el.style.padding = '1rem';
+                    el.style.borderRadius = 'var(--radius-md)';
+                    el.style.border = '1px solid var(--border-color)';
+                    el.style.textAlign = 'center';
+                    el.innerHTML = `<strong>${p.username}</strong>`;
+                    if (p.uid === currentUser.uid) {
+                        el.style.borderColor = 'var(--accent-color)';
+                    }
+                    if (p.uid === roomData.hostId) {
+                        el.innerHTML += '<br><span style="font-size:0.8rem; color: #fbbf24;">HOST</span>';
+                    }
+                    list.appendChild(el);
+                });
+
+                // Host Controls
+                if (currentUser.uid === roomData.hostId) {
+                    document.getElementById('host-controls').classList.remove('hidden');
+                    document.getElementById('waiting-msg').classList.add('hidden');
+                } else {
+                    document.getElementById('host-controls').classList.add('hidden');
+                    document.getElementById('waiting-msg').classList.remove('hidden');
+                }
+            });
+        }
+
+        document.getElementById('start-game-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('start-game-btn');
+            btn.disabled = true;
+            btn.textContent = "Starting...";
+            try {
+                await startGame(roomId);
+            } catch (e) {
+                console.error(e);
+                btn.disabled = false;
+                btn.textContent = "Start Game";
+            }
+        });
+    </script>
+</body>
+
+</html>
