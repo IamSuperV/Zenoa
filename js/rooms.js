@@ -20,36 +20,55 @@ const GENERATE_ROOM_ID = () => {
 
 import { QUESTIONS_DB } from './data.js';
 
+// Helper: Shuffle Array (Fisher-Yates)
+const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+
 // Create a Room
-export const createRoom = async (hostUid, username, roomType) => {
+export const createRoom = async (hostUid, username, roomType, gameMode = 'Mix') => {
     const roomId = GENERATE_ROOM_ID();
 
-    // Updated Categories for v0.2
-    const categories = [
-        "Logical Intelligence",
-        "Strategic Intelligence",
-        "Social Intelligence",
-        "Political Intelligence",
-        "Adaptive Intelligence"
-    ];
+    let categories = [];
+    let questionQueue = [];
+
+    if (gameMode === 'Mix') {
+        categories = [
+            "Logical Intelligence", "Strategic Intelligence",
+            "Social Intelligence", "Political Intelligence", "Adaptive Intelligence"
+        ];
+        // Select 2 RANDOM questions from each category
+        categories.forEach(cat => {
+            const allCatQs = QUESTIONS_DB.filter(q => q.category === cat);
+            const shuffled = shuffleArray([...allCatQs]); // Copy & Shuffle
+            const selected = shuffled.slice(0, 2).map(q => q.id);
+            questionQueue.push(...selected);
+        });
+    } else {
+        // Specific Drill Mode
+        categories = [gameMode];
+        const allCatQs = QUESTIONS_DB.filter(q => q.category === gameMode);
+        const shuffled = shuffleArray([...allCatQs]); // Copy & Shuffle
+        // Take up to 10 RANDOM questions
+        questionQueue = shuffled.slice(0, 10).map(q => q.id);
+    }
 
     try {
         await setDoc(doc(db, "rooms", roomId), {
             roomId: roomId,
             hostId: hostUid,
             roomContext: roomType,
+            gameMode: gameMode,
             status: 'waiting',
             categories: categories,
             currentCategoryIndex: 0,
             currentQuestionIndex: 0,
             answers: {},
-            questionQueue: [
-                ...QUESTIONS_DB.filter(q => q.category === "Logical Intelligence").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Strategic Intelligence").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Social Intelligence").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Political Intelligence").slice(0, 2).map(q => q.id),
-                ...QUESTIONS_DB.filter(q => q.category === "Adaptive Intelligence").slice(0, 2).map(q => q.id)
-            ],
+            questionQueue: questionQueue,
             createdAt: serverTimestamp(),
             players: [
                 {
