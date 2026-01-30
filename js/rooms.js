@@ -41,6 +41,7 @@ export const createRoom = async (hostUid, username, roomType) => {
             categories: categories,
             currentCategoryIndex: 0,
             currentQuestionIndex: 0,
+            answers: {},
             questionQueue: [
                 ...QUESTIONS_DB.filter(q => q.category === "Situational Reasoning").slice(0, 2).map(q => q.id),
                 ...QUESTIONS_DB.filter(q => q.category === "Decision Under Pressure").slice(0, 2).map(q => q.id),

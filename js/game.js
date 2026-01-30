@@ -2,10 +2,10 @@ import { db } from './firebase.js';
 import {
     doc,
     updateDoc,
+    setDoc,
     onSnapshot,
     serverTimestamp,
-    increment,
-    arrayUnion
+    increment
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { QUESTIONS_DB } from './data.js';
 
@@ -22,20 +22,28 @@ export const subscribeToGame = (roomId, callback) => {
 export const submitAnswer = async (roomId, uid, questionId, optionIndex) => {
     const roomRef = doc(db, "rooms", roomId);
 
-    // Calculate Score Impact (Simplistic for local feedback, real calc happens on profile update)
-    const question = QUESTIONS_DB.find(q => q.id === questionId);
-    const weights = question.weights[optionIndex] || {};
+    // We use setDoc with merge: true to ensure we don't overwrite other fields
+    // and to create the nested structure if it's missing.
+    // Structure: answers / UID / QuestionID
 
-    // We store the answer in the player's object in the array
-    // Firestore array update is tricky for specific item fields, standard pattern is to read-modify-write entire array
-    // Or simpler: store answers in a separate subcollection or map if high concurrency
-    // For v0.1: We will use a separate field `playerAnswers` map in the room doc: { uid: { qId: answerIdx } }
+    // Convert QuestionID to string to be safe as Map key
+    const qIdKey = String(questionId);
 
-    const key = `answers.${uid}.${questionId}`;
+    const matchData = {
+        answers: {
+            [uid]: {
+                [qIdKey]: optionIndex
+            }
+        }
+    };
 
-    await updateDoc(roomRef, {
-        [key]: optionIndex
-    });
+    try {
+        await setDoc(roomRef, matchData, { merge: true });
+        console.log("Answer submitted:", matchData);
+    } catch (error) {
+        console.error("Submit error:", error);
+        throw error;
+    }
 };
 
 // Host: Advance to Next Question
@@ -53,6 +61,3 @@ export const nextQuestion = async (roomId, currentIndex, queueLength) => {
         });
     }
 };
-
-// Update Player Score/Stats (At end of game or live?)
-// For v0.1, we'll calculate final stats at the results screen based on all answers.

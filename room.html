@@ -85,6 +85,7 @@
 
         function initRoomListener() {
             subscribeToRoom(roomId, (roomData) => {
+                console.log("Room Update:", roomData);
                 if (!roomData) {
                     alert("Room does not exist or was deleted.");
                     window.location.href = 'dashboard.html';
@@ -93,6 +94,7 @@
 
                 // Redirect if game started
                 if (roomData.status === 'playing') {
+                    console.log("Game started! Redirecting...");
                     window.location.href = `play.html?roomId=${roomId}`;
                     return;
                 }
