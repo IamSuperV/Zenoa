@@ -26,46 +26,66 @@
         <main style="padding-top: 4rem; max-width: 600px; margin: 0 auto;">
             <h1 style="text-align: center; margin-bottom: 3rem;">Ready, <span id="display-name">...</span>?</h1>
 
-            style="width: auto; margin-right: 0.5rem;"> School
-            </label>
-    </div>
-    </div>
-
-    <div class="form-group">
-        <label for="game-mode">Game Mode</label>
-        <select id="game-mode"
-            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
-            <option value="Mix">Full Assessment (Mixed)</option>
-            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
-            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
-            <option value="Social Intelligence">Drill: Social Intelligence</option>
-            <option value="Political Intelligence">Drill: Political Intelligence</option>
-            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
-    </form>
-    </div>
-
-    <div style="text-align: center; position: relative; margin: 2rem 0;">
-        <hr style="border: 0; border-top: 1px solid var(--border-color);">
-        <span
-            style="position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--bg-color); padding: 0 1rem; color: var(--text-secondary); font-size: 0.9rem;">OR</span>
-    </div>
-
-    <div class="card">
-        <h2 style="font-size: 1.4rem;">Join a Room</h2>
-        <form id="join-room-form">
-            <div class="form-group">
-                <label for="room-code">Room Code</label>
-                <input type="text" id="room-code" placeholder="ABC123" required
-                    style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;">
+            <div class="card" style="margin-bottom: 2rem; border-color: var(--accent-color);">
+                <h2 style="color: var(--accent-color);">Start Solo Assessment</h2>
+                <p>Take the assessment by yourself to analyze your intelligence type.</p>
+                <button id="solo-btn" class="btn btn-primary btn-block">Play Solo</button>
             </div>
-            <button type="submit" class="btn btn-secondary btn-block" id="join-btn">Join Game</button>
-        </form>
-    </div>
-    </main>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.4rem;">Create a Room</h2>
+                <form id="create-room-form">
+                    <div class="form-group">
+                        <label style="margin-bottom: 0.5rem; display: block;">Context</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <label
+                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                <input type="radio" name="context" value="College" checked
+                                    style="width: auto; margin-right: 0.5rem;"> College
+                            </label>
+                            <label
+                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                <input type="radio" name="context" value="School"
+                                    style="width: auto; margin-right: 0.5rem;"> School
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="game-mode">Game Mode</label>
+                        <select id="game-mode"
+                            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                            <option value="Mix">Full Assessment (Mixed)</option>
+                            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
+                            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
+                            <option value="Social Intelligence">Drill: Social Intelligence</option>
+                            <option value="Political Intelligence">Drill: Political Intelligence</option>
+                            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
+                </form>
+            </div>
+
+            <div style="text-align: center; position: relative; margin: 2rem 0;">
+                <hr style="border: 0; border-top: 1px solid var(--border-color);">
+                <span
+                    style="position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--bg-color); padding: 0 1rem; color: var(--text-secondary); font-size: 0.9rem;">OR</span>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 1.4rem;">Join a Room</h2>
+                <form id="join-room-form">
+                    <div class="form-group">
+                        <label for="room-code">Room Code</label>
+                        <input type="text" id="room-code" placeholder="ABC123" required
+                            style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;">
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block" id="join-btn">Join Game</button>
+                </form>
+            </div>
+        </main>
     </div>
 
     <script type="module">
