@@ -19,27 +19,22 @@ export const subscribeToGame = (roomId, callback) => {
 };
 
 // Submit Answer
+// Submit Answer
 export const submitAnswer = async (roomId, uid, questionId, optionIndex) => {
     const roomRef = doc(db, "rooms", roomId);
 
-    // We use setDoc with merge: true to ensure we don't overwrite other fields
-    // and to create the nested structure if it's missing.
-    // Structure: answers / UID / QuestionID
+    // FIX: Use updateDoc with Dot Notation to avoid overwriting the entire 'answers' map.
+    // 'answers' field is initialized in createRoom, so updateDoc works.
+    // keys: answers.UID.QuestionID
 
-    // Convert QuestionID to string to be safe as Map key
     const qIdKey = String(questionId);
-
-    const matchData = {
-        answers: {
-            [uid]: {
-                [qIdKey]: optionIndex
-            }
-        }
-    };
+    const fieldPath = `answers.${uid}.${qIdKey}`;
 
     try {
-        await setDoc(roomRef, matchData, { merge: true });
-        console.log("Answer submitted:", matchData);
+        await updateDoc(roomRef, {
+            [fieldPath]: optionIndex
+        });
+        console.log(`Answer submitted to ${fieldPath}:`, optionIndex);
     } catch (error) {
         console.error("Submit error:", error);
         throw error;

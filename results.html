@@ -134,6 +134,17 @@
                     console.log("Calculation result:", myResults);
                 } catch (e) {
                     console.error("Calculation failed:", e);
+                    document.getElementById('dominant-hero').textContent = "DATA ERROR";
+                    document.getElementById('dominant-hero').style.color = "var(--danger-color)";
+                    document.getElementById('dominant-hero').style.fontSize = "1.5rem";
+
+                    // Create detailed error msg
+                    const errMsg = document.createElement('div');
+                    errMsg.style.fontSize = "0.8rem";
+                    errMsg.style.marginTop = "1rem";
+                    errMsg.style.color = "#ff6b6b";
+                    errMsg.textContent = "Sync failed. Please try refreshing or play a new match.";
+                    document.getElementById('dominant-hero').parentNode.appendChild(errMsg);
                 }
 
                 if (myResults) {
