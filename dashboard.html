@@ -26,67 +26,53 @@
         <main style="padding-top: 4rem; max-width: 600px; margin: 0 auto;">
             <h1 style="text-align: center; margin-bottom: 3rem;">Ready, <span id="display-name">...</span>?</h1>
 
-            <div class="card" style="margin-bottom: 2rem;">
-                <h2 style="font-size: 1.4rem;">Create a Room</h2>
-                <form id="create-room-form">
-                    <div class="form-group">
-                        <label style="margin-bottom: 0.5rem; display: block;">Context</label>
-                        <div style="display: flex; gap: 1rem;">
-                            <label
-                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="College" checked
-                                    style="width: auto; margin-right: 0.5rem;"> College
-                            </label>
-                            <label
-                                style="cursor: pointer; display: flex; align-items: center; background: var(--surface-hover); padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="School"
-                                    style="width: auto; margin-right: 0.5rem;"> School
-                            </label>
-                        </div>
-                    </div>
+            style="width: auto; margin-right: 0.5rem;"> School
+            </label>
+    </div>
+    </div>
 
-                    <div class="form-group">
-                        <label for="game-mode">Game Mode</label>
-                        <select id="game-mode"
-                            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
-                            <option value="Mix">Full Assessment (Mixed)</option>
-                            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
-                            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
-                            <option value="Social Intelligence">Drill: Social Intelligence</option>
-                            <option value="Political Intelligence">Drill: Political Intelligence</option>
-                            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
-                        </select>
-                    </div>
+    <div class="form-group">
+        <label for="game-mode">Game Mode</label>
+        <select id="game-mode"
+            style="width: 100%; padding: 0.75rem; background: var(--surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+            <option value="Mix">Full Assessment (Mixed)</option>
+            <option value="Logical Intelligence">Drill: Logical Intelligence</option>
+            <option value="Strategic Intelligence">Drill: Strategic Intelligence</option>
+            <option value="Social Intelligence">Drill: Social Intelligence</option>
+            <option value="Political Intelligence">Drill: Political Intelligence</option>
+            <option value="Adaptive Intelligence">Drill: Adaptive Intelligence</option>
+        </select>
+    </div>
 
-                    <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
-                </form>
+    <button type="submit" class="btn btn-primary btn-block" id="create-btn">Host Room</button>
+    </form>
+    </div>
+
+    <div style="text-align: center; position: relative; margin: 2rem 0;">
+        <hr style="border: 0; border-top: 1px solid var(--border-color);">
+        <span
+            style="position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--bg-color); padding: 0 1rem; color: var(--text-secondary); font-size: 0.9rem;">OR</span>
+    </div>
+
+    <div class="card">
+        <h2 style="font-size: 1.4rem;">Join a Room</h2>
+        <form id="join-room-form">
+            <div class="form-group">
+                <label for="room-code">Room Code</label>
+                <input type="text" id="room-code" placeholder="ABC123" required
+                    style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;">
             </div>
-
-            <div style="text-align: center; position: relative; margin: 2rem 0;">
-                <hr style="border: 0; border-top: 1px solid var(--border-color);">
-                <span
-                    style="position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--bg-color); padding: 0 1rem; color: var(--text-secondary); font-size: 0.9rem;">OR</span>
-            </div>
-
-            <div class="card">
-                <h2 style="font-size: 1.4rem;">Join a Room</h2>
-                <form id="join-room-form">
-                    <div class="form-group">
-                        <label for="room-code">Room Code</label>
-                        <input type="text" id="room-code" placeholder="ABC123" required
-                            style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: center;">
-                    </div>
-                    <button type="submit" class="btn btn-secondary btn-block" id="join-btn">Join Game</button>
-                </form>
-            </div>
-        </main>
+            <button type="submit" class="btn btn-secondary btn-block" id="join-btn">Join Game</button>
+        </form>
+    </div>
+    </main>
     </div>
 
     <script type="module">
         import { auth } from './js/firebase.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
         import { logoutUser, getUserProfile, createGuestProfile } from './js/auth.js';
-        import { createRoom, joinRoom } from './js/rooms.js';
+        import { createRoom, joinRoom, startGame } from './js/rooms.js';
 
         let currentUser = null;
         let userProfile = null;
@@ -160,6 +146,40 @@
                 console.error(error);
                 alert("Failed to create room: " + error.message);
                 btn.textContent = "Host Room";
+                btn.disabled = false;
+            }
+        });
+
+        // Solo Mode
+        document.getElementById('solo-btn').addEventListener('click', async () => {
+            if (!currentUser || !userProfile) {
+                alert("Please wait for profile to load...");
+                return;
+            }
+
+            const btn = document.getElementById('solo-btn');
+            btn.textContent = "Starting...";
+            btn.disabled = true;
+
+            try {
+                // 1. Create Private Room
+                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Solo', 'Mix');
+
+                // 2. Auto-Start Game
+                // We need to import startGame but it wasn't imported in module script yet.
+                // We can't import dynamic easily here without changing top imports. 
+                // Let's rely on room.html logic? No, we want to skip it.
+                // I will update imports in a separate tool call to be safe or assuming startGame is available/exported.
+                // Wait, I need to check imports.
+
+                // Assuming I will add startGame to imports below.
+                await startGame(roomId);
+
+                window.location.href = `play.html?roomId=${roomId}`;
+            } catch (e) {
+                console.error(e);
+                alert("Error starting solo: " + e.message);
+                btn.textContent = "Play Solo";
                 btn.disabled = false;
             }
         });

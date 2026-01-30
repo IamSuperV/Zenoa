@@ -58,8 +58,7 @@
             <p id="error-msg" style="color: var(--danger-color); text-align: center; margin-top: 1rem;"></p>
         </div>
 
-        <div id="host-controls" class="hidden" style="margin-top: 2rem; text-align: center;">
-            <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Host Controls</p>
+        <div id="next-btn-container" style="margin-top: 2rem; text-align: center;">
             <button id="next-btn" class="btn btn-primary" style="padding: 0.5rem 2rem;">Next Question</button>
         </div>
         <p id="waiting-msg" class="hidden"
@@ -101,20 +100,37 @@
                 }
 
                 renderQuestion(roomData);
+            });
+        }
 
-                // Show Host Controls
-                if (currentUser.uid === roomData.hostId) {
-                    document.getElementById('host-controls').classList.remove('hidden');
-                    document.getElementById('waiting-msg').classList.add('hidden');
-                } else {
-                    document.getElementById('host-controls').classList.add('hidden');
-                    document.getElementById('waiting-msg').classList.remove('hidden');
-                }
+        let localCurrentIndex = 0;
+        let totalQuestions = 0;
+
+        function initGameListener() {
+            subscribeToGame(roomId, (roomData) => {
+                if (!roomData) return;
+                currentRoomData = roomData;
+                totalQuestions = roomData.questionQueue.length;
+
+                // Sync: If room is just starting, ensure we are at 0 (or recover if reloaded)
+                // We will use localCurrentIndex to drive the UI.
+
+                // If game detects "finished" globally for everyone, maybe force end? 
+                // No, let's keep it individual. 
+
+                renderQuestion(roomData);
             });
         }
 
         function renderQuestion(roomData) {
-            const index = roomData.currentQuestionIndex || 0;
+            const index = localCurrentIndex;
+
+            // Check if finished
+            if (index >= totalQuestions) {
+                window.location.href = `results.html?roomId=${roomId}`;
+                return;
+            }
+
             const qId = roomData.questionQueue[index];
             const question = QUESTIONS_DB.find(q => q.id === qId);
 
@@ -122,7 +138,7 @@
 
             // Update UI Labels
             document.getElementById('category-badge').textContent = question.category;
-            document.getElementById('progress-indicator').textContent = `${index + 1} / ${roomData.questionQueue.length}`;
+            document.getElementById('progress-indicator').textContent = `${index + 1} / ${totalQuestions}`;
             document.getElementById('scenario-text').textContent = question.scenario;
 
             // Determine Selected Answer
@@ -146,7 +162,6 @@
 
                 // Click Handler
                 btn.onclick = async () => {
-                    // Allow changing answer
                     // Optimistic UI update
                     const allBtns = container.querySelectorAll('.option-btn');
                     allBtns.forEach(b => b.classList.remove('selected'));
@@ -155,9 +170,15 @@
                     try {
                         await submitAnswer(roomId, currentUser.uid, qId, i);
                         document.getElementById('error-msg').textContent = '';
+
+                        // Auto-advance or Enable Next? 
+                        // Let's enable the Next button logic.
+                        // Actually, user clicked default next button before.
+                        // We need a "Next" button for EVERYONE now.
+                        document.getElementById('next-btn-container').classList.remove('hidden');
                     } catch (e) {
                         document.getElementById('error-msg').textContent = "Failed to save answer. Try again.";
-                        btn.classList.remove('selected'); // Revert on failure
+                        btn.classList.remove('selected');
                     }
                 };
 
@@ -165,22 +186,16 @@
             });
         }
 
-        // Host Next Button
-        document.getElementById('next-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('next-btn');
-            btn.disabled = true;
-            btn.textContent = "Loading...";
-            try {
-                await nextQuestion(roomId, currentRoomData.currentQuestionIndex, currentRoomData.questionQueue.length);
-            } catch (e) {
-                console.error(e);
-                alert("Failed to move to next question");
-            }
-            // Button re-enables when new question renders via listener
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = "Next Question";
-            }, 2000);
+        // Universal Next Button Logic
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.addEventListener('click', () => {
+            localCurrentIndex++;
+            // Force re-render with new index
+            renderQuestion(currentRoomData);
+            // Hide button until they answer next one (optional, but good UX)
+            // But existing code showed it always in host controls.
+            // We will keep it simple.
+            window.scrollTo(0, 0);
         });
     </script>
 </body>
