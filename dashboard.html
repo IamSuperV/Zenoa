@@ -98,6 +98,8 @@
                 currentUser = user;
                 // Fetch full profile for username
                 userProfile = await getUserProfile(user.uid);
+                console.log("Profile Loaded:", userProfile);
+
                 if (userProfile) {
                     document.getElementById('display-name').textContent = userProfile.username;
 
@@ -118,7 +120,14 @@
         // Create Room
         document.getElementById('create-room-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser || !userProfile) return;
+            if (!currentUser) {
+                alert("You are not logged in!");
+                return;
+            }
+            if (!userProfile) {
+                alert("Profile is still loading... please wait a second and try again.");
+                return;
+            }
 
             const btn = document.getElementById('create-btn');
             btn.textContent = "Creating...";
@@ -132,7 +141,7 @@
                 window.location.href = `room.html?roomId=${roomId}`;
             } catch (error) {
                 console.error(error);
-                alert("Failed to create room. See console.");
+                alert("Failed to create room: " + error.message);
                 btn.textContent = "Host Room";
                 btn.disabled = false;
             }
