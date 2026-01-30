@@ -110,6 +110,12 @@ export const calculateAndSaveResults = async (roomId, userId) => {
     const newTier = getTier(newTotalScore);
     const isPromoted = oldTier !== newTier;
 
+    // FIX: Define newBadges array
+    let newBadges = [];
+    if (isPromoted) {
+        newBadges.push(`Promoted to ${newTier}`);
+    }
+
     // TROPHIES
     // Award a trophy just for playing (Participation) or potentially for winning (if we knew rank here)
     // Since this runs per user, we'll award a "Match Completion" trophy every time
