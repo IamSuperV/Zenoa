@@ -167,10 +167,11 @@ export const calculateRoomLeaderboard = (roomData) => {
 
         if (pAnswers) {
             roomData.questionQueue.forEach(qId => {
+                // Ensure we handle both number and string keys
                 let aIdx = pAnswers[qId];
                 if (aIdx === undefined) aIdx = pAnswers[String(qId)];
 
-                if (aIdx !== undefined) {
+                if (aIdx !== undefined && aIdx !== null) {
                     const q = QUESTIONS_DB.find(qu => qu.id === qId);
                     if (q) {
                         const w = q.weights[aIdx] || {};
