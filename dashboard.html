@@ -23,43 +23,103 @@
             </nav>
         </header>
 
-        <main style="padding-top: 2rem; max-width: 800px; margin: 0 auto;">
+        <main style="padding-top: 1rem; max-width: 800px; margin: 0 auto; padding-bottom: 4rem;">
 
-            <!-- PLAYER PROFILE CARD -->
+            <!-- 1. PLAYER CARD (TOP) -->
             <div class="card"
-                style="margin-bottom: 3rem; display: flex; align-items: center; gap: 2rem; border: 1px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);">
+                style="margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem; border: 1px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.8));">
                 <div style="flex: 1;">
-                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                        <span class="tier-badge tier-gold" id="user-tier-badge">GOLD TIER</span>
-                        <span style="color: var(--text-secondary); font-size: 0.8rem;">LEVEL 12</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <!-- Hexagon Avatar Placeholder -->
+                            <div
+                                style="width: 60px; height: 60px; background: var(--surface-border); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                👤
+                            </div>
+                            <div>
+                                <h1 style="text-align: left; margin: 0; font-size: 2rem; line-height: 1.2;">
+                                    <span id="display-name" style="color: #fff;">Loading...</span>
+                                </h1>
+                                <span class="tier-badge tier-gold" id="user-tier-badge"
+                                    style="font-size: 0.7rem; padding: 2px 6px;">GOLD TIER</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">
+                                Rank</div>
+                            <div style="font-size: 1.5rem; font-weight: 700;">#42</div>
+                        </div>
                     </div>
-                    <h1 style="text-align: left; margin: 0; font-size: 2.5rem; text-shadow: none;">
-                        <span id="display-name" style="color: #fff;">Loading...</span>
-                    </h1>
 
                     <!-- XP BAR -->
-                    <div class="xp-container">
-                        <div class="xp-fill" style="width: 0%;"></div>
+                    <div style="margin-top: 1.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.3rem; color: var(--text-secondary);">
+                            <span id="xp-current-text">0 XP</span>
+                            <span id="xp-next-text">1000 XP</span>
+                        </div>
+                        <div class="xp-container" style="height: 6px;">
+                            <div class="xp-fill" style="width: 0%;"></div>
+                        </div>
                     </div>
-                    <div><!-- Filled by JS --></div>
                 </div>
             </div>
 
-            <div class="card"
-                style="margin-bottom: 2rem; border-color: var(--tier-champion); position: relative; overflow: visible;">
-                <div
-                    style="position: absolute; top: -10px; right: 20px; background: var(--tier-champion); color: #fff; padding: 2px 10px; font-size: 0.7rem; font-weight: bold; border-radius: 4px;">
-                    RANKED MODE</div>
-                <h2 style="color: var(--tier-champion);">Start Solo Assessment</h2>
-                <p>Analyze your intelligence type in a private calibrated session.</p>
-                <button id="solo-btn" class="btn btn-primary btn-block"
-                    style="background: linear-gradient(135deg, var(--tier-champion), #6a00ff);">BEGIN
-                    ASSESSMENT</button>
+            <!-- 2. ONE BIG BUTTON (START MATCH) -->
+            <div style="margin-bottom: 3rem;">
+                <button id="quick-play-btn" class="btn btn-primary"
+                    style="width: 100%; padding: 2.5rem; font-size: 2rem; letter-spacing: 3px; border-radius: 12px; background: linear-gradient(90deg, var(--accent-color), #2563eb); text-shadow: 0 0 10px rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3); transition: transform 0.2s;">
+                    START MATCH
+                </button>
+                <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    Instant Matchmaking • Ranked • Global
+                </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- 3. SECONDARY ACTIONS (Grid) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
 
-                <!-- HOST CARD -->
+                <!-- JOIN ROOM -->
+                <div class="card" style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s;"
+                    id="join-card-trigger">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🚪</div>
+                    <h3 style="margin-bottom: 0.5rem;">Join Room</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Enter code to join friends</p>
+                </div>
+
+                <!-- HOST ROOM -->
+                <div class="card" style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s;"
+                    id="host-card-trigger">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📡</div>
+                    <h3 style="margin-bottom: 0.5rem;">Create Room</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host a private lobby</p>
+                </div>
+
+                <!-- SOLO / TRAINING -->
+                <div class="card"
+                    style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s; grid-column: span 2;"
+                    id="solo-card-trigger">
+                    <h3 style="margin-bottom: 0.5rem; color: var(--tier-champion);">Training Mode</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Practice specific intelligence types
+                        against AI</p>
+                </div>
+            </div>
+
+            <!-- HIDDEN FORMS (Modals/Expandable) -->
+            <div id="join-section" class="hidden" style="margin-top: 2rem; animation: slideDown 0.3s ease-out;">
+                <div class="card">
+                    <h2>Join Match</h2>
+                    <form id="join-room-form">
+                        <div class="form-group">
+                            <input type="text" id="room-code" placeholder="CODE" required
+                                style="text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; font-size: 1.5rem; background: rgba(0,0,0,0.5);">
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-block" id="join-btn">CONNECT</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="host-section" class="hidden" style="margin-top: 2rem; animation: slideDown 0.3s ease-out;">
                 <div class="card">
                     <h2>Host Match</h2>
                     <form id="create-room-form">
@@ -90,25 +150,35 @@
                                 <option value="Adaptive Intelligence">Drill: Adaptive</option>
                             </select>
                         </div>
-
                         <button type="submit" class="btn btn-primary btn-block" id="create-btn">CREATE LOBBY</button>
                     </form>
                 </div>
-
-                <!-- JOIN CARD -->
-                <div class="card">
-                    <h2>Join Match</h2>
-                    <p style="font-size: 0.9rem;">Enter the 6-digit lobby code to join an active session.</p>
-                    <form id="join-room-form">
-                        <div class="form-group">
-                            <input type="text" id="room-code" placeholder="CODE" required
-                                style="text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; font-size: 1.5rem; background: rgba(0,0,0,0.5);">
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-block" id="join-btn">CONNECT</button>
-                    </form>
-                </div>
             </div>
+
         </main>
+
+        <script>
+            // Simple interactions for the new dashboard
+            document.getElementById('join-card-trigger').onclick = () => {
+                document.getElementById('join-section').classList.toggle('hidden');
+                document.getElementById('host-section').classList.add('hidden');
+            };
+            document.getElementById('host-card-trigger').onclick = () => {
+                document.getElementById('host-section').classList.toggle('hidden');
+                document.getElementById('join-section').classList.add('hidden');
+            };
+            document.getElementById('solo-card-trigger').onclick = () => {
+                document.getElementById('solo-btn').click(); // Reuse existing solo logic
+            };
+            // Quick Play = Create Solo for now, or Matchmaking? 
+            // Let's make Quick Play = Join Random or Create Solo. For now, let's map it to Solo (Training).
+            document.getElementById('quick-play-btn').onclick = () => {
+                document.getElementById('solo-btn').click();
+            };
+        </script>
+
+        <!-- Hidden legacy button for binding -->
+        <button id="solo-btn" class="hidden"></button>
     </div>
 
     <script type="module">

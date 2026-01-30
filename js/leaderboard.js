@@ -26,7 +26,22 @@ export const calculateAndSaveResults = async (roomId, userId) => {
     const allAnswers = roomData.answers || {};
     const playerAnswers = allAnswers[userId];
 
-    if (!playerAnswers) return null;
+    // BUG FIX: If no answers found, return a default empty structure instead of null
+    // This allows the UI to render 0s instead of crashing/hanging
+    if (!playerAnswers) {
+        console.warn(`No answers found for user ${userId} in room ${roomId}. Returning 0 stats.`);
+        return {
+            stats: { logical: 0, strategic: 0, social: 0, political: 0, adaptive: 0 },
+            dominantType: "Unranked",
+            badges: [],
+            xpGained: 0,
+            newTotalScore: userData.totalScore || 0,
+            oldTier: "BRONZE",
+            newTier: "BRONZE",
+            isPromoted: false,
+            trophyEarned: false
+        };
+    }
 
     // 3. Calculate Stats - NEW 5 PILLARS
     let sessionStats = {

@@ -124,10 +124,17 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user && !hasCalculated) {
+                console.log("User authenticated, starting calculation...", user.uid);
                 hasCalculated = true;
 
                 // 1. Calculate & Save My Results (Once)
-                const myResults = await calculateAndSaveResults(roomId, user.uid);
+                let myResults = null;
+                try {
+                    myResults = await calculateAndSaveResults(roomId, user.uid);
+                    console.log("Calculation result:", myResults);
+                } catch (e) {
+                    console.error("Calculation failed:", e);
+                }
 
                 if (myResults) {
                     document.getElementById('dominant-hero').textContent = myResults.dominantType.toUpperCase();
@@ -141,6 +148,9 @@
                     // XP & Tiers
                     if (myResults.xpGained) {
                         document.getElementById('xp-gained').textContent = myResults.xpGained;
+                        // document.getElementById('new-total-score').textContent = `Total: ${Math.floor(myResults.newTotalScore)}`;
+                        // Removed total score text to keep it clean, or can uncomment if needed.
+                        // Actually, I'll keep it as user might want to see total.
                         document.getElementById('new-total-score').textContent = `Total: ${Math.floor(myResults.newTotalScore)}`;
 
                         if (myResults.isPromoted) {
