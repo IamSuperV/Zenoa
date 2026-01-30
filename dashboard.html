@@ -104,84 +104,86 @@
                         against AI</p>
                 </div>
             </div>
-            <!-- JOIN SECTION (Hidden by default) -->
-            <div id="join-section" class="hidden"
-                style="margin-top: 2rem; animation: fadeIn 0.3s; background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                    <span style="font-size: 2rem;">🚪</span> Join Room
-                </h2>
-                <form id="join-room-form" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <input type="text" id="room-code" placeholder="ENTER ROOM CODE" required
-                        style="flex: 1; padding: 1rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; text-align: center; border: 2px solid var(--accent-color); background: rgba(0,0,0,0.3); color: #fff; border-radius: 8px;">
-                    <button type="submit" id="join-btn" class="btn btn-primary"
-                        style="padding: 1rem 2rem; font-size: 1.2rem;">JOIN GAME</button>
-                </form>
-            </div>
 
-            <!-- HOST SECTION (Hidden by default) -->
-            <div id="host-section" class="hidden"
-                style="margin-top: 2rem; animation: fadeIn 0.3s; background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                    <span style="font-size: 2rem;">📡</span> Create Room
-                </h2>
-                <form id="create-room-form">
-                    <!-- Context Selection -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Select
-                            Context</label>
-                        <div style="display: flex; gap: 1rem;">
-                            <label
-                                style="flex: 1; cursor: pointer; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="Social" checked> Social
-                            </label>
-                            <label
-                                style="flex: 1; cursor: pointer; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color);">
-                                <input type="radio" name="context" value="Professional"> Professional
-                            </label>
+            <!-- IDENTITY MODAL (New Request) -->
+            <div id="identity-modal" class="hidden"
+                style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+                <div class="card"
+                    style="width: 90%; max-width: 500px; animation: slideDown 0.3s ease-out; border: 1px solid var(--accent-color);">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <div style="font-size: 3rem;">🆔</div>
+                        <h2>Operative Identity</h2>
+                        <p style="color: var(--text-secondary);">Confirm your details for the official record.</p>
+                    </div>
+
+                    <form id="identity-form">
+                        <div class="form-group">
+                            <label>Codename (Your Name)</label>
+                            <input type="text" id="id-username" required
+                                style="background: rgba(255,255,255,0.05); font-weight: 700; text-align: center;">
                         </div>
-                    </div>
 
-                    <!-- Game Mode -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Game
-                            Mode</label>
-                        <select id="game-mode"
-                            style="width: 100%; padding: 1rem; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid var(--border-color); border-radius: 8px;">
-                            <option value="Mix">Mix (All Types)</option>
-                            <option value="Logical">Logical Drill</option>
-                            <option value="Social">Social Drill</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label>Affiliation Type</label>
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <label
+                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
+                                    <input type="radio" name="id-type" value="College" checked> College
+                                </label>
+                                <label
+                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
+                                    <input type="radio" name="id-type" value="School"> School
+                                </label>
+                            </div>
+                        </div>
 
-                    <button type="submit" id="create-btn" class="btn btn-primary"
-                        style="width: 100%; padding: 1rem; font-size: 1.1rem;">HOST ROOM</button>
-                </form>
+                        <div class="form-group">
+                            <label>Institution Name</label>
+                            <input type="text" id="id-institution" placeholder="e.g. Harvard, MIT, DPS" required
+                                style="background: rgba(255,255,255,0.05); font-weight: 700; text-align: center;">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block"
+                            style="padding: 1rem; font-size: 1.1rem;">CONFIRM & PROCEED</button>
+                    </form>
+                </div>
             </div>
+
         </main>
 
         <script>
             // Simple interactions for the new dashboard
-            // Direct actions restored
+            // We intercept clicks to show Identity Modal first instead of direct action
+            let pendingAction = null; // 'join', 'host', 'solo'
+
+            const showIdentityModal = (action) => {
+                pendingAction = action;
+                document.getElementById('identity-modal').style.display = 'flex'; // Override hidden class manually or toggle
+                document.getElementById('identity-modal').classList.remove('hidden');
+
+                // Pre-fill if profile loaded
+                // (Handled in JS module below)
+            };
 
             document.getElementById('join-card-trigger').onclick = () => {
-                document.getElementById('join-section').classList.remove('hidden');
-                document.getElementById('host-section').classList.add('hidden');
-                document.getElementById('join-section').scrollIntoView({ behavior: 'smooth' });
+                // Determine if we need to ask for identity? 
+                // Request says "take college name ... in starting of every match"
+                showIdentityModal('join');
             };
 
             document.getElementById('host-card-trigger').onclick = () => {
-                document.getElementById('host-section').classList.remove('hidden');
-                document.getElementById('join-section').classList.add('hidden');
-                document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
+                showIdentityModal('host');
             };
 
             document.getElementById('solo-card-trigger').onclick = () => {
-                document.getElementById('solo-btn').click();
+                showIdentityModal('solo');
             };
 
             document.getElementById('quick-play-btn').onclick = () => {
-                document.getElementById('solo-btn').click();
+                showIdentityModal('solo');
             };
+
+            // Close modal if needed? No, forced flow.
         </script>
 
         <!-- Hidden legacy button for binding -->
@@ -221,6 +223,11 @@
                         userProfile = docSnap.data();
                         updateUI(userProfile);
 
+                        // Prefill Identity Modal
+                        document.getElementById('id-username').value = userProfile.username || '';
+                        document.getElementById('id-institution').value = userProfile.college || userProfile.school || ''; // college field stores institution
+                        // Radio select
+                        // Default to College if not set
                     } else {
                         // Create profile if missing
                         if (user.isAnonymous) {
@@ -276,6 +283,61 @@
                 nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
             }
         }
+
+        // --- IDENTITY FORM HANDLER ---
+        document.getElementById('identity-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "Updating Identity...";
+            btn.disabled = true;
+
+            const newName = document.getElementById('id-username').value.trim();
+            const newInst = document.getElementById('id-institution').value.trim();
+            const type = document.querySelector('input[name="id-type"]:checked').value; // College or School
+
+            try {
+                // Update Firestore
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    username: newName,
+                    college: newInst,
+                    affiliationType: type
+                });
+
+                // IMPORTANT: Manually update local state immediately to avoid race condition with onSnapshot
+                if (userProfile) {
+                    userProfile.username = newName;
+                    userProfile.college = newInst;
+                }
+
+                // Hide Modal
+                document.getElementById('identity-modal').classList.add('hidden');
+                document.getElementById('identity-modal').style.display = 'none';
+
+                // Proceed with Pending Action
+                if (pendingAction === 'join') {
+                    document.getElementById('join-section').classList.remove('hidden');
+                    document.getElementById('host-section').classList.add('hidden');
+                    document.getElementById('join-section').scrollIntoView({ behavior: 'smooth' });
+                } else if (pendingAction === 'host') {
+                    document.getElementById('host-section').classList.remove('hidden');
+                    document.getElementById('join-section').classList.add('hidden');
+                    document.getElementById('host-section').scrollIntoView({ behavior: 'smooth' });
+                } else if (pendingAction === 'solo') {
+                    // Trigger solo logic DIRECTLY
+                    // We call the logic manually here instead of clicking button to ensure variables are passed
+                    startSoloGame();
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Update failed: " + err.message);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
 
         // Logout
         document.getElementById('logout-btn').addEventListener('click', logoutUser);

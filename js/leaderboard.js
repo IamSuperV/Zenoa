@@ -222,51 +222,58 @@ export const getRoomLeaderboard = async (roomId) => {
 // NEW: Global Leaderboard Fetcher
 // NEW: Global Leaderboard Fetcher
 // NEW: Real-time Global Leaderboard Listener
-// REFACTORED: Calculates limits/sorts client-side to ensure it works without complex indexes for small user bases
 export const subscribeToGlobalLeaderboard = (type = 'Global', filterValue = null, categoryField = 'totalScore', callback) => {
     const usersRef = collection(db, "users");
+    let q;
 
-    // Simplest Query: Fetch last 100 users (or all non-guests if possible, but limit protects us)
-    // We remove 'orderBy' from query to avoid index requirements blocking the view
-    const q = query(usersRef, where("isGuest", "==", false), limit(100));
+    // Mapping categoryField to Firestore field
+    let dbField = categoryField;
+    if (categoryField !== 'totalScore') {
+        dbField = `intelligence.${categoryField.toLowerCase()}`;
+    }
 
-    // Return unsubscribe function
-    return onSnapshot(q, (querySnapshot) => {
-        let users = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            let displayScore = 0;
-            if (categoryField === 'totalScore') {
-                displayScore = data.totalScore || 0;
-            } else {
-                displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
-            }
-
-            users.push({
-                uid: data.uid,
-                username: data.username,
-                college: data.college,
-                city: data.city,
-                displayScore: displayScore,
-                dominantType: data.dominantType
-            });
-        });
-
-        // CLIENT-SIDE FILTER
-        if (type === 'College' && filterValue) {
-            users = users.filter(u => u.college && u.college.toLowerCase().includes(filterValue.toLowerCase()));
-        } else if (type === 'City' && filterValue) {
-            users = users.filter(u => u.city && u.city.toLowerCase().includes(filterValue.toLowerCase()));
+    try {
+        if (type === 'Global') {
+            q = query(usersRef, where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
+        } else if (type === 'College') {
+            q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
+        } else if (type === 'City') {
+            q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
         }
 
-        // CLIENT-SIDE SORT
-        users.sort((a, b) => b.displayScore - a.displayScore);
+        // Return unsubscribe function
+        return onSnapshot(q, (querySnapshot) => {
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
 
-        // Slice to Top 50
-        callback(users.slice(0, 50));
+                let displayScore = 0;
+                if (categoryField === 'totalScore') {
+                    displayScore = data.totalScore || 0;
+                } else {
+                    displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
+                }
 
-    }, (error) => {
-        console.error("Leaderboard Sync Error:", error);
+                users.push({
+                    uid: data.uid,
+                    username: data.username,
+                    college: data.college,
+                    city: data.city,
+                    displayScore: displayScore,
+                    dominantType: data.dominantType
+                });
+            });
+            callback(users);
+        }, (error) => {
+            console.error("Leaderboard Sync Error:", error);
+            // Fallback to empty array or handle error
+            callback([]);
+        });
+
+    } catch (e) {
+        console.error("Firestore Query Setup Error:", e);
+        // Fallback for missing index not easily done with snapshots without complex client-side logic
         callback([]);
-    });
+        return () => { }; // Return dummy unsubscribe
+    }
 };
