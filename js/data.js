@@ -749,7 +749,7 @@ export const QUESTIONS_DB = [
             "Wait for help."
         ],
         weights: { "0": { adaptive: 0 }, "1": { adaptive: 2 }, "2": { adaptive: 3 }, "3": { adaptive: 0 } }
-    }
+    },
     // ==========================================
     // EXPANSION PACK 1: ADVANCED PSYCHOLOGY
     // ==========================================
