@@ -320,9 +320,18 @@ select:focus {
 }
 
 /* --- RESPONSIVE --- */
+/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
     h1 {
         font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .container {
+        padding: 1rem;
     }
 
     .grid-2 {
@@ -330,8 +339,107 @@ select:focus {
         gap: 1rem;
     }
 
-    .container {
+    .card-glass {
+        padding: 1.5rem;
+    }
+
+    /* Wrap headers on narrower tablets/phones */
+    header.flex-between {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    header nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Play Area Adjustments */
+    .scenario-text {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem !important;
+        /* Override inline style */
+        min-height: auto !important;
+    }
+
+    .option-btn {
         padding: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    /* Button resizing */
+    .btn {
+        padding: 0.8rem 1.5rem;
+        width: 100%;
+        /* Full width buttons on mobile usually feel better */
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .container {
+        padding: 0.8rem;
+    }
+
+    .card-glass {
+        padding: 1rem;
+    }
+
+    /* Tighter Play UI for small screens */
+    .scenario-text {
+        font-size: 1.2rem;
+    }
+
+    .option-btn {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    /* Adjust Leaderboard/Profile flex rows */
+    .rank-card {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .rank-card .rank-display {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+        width: 40px;
+    }
+
+    .rank-card .hex-avatar {
+        width: 40px;
+        height: 40px;
+        margin-right: 0.5rem;
+    }
+
+    .player-info {
+        width: 100%;
+        /* Force break */
+        order: 3;
+        margin-top: 0.5rem;
+    }
+
+    .score-display {
+        margin-left: auto;
+        /* Push to right */
+    }
+
+    /* Tier Icons */
+    .tier-icon-lg {
+        width: 60px;
+        height: 60px;
     }
 }
 

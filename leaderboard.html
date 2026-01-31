@@ -294,6 +294,56 @@
         .hidden {
             display: none;
         }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .page-title h1 {
+                font-size: 2.5rem;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1 1 100px;
+                /* Allow shrinking/growing */
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .rank-card {
+                flex-wrap: wrap;
+                justify-content: center;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .rank-card .hex-avatar {
+                margin: 0 auto 0.5rem auto;
+            }
+
+            .rank-display {
+                width: 100%;
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+            }
+
+            .player-info {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .score-display {
+                width: 100%;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
