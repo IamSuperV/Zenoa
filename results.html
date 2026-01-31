@@ -190,10 +190,47 @@
 
                 // 2. Real-time Leaderboard Listener
                 const roomRef = doc(db, "rooms", roomId);
+
+                // Bot Cache (to keep them consistent across snapshots)
+                let cachedBots = null;
+
                 onSnapshot(roomRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const roomData = docSnap.data();
-                        const leaderboard = calculateRoomLeaderboard(roomData);
+                        let leaderboard = calculateRoomLeaderboard(roomData);
+
+                        // SIMULATED MULTIPLAYER LOGIC
+                        if (leaderboard.length === 1) {
+                            if (!cachedBots) {
+                                cachedBots = [];
+                                const userScore = leaderboard[0].score;
+                                const botNames = ["NeoDrifter", "CyberViper", "NullPointer", "GlitchWalk", "DataWraith", "IonFlux"];
+                                const types = ["Strategic", "Logical", "Ruthless", "Adaptive", "Social"];
+
+                                // Create 3 random bots
+                                for (let i = 0; i < 3; i++) {
+                                    // Score variance: +/- 20% of user score
+                                    const variance = (Math.random() * 0.4) - 0.2;
+                                    const botScore = Math.max(0, Math.floor(userScore * (1 + variance)));
+                                    const name = botNames[Math.floor(Math.random() * botNames.length)];
+                                    // Remove name from pool
+                                    botNames.splice(botNames.indexOf(name), 1);
+
+                                    cachedBots.push({
+                                        uid: `bot_${i}`,
+                                        username: name,
+                                        dominantType: types[Math.floor(Math.random() * types.length)],
+                                        score: botScore,
+                                        isBot: true
+                                    });
+                                }
+                            }
+
+                            // Merge and Sort
+                            leaderboard = [...leaderboard, ...cachedBots];
+                            leaderboard.sort((a, b) => b.score - a.score);
+                        }
+
                         renderLeaderboard(leaderboard, user.uid);
                     }
                 });

@@ -45,7 +45,7 @@
     </style>
 </head>
 
-<body style="overflow: hidden;">
+<body style="overflow-y: auto;">
     <div class="overlay"></div>
 
     <!-- Cinematic Container -->
@@ -195,7 +195,9 @@
 
                     try {
                         await submitAnswer(roomId, currentUser.uid, qId, i);
-                        document.getElementById('next-btn-container').style.opacity = '1';
+                        const nextBtnContainer = document.getElementById('next-btn-container');
+                        nextBtnContainer.style.opacity = '1';
+                        nextBtnContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     } catch (e) {
                         document.getElementById('error-msg').textContent = "TRANSMISSION FAILED. RETRY.";
                     }

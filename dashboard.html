@@ -151,6 +151,9 @@
                                 <option value="Mix">Ranked Mix (All Types)</option>
                                 <option value="Logical Intelligence">Drill: Logical</option>
                                 <option value="Strategic Intelligence">Drill: Strategic</option>
+                                <option value="Social Intelligence">Drill: Social</option>
+                                <option value="Political Intelligence">Drill: Political</option>
+                                <option value="Adaptive Intelligence">Drill: Adaptive</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary" style="width: 100%;"
@@ -271,15 +274,34 @@
         document.getElementById('solo-btn').addEventListener('click', async () => {
             if (!currentUser || !userProfile) return;
             const btn = document.getElementById('quick-play-btn');
-            btn.textContent = "SEARCHING...";
+            const originalText = btn.textContent;
+
+            // Simulation Sequence
+            const steps = [
+                "ESTABLISHING LINK...",
+                "SCANNING NETWORK...",
+                "DETECTING OPERATIVES...",
+                "MATCH FOUND (4/4)",
+                "INITIALIZING..."
+            ];
+
+            btn.disabled = true;
+
+            for (const step of steps) {
+                btn.textContent = step;
+                await new Promise(r => setTimeout(r, 800)); // Delay between steps
+            }
 
             try {
-                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Solo', 'Mix');
+                // Create 'Ranked' context implies simulated multiplayer in results
+                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Ranked (Sim)', 'Mix');
                 await startGame(roomId);
                 window.location.href = `play.html?roomId=${roomId}`;
             } catch (e) {
                 console.error(e);
-                btn.textContent = "START RANKED MATCH";
+                alert("Connection failed. Retrying...");
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         });
 

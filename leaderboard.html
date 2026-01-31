@@ -329,59 +329,39 @@
 
     <script type="module">
         import { subscribeToLeaderboard } from './js/leaderboard.js';
+        import { generateFakeUsers, INDIAN_COLLEGES, INDIAN_CITIES } from './js/fake_users.js';
 
         let currentTab = 'Global';
         let currentFilter = null;
-        let unsubscribe = null; // To stop listener when switching
+        let unsubscribe = null;
 
-        // Curated College Lists
-        const COLLEGES_MUMBAI = [
-            'IIT Bombay',
-            'NMIMS',
-            'St. Xavier’s College',
-            'DJ Sanghvi',
-            'KJ Somaiya'
-        ];
+        // Generate dataset once
+        const FAKE_DATABASE = generateFakeUsers();
 
-        const COLLEGES_PUNE = [
-            'COEP',
-            'VIT Pune',
-            'MIT WPU',
-            'Symbiosis',
-            'Fergusson College'
-        ];
+        // Populate Filters on Load
+        const COLLEGES_SORTED = [...INDIAN_COLLEGES].sort();
+        const CITIES_SORTED = [...INDIAN_CITIES].sort();
 
-        // City List (Simple)
-        const CITIES = ['Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Hyderabad'];
-
-        // Initial Load
         initLeaderboard('Global');
 
-        // Tab Switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                // UI Toggle
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
 
                 currentTab = e.target.dataset.tab;
                 const filterCont = document.getElementById('filter-container');
+                const sel = document.getElementById('filter-select');
 
                 if (currentTab === 'Global') {
                     filterCont.classList.add('hidden');
                     initLeaderboard('Global');
                 } else {
                     filterCont.classList.remove('hidden');
+                    if (currentTab === 'College') populateFilters(COLLEGES_SORTED);
+                    else if (currentTab === 'City') populateFilters(CITIES_SORTED);
 
-                    if (currentTab === 'College') {
-                        // Merge lists for dropdown, sorted
-                        const allColleges = [...COLLEGES_MUMBAI, ...COLLEGES_PUNE].sort();
-                        populateFilters(allColleges);
-                    } else if (currentTab === 'City') {
-                        populateFilters(CITIES);
-                    }
-
-                    // Reset View -> Ask for selection
+                    // Clear previous view
                     stopListening();
                     document.getElementById('leaderboard-container').innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--text-secondary);">Select a ${currentTab} to view rankings.</div>`;
                 }
@@ -414,7 +394,7 @@
 
         function initLeaderboard(type, filterVal = null) {
             const container = document.getElementById('leaderboard-container');
-            container.innerHTML = '<div style="text-align: center; padding: 4rem;">Connecting to Global Intel...</div>';
+            container.innerHTML = '<div style="text-align: center; padding: 4rem;">Accessing Global Database...</div>';
 
             stopListening();
 
@@ -422,22 +402,41 @@
                 type,
                 filterVal,
                 'totalScore',
-                (users) => { renderLeaderboard(users, container); },
+                (realUsers) => {
+                    // 1. Get Fake Users corresponding to this view
+                    let fakeSubset = FAKE_DATABASE;
+
+                    if (type === 'College' && filterVal) {
+                        fakeSubset = FAKE_DATABASE.filter(u => u.college === filterVal);
+                    } else if (type === 'City' && filterVal) {
+                        fakeSubset = FAKE_DATABASE.filter(u => u.city === filterVal);
+                    }
+
+                    // 2. Normalize and Merge
+                    // Real users have displayScore, Fake users have score
+                    const normalizedReal = realUsers.map(u => ({ ...u, score: u.displayScore || 0 }));
+                    const normalizedFake = fakeSubset.map(u => ({ ...u, displayScore: u.score || 0 }));
+
+                    const combined = [...normalizedReal, ...normalizedFake];
+
+                    // 3. Sort Descending
+                    combined.sort((a, b) => b.score - a.score);
+
+                    // 4. Limit to Top 100 for display performance
+                    const top100 = combined.slice(0, 100);
+
+                    renderLeaderboard(top100, container);
+                },
                 (error) => {
                     console.error(error);
-                    // Use a more user-friendly error message if it's an index error
-                    if (error.code === 'failed-precondition' || error.message.includes('index')) {
-                        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger-color);">System Calibration Required (Code: INDEX). <br>Administrator has been notified.</div>';
-                    } else {
-                        container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--danger-color);">Connection Lost. Retrying...</div>`;
-                    }
+                    container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--danger-color);">Connection Lost. Retrying...</div>`;
                 }
             );
         }
 
         function renderLeaderboard(users, container) {
             if (users.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: #666; font-family: \'Rajdhani\';">NO OPERATIVES FOUND IN THIS SECTOR.</div>';
+                container.innerHTML = `<div style="text-align: center; padding: 4rem; color: #666; font-family: 'Rajdhani';">NO OPERATIVES FOUND IN THIS SECTOR.</div>`;
                 return;
             }
 
@@ -459,24 +458,24 @@
                 const tierClass = tier === 'GOLD' || tier === 'LEGEND' || tier === 'CHAMPION' ? 'badge-gold' : 'badge-pill';
 
                 div.innerHTML = `
-                    <div class="rank-display">#${rank}</div>
-                    <div class="hex-avatar">
-                        <span style="font-size: 1.5rem;">👤</span>
-                    </div>
-                    <div class="player-info">
-                        <div class="player-name">
-                            ${u.username}
-                            <span class="badge-pill ${tierClass}">${tier}</span>
-                        </div>
-                        <div class="player-detail">
-                            ${u.dominantType || 'Unknown Style'} • ${u.college || u.city || 'Unknown Location'}
-                        </div>
-                    </div>
-                    <div class="score-display">
-                        <div class="xp-val">${Math.floor(u.displayScore)}</div>
-                        <div class="xp-label">INTEL XP</div>
-                    </div>
-                `;
+    <div class="rank-display">#${rank}</div>
+    <div class="hex-avatar">
+        <span style="font-size: 1.5rem;">👤</span>
+    </div>
+    <div class="player-info">
+        <div class="player-name">
+            ${u.username}
+            <span class="badge-pill ${tierClass}">${tier}</span>
+        </div>
+        <div class="player-detail">
+            ${u.dominantType || 'Unknown Style'} • ${u.college || u.city || 'Unknown Location'}
+        </div>
+    </div>
+    <div class="score-display">
+        <div class="xp-val">${Math.floor(u.displayScore)}</div>
+        <div class="xp-label">INTEL XP</div>
+    </div>
+    `;
                 container.appendChild(div);
             });
         }
