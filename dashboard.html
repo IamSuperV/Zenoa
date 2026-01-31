@@ -15,15 +15,39 @@
     <div class="overlay"></div>
     <div class="container">
 
-        <!-- HEADER -->
+        <!-- HEADER (BGMI STYLE) -->
         <header class="flex-between"
-            style="padding: 1.5rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border);">
-            <div class="flex-center" style="gap: 1rem;">
-                <div
-                    style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); letter-spacing: 2px;">
-                    ZENOA</div>
-                <div class="badge badge-tier-gold" style="font-size: 0.6rem;">LIVE</div>
+            style="padding: 1rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border);">
+
+            <!-- BGMI Profile Widget (Top Left) -->
+            <div class="bgmi-profile">
+                <div class="bgmi-avatar">👤</div>
+                <div class="bgmi-info">
+                    <div class="bgmi-name-row">
+                        <span id="display-name" class="bgmi-name">LOADING...</span>
+                        <span id="user-tier-badge" class="badge badge-tier-bronze"
+                            style="padding: 1px 6px; font-size: 0.6rem;">--</span>
+                    </div>
+                    <div class="bgmi-stats-row">
+                        <span style="color: var(--gold-primary); font-weight: bold;">RANK #--</span>
+                        <span style="width: 1px; height: 10px; background: rgba(255,255,255,0.2);"></span>
+                        <div
+                            style="width: 80px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                            <div class="xp-fill" style="width: 0%; height: 100%;"></div>
+                        </div>
+                        <span id="xp-current-text" style="font-size: 0.6rem; display: none;">0 XP</span>
+                        <!-- Hidden Text Hooks for JS compatibility -->
+                        <span id="xp-next-text" class="hidden"></span>
+                    </div>
+                </div>
             </div>
+
+            <!-- Centered Logo (Optional) -->
+            <div
+                style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); letter-spacing: 2px; position: absolute; left: 50%; transform: translateX(-50%); text-shadow: 0 0 15px rgba(255,215,0,0.3);">
+                ZENOA
+            </div>
+
             <nav class="flex-center" style="gap: 1rem;">
                 <a href="leaderboard.html" class="btn btn-secondary"
                     style="padding: 0.5rem 1rem; font-size: 0.8rem;">RANKINGS</a>
@@ -33,127 +57,79 @@
             </nav>
         </header>
 
-        <main style="max-width: 900px; margin: 0 auto;">
+        <main style="max-width: 900px; margin: 0 auto; margin-top: 5rem;">
 
-            <!-- 1. HERO PLAYER CARD -->
-            <div class="card-glass" style="margin-bottom: 3rem; border: 1px solid var(--gold-glow);">
-                <div class="flex-between" style="align-items: flex-start;">
-                    <div class="flex-center" style="gap: 1.5rem;">
-                        <!-- Hex Avatar -->
-                        <div
-                            style="width: 80px; height: 80px; background: #111; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 1px solid var(--gold-primary); box-shadow: 0 0 15px var(--gold-glow);">
-                            👤
-                        </div>
-                        <div>
-                            <h2 id="display-name"
-                                style="margin: 0; font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
-                                LOADING...</h2>
-                            <div style="margin-top: 0.5rem;">
-                                <span id="user-tier-badge" class="badge badge-tier-bronze">CALIBRATING...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div
-                            style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
-                            Global Rank</div>
-                        <div style="font-family: var(--font-display); font-size: 2.5rem; color: var(--gold-primary);">
-                            #--</div>
-                    </div>
-                </div>
+            <!-- UNIFIED COMMAND CONSOLE -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 3rem;">
 
-                <!-- XP Bar -->
-                <div style="margin-top: 2rem;">
-                    <div class="flex-between"
-                        style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                        <span id="xp-current-text">0 XP</span>
-                        <span id="xp-next-text">NEXT RANK</span>
-                    </div>
-                    <div class="xp-track">
-                        <div class="xp-fill" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. MAIN ACTION -->
-            <div style="margin-bottom: 3rem; text-align: center;">
+                <!-- 1. Ranked (Dominant) -->
                 <button id="quick-play-btn" class="btn btn-primary"
-                    style="width: 100%; padding: 2rem; font-size: 1.5rem; letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                    style="grid-column: span 2; width: 100%; padding: 2rem; font-size: 1.5rem; letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); margin-bottom: 0;">
                     START RANKED MATCH
+                    <span
+                        style="display: block; font-size: 0.8rem; opacity: 0.7; margin-top: 5px; font-weight: 400; letter-spacing: 2px;">INSTANT
+                        MATCHMAKING</span>
                 </button>
-                <div
-                    style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
-                    <span style="color: var(--neon-blue);">●</span> Instant Matchmaking <span
-                        style="color: var(--gold-primary); margin-left: 10px;">●</span> Skill-Based
-                </div>
-            </div>
 
-            <!-- 3. SECONDARY ACTIONS GRID -->
-            <div class="grid-2">
-                <!-- Join -->
-                <div class="card-glass" id="join-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_join.png"
-                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); animation: float 6s ease-in-out infinite;">
-                    <h3 style="font-size: 1.2rem;">Join Lobby</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Sync with squad uplink.</p>
-                </div>
+                <!-- 2. Secondary Actions (Lobby) -->
+                <button class="btn btn-volcano-glass" id="join-card-trigger"
+                    style="height: 120px; flex-direction: column; text-align: center; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.3rem;">JOIN LOBBY</h3>
+                    <p style="font-size: 0.75rem; opacity: 0.8; letter-spacing: 1px;">SYNC UPLINK</p>
+                </button>
 
-                <!-- Host -->
-                <div class="card-glass" id="host-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_create.png"
-                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); animation: float 6s ease-in-out infinite 1s;">
-                    <h3 style="font-size: 1.2rem;">Create Lobby</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host custom scenarios.</p>
-                </div>
+                <button class="btn btn-volcano-glass" id="host-card-trigger"
+                    style="height: 120px; flex-direction: column; text-align: center; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 0.3rem;">CREATE LOBBY</h3>
+                    <p style="font-size: 0.75rem; opacity: 0.8; letter-spacing: 1px;">HOST SCENARIO</p>
+                </button>
 
-                <!-- Training -->
-                <div class="card-glass" id="solo-card-trigger"
-                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05); transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_train.png"
-                        style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));">
-                    <h3 style="font-size: 1.2rem; color: var(--text-secondary);">Training Simulation</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Practice against AI constructs</p>
-                </div>
+                <!-- 3. Tertiary (Training) -->
+                <button class="btn btn-console-tertiary" id="solo-card-trigger"
+                    style="height: 60px; grid-column: span 2; width: 100%; letter-spacing: 2px; font-size: 0.9rem; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">
+                    TRAINING SIMULATION
+                </button>
             </div>
 
             <!-- HIDDEN SECTIONS (Interactive) -->
             <div id="join-section" class="hidden" style="margin-top: 2rem; opacity: 0; animation: float 0.5s forwards;">
-                <div class="card-glass" style="background: #000;">
-                    <h3 style="margin-bottom: 1rem;">ACCESS CODE</h3>
+                <div class="card-magma">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">ACCESS CODE</h3>
                     <form id="join-room-form">
-                        <input type="text" id="room-code" placeholder="ENTER CODE" required
-                            style="font-size: 1.5rem; text-align: center; letter-spacing: 5px; margin-bottom: 1rem; text-transform: uppercase; background: #111;">
-                        <button type="submit" class="btn btn-secondary" style="width: 100%;"
-                            id="join-btn">CONNECT</button>
+                        <input type="text" id="room-code" placeholder="ENTER CODE" required class="input-magma"
+                            style="font-size: 2rem; text-align: center; letter-spacing: 8px; margin-bottom: 2rem; text-transform: uppercase; height: 80px; font-weight: 700;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; background: #ff4500; border: none; box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);"
+                            id="join-btn">CONNECT TO LOBBY</button>
                     </form>
                 </div>
             </div>
 
-            <div id="host-section" class="hidden" style="margin-top: 2rem;">
-                <div class="card-glass" style="background: #000;">
-                    <h3 style="margin-bottom: 1rem;">LOBBY CONFIGURATION</h3>
+            <div id="host-section" class="hidden" style="margin-top: 2rem; animation: float 0.5s forwards;">
+                <div class="card-magma">
+                    <h3 style="margin-bottom: 1.5rem;">LOBBY CONFIGURATION</h3>
                     <form id="create-room-form">
-                        <div style="margin-bottom: 1rem;">
+                        <div style="margin-bottom: 1.5rem;">
                             <label
-                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">CONTEXT</label>
-                            <div class="grid-2" style="gap: 10px;">
+                                style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: #ffccbc; letter-spacing: 1px;">CONTEXT</label>
+                            <div class="grid-2" style="gap: 15px;">
                                 <label
-                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
-                                    <input type="radio" name="context" value="College" checked> College
+                                    style="background: rgba(0,0,0,0.4); padding: 15px; text-align: center; cursor: pointer; border: 1px solid rgba(255,69,0,0.2); transition: all 0.2s;">
+                                    <input type="radio" name="context" value="College" checked> <span
+                                        style="margin-left: 5px; color: #fff;">College</span>
                                 </label>
                                 <label
-                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
-                                    <input type="radio" name="context" value="School"> School
+                                    style="background: rgba(0,0,0,0.4); padding: 15px; text-align: center; cursor: pointer; border: 1px solid rgba(255,69,0,0.2); transition: all 0.2s;">
+                                    <input type="radio" name="context" value="School"> <span
+                                        style="margin-left: 5px; color: #fff;">School</span>
                                 </label>
                             </div>
                         </div>
 
-                        <div style="margin-bottom: 1.5rem;">
+                        <div style="margin-bottom: 2rem;">
                             <label
-                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">PROTOCOL</label>
-                            <select id="game-mode">
+                                style="display: block; margin-bottom: 0.8rem; font-size: 0.8rem; color: #ffccbc; letter-spacing: 1px;">PROTOCOL</label>
+                            <select id="game-mode" class="input-magma">
                                 <option value="Mix">Ranked Mix (All Types)</option>
                                 <option value="Logical Intelligence">Drill: Logical</option>
                                 <option value="Strategic Intelligence">Drill: Strategic</option>
@@ -162,7 +138,8 @@
                                 <option value="Adaptive Intelligence">Drill: Adaptive</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;"
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; background: #ff4500; border: none; box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);"
                             id="create-btn">INITIALIZE</button>
                     </form>
                 </div>
