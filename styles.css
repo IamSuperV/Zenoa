@@ -461,6 +461,100 @@ select:focus {
     }
 }
 
-.hidden {
-    display: none !important;
+/* --- CYBER CARDS (REF IMAGE MATCH) --- */
+.cyber-card {
+    position: relative;
+    background: rgba(10, 10, 15, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+}
+
+.cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+.cyber-card-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* CYAN (Join) */
+.cyber-card-cyan {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1), inset 0 0 20px rgba(0, 243, 255, 0.05);
+}
+
+.cyber-card-cyan:hover {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    background: rgba(0, 243, 255, 0.05);
+    transform: translateY(-5px);
+}
+
+.cyber-card-cyan h3 {
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* PINK (Create) */
+.cyber-card-pink {
+    border-color: #ff00ff;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.1), inset 0 0 20px rgba(255, 0, 255, 0.05);
+}
+
+.cyber-card-pink:hover {
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.3), inset 0 0 30px rgba(255, 0, 255, 0.1);
+    background: rgba(255, 0, 255, 0.05);
+    transform: translateY(-5px);
+}
+
+.cyber-card-pink h3 {
+    color: #fff;
+    text-shadow: 0 0 10px #ff00ff;
+}
+
+/* CORNER ACCENTS */
+.corner-accent {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.cyber-card-cyan .corner-accent {
+    border-color: var(--neon-blue);
+}
+
+.cyber-card-pink .corner-accent {
+    border-color: #ff00ff;
+}
+
+.c-tl {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.c-br {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
 }
