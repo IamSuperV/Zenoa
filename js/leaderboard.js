@@ -221,33 +221,25 @@ export const subscribeToLeaderboard = (type, filterValue, categoryField, onUpdat
     }
 
     try {
-        // Strategy: Use a simple query and sort client-side if needed to avoid index issues with many colleges
-        // For Global, we can try robust server-side sorting.
-        // For Specific Filters, fetching a slightly larger set and filtering might be safer if indexes are missing,
-        // but for scalability, let's try the direct query first. If it fails, the onError callback handles it.
+        // STRATEGY CHANGE: To avoid "System Calibration" (Missing Index) errors, 
+        // we will fetch the top 100 users sorted by score and filter client-side.
+        // This works with default Firestore indexes and avoids manual setup.
 
-        if (type === 'Global') {
-            // Global: Show top 50, strictly sorted
-            q = query(usersRef, where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
-        } else {
-            // Filtered: Might strictly require an index. 
-            // IMPROVEMENT: To avoid index hell for every college, we will ONLY filter by 'isGuest' 
-            // and perform client-side filtering logic inside the snapshot if the dataset isn't huge.
-            // But wait, if we have 1000 users, downloading all is bad.
-            // Let's stick to the specific query. If it fails, the User (Dev) sees it in Console.
-            // Actually, let's use a "Safer" approach for filters:
-            // Query strictly by the Filter field, order by totalScore.
-            if (type === 'College') {
-                q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
-            } else if (type === 'City') {
-                q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
-            }
-        }
+        // 1. Base Query: Sort by the target score field
+        // We do NOT filter by 'isGuest' or 'college' in the query itself to avoid composite index requirements.
+        q = query(usersRef, orderBy(dbField, "desc"), limit(100));
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const users = [];
+            let users = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
+
+                // Client-Side Filter: Remove Guests
+                if (data.isGuest === true) return;
+
+                // Client-Side Filter: College / City
+                if (type === 'College' && filterValue && data.college !== filterValue) return;
+                if (type === 'City' && filterValue && data.city !== filterValue) return;
 
                 // Get display score
                 let displayScore = 0;
@@ -267,6 +259,13 @@ export const subscribeToLeaderboard = (type, filterValue, categoryField, onUpdat
                     tier: getTierFromScore(data.totalScore || 0)
                 });
             });
+
+            // Re-sort client side just in case (though query was sorted, filtering preserves order)
+            // But if we filtered differently (not needed here as we ordered by score), it's fine.
+
+            // Limit to 50 specifically for display
+            users = users.slice(0, 50);
+
             onUpdate(users);
         }, (error) => {
             console.error("Leaderboard Stream Error:", error);
