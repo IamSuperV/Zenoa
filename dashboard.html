@@ -47,68 +47,84 @@
             </nav>
         </header>
 
-        <main style="max-width: 900px; margin: 0 auto;">
+        <main style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem;">
 
-            <!-- 1. HERO PLAYER CARD REMOVED (Relocated to Header) -->
-            <!-- Hidden elements for script compatibility -->
+            <!-- 1. HEADER / HERO REMOVED (Relocated) -->
             <div style="display: none;">
                 <div class="xp-fill"></div>
                 <span id="xp-current-text"></span>
                 <span id="xp-next-text"></span>
             </div>
 
-            <!-- 2. MAIN ACTION -->
-            <div style="margin-bottom: 3rem; text-align: center;">
+            <!-- 2. PRIMARY ACTION: RANKED MATCH -->
+            <!-- Massive visual weight, central focus, pulsing glow -->
+            <div style="position: relative; padding: 3rem 0; text-align: center;">
+                <div
+                    style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%); z-index: -1; animation: glow-pulse 4s infinite;">
+                </div>
+
+                <h2
+                    style="font-size: 1rem; color: var(--gold-primary); letter-spacing: 4px; margin-bottom: 1rem; opacity: 0.8;">
+                    COMPETITIVE SEASON 1</h2>
+
                 <button id="quick-play-btn" class="btn btn-primary"
-                    style="width: 100%; padding: 2rem; font-size: 1.5rem; letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                    style="width: 100%; max-width: 600px; padding: 2.5rem; font-size: 2.2rem; font-family: var(--font-display); letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 0 50px rgba(255, 215, 0, 0.2); transition: all 0.2s;">
                     START RANKED MATCH
                 </button>
+
                 <div
-                    style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
-                    <span style="color: var(--neon-blue);">●</span> Instant Matchmaking <span
-                        style="color: var(--gold-primary); margin-left: 10px;">●</span> Skill-Based
+                    style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
+                    <span style="display: flex; align-items: center; gap: 8px;"><span
+                            style="width: 8px; height: 8px; background: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); border-radius: 50%;"></span>
+                        Instant Matchmaking</span>
+                    <span style="display: flex; align-items: center; gap: 8px;"><span
+                            style="width: 8px; height: 8px; background: var(--gold-primary); box-shadow: 0 0 8px var(--gold-primary); border-radius: 50%;"></span>
+                        Skill-Based</span>
                 </div>
             </div>
 
-            <!-- 3. SECONDARY ACTIONS GRID -->
-            <div class="grid-2">
+            <!-- 3. SECONDARY ACTIONS: UTILITIES -->
+            <!-- Compact, side-by-side, visually subordinate -->
+            <div class="grid-2" style="gap: 1.5rem;">
                 <!-- Join -->
                 <div class="card-glass" id="join-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: all 0.3s; border: 1px solid rgba(0, 243, 255, 0.3); background: linear-gradient(135deg, rgba(0, 243, 255, 0.05) 0%, transparent 100%); display: flex; flex-direction: column; justify-content: center; height: 180px; position: relative;">
+                    style="padding: 1.5rem; cursor: pointer; text-align: left; transition: all 0.2s; border: 1px solid rgba(0, 243, 255, 0.2); background: linear-gradient(90deg, rgba(0, 243, 255, 0.05) 0%, rgba(5, 5, 10, 0.9) 100%); display: flex; align-items: center; gap: 1rem; height: 100px; position: relative; overflow: hidden;">
                     <div
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);">
+                        style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue);">
                     </div>
-                    <h3
-                        style="font-size: 1.8rem; letter-spacing: 2px; color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue-glow); margin-bottom: 0.5rem; font-family: var(--font-display);">
-                        JOIN LOBBY</h3>
-                    <p style="font-size: 0.9rem; color: #fff; opacity: 0.8; letter-spacing: 1px;">Sync with squad
-                        uplink.</p>
+                    <div style="font-size: 2.5rem; color: var(--neon-blue); opacity: 0.5;">📡</div>
+                    <div>
+                        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 0.2rem; font-family: var(--font-ui);">
+                            JOIN LOBBY</h3>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0; opacity: 0.7;">ENTER
+                            ACCESS CODE</p>
+                    </div>
                 </div>
 
                 <!-- Host -->
                 <div class="card-glass" id="host-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: all 0.3s; border: 1px solid rgba(255, 215, 0, 0.3); background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%); display: flex; flex-direction: column; justify-content: center; height: 180px; position: relative;">
+                    style="padding: 1.5rem; cursor: pointer; text-align: right; transition: all 0.2s; border: 1px solid rgba(255, 215, 0, 0.2); background: linear-gradient(-90deg, rgba(255, 215, 0, 0.05) 0%, rgba(5, 5, 10, 0.9) 100%); display: flex; align-items: center; justify-content: flex-end; gap: 1rem; height: 100px; position: relative; overflow: hidden;">
                     <div
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-primary);">
+                        style="position: absolute; right: 0; top: 0; bottom: 0; width: 4px; background: var(--gold-primary); box-shadow: 0 0 15px var(--gold-primary);">
                     </div>
-                    <h3
-                        style="font-size: 1.8rem; letter-spacing: 2px; color: var(--gold-primary); text-shadow: 0 0 15px var(--gold-glow); margin-bottom: 0.5rem; font-family: var(--font-display);">
-                        CREATE LOBBY</h3>
-                    <p style="font-size: 0.9rem; color: #fff; opacity: 0.8; letter-spacing: 1px;">Host custom scenarios.
-                    </p>
-                </div>
-
-                <!-- Training -->
-                <div class="card-glass" id="solo-card-trigger"
-                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05); transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_train.png"
-                        style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));">
-                    <h3 style="font-size: 1.2rem; color: var(--text-secondary);">Training Simulation</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Practice against AI constructs</p>
+                    <div>
+                        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 0.2rem; font-family: var(--font-ui);">
+                            CREATE LOBBY</h3>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0; opacity: 0.7;">HOST
+                            CUSTOM SCENARIO</p>
+                    </div>
+                    <div style="font-size: 2.5rem; color: var(--gold-primary); opacity: 0.5;">🏰</div>
                 </div>
             </div>
 
-            <!-- HIDDEN SECTIONS (Interactive) -->
+            <!-- 4. TERTIARY ACTION: TRAINING -->
+            <!-- Minimal footer strip -->
+            <div id="solo-card-trigger"
+                style="margin-top: 1rem; padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; cursor: pointer; transition: all 0.2s; color: var(--text-muted); font-size: 0.9rem; letter-spacing: 2px;">
+                <span style="opacity: 0.5;">[ TRAINING SIMULATION ]</span>
+            </div>
+
+            <!-- HIDDEN INTERACTIVE SECTIONS (No visual changes, just functional) -->
             <div id="join-section" class="hidden" style="margin-top: 2rem; opacity: 0; animation: float 0.5s forwards;">
                 <div class="card-glass" style="background: #000;">
                     <h3 style="margin-bottom: 1rem;">ACCESS CODE</h3>
