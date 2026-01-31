@@ -158,47 +158,65 @@ h1 {
     letter-spacing: 2px;
     border: none;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     position: relative;
     text-decoration: none;
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 
 .btn-primary {
-    background: var(--gold-primary);
+    background: linear-gradient(135deg, var(--gold-primary), #bd8b00);
     color: #000;
-    box-shadow: 0 0 20px var(--gold-glow);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    border: 1px solid var(--gold-primary);
 }
 
 .btn-primary:hover {
     background: #fff;
     box-shadow: 0 0 30px var(--gold-glow);
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    border-color: #fff;
 }
 
 .btn-secondary {
-    background: transparent;
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
+    backdrop-filter: blur(5px);
 }
 
 .btn-secondary:hover {
     border-color: var(--text-primary);
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.btn-tertiary {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+}
+
+.btn-tertiary:hover {
+    color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    background: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
 }
 
 .btn-neon {
-    background: rgba(0, 243, 255, 0.1);
-    border: 1px solid var(--neon-blue);
+    background: rgba(0, 243, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.3);
     color: var(--neon-blue);
-    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
 }
 
 .btn-neon:hover {
-    background: var(--neon-blue);
-    color: #000;
-    box-shadow: 0 0 30px var(--neon-blue-glow);
+    background: rgba(0, 243, 255, 0.15);
+    color: #fff;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 25px var(--neon-blue-glow);
 }
 
 /* --- BADGES & TIERS --- */
