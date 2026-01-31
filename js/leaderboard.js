@@ -3,7 +3,14 @@ import {
     doc,
     updateDoc,
     getDoc,
-    onSnapshot
+    onSnapshot,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    increment,
+    arrayUnion
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { QUESTIONS_DB } from './data.js';
 
