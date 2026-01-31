@@ -170,6 +170,23 @@
                     document.getElementById('dominant-type').textContent = profile.dominantType || "UNRANKED";
                     document.getElementById('trophies-count').textContent = profile.trophies || 0;
 
+                    // Calculate Tier
+                    const score = profile.totalScore || 0;
+                    let tier = "BRONZE";
+                    if (score >= 5000) tier = "LEGEND";
+                    else if (score >= 3000) tier = "CHAMPION";
+                    else if (score >= 1500) tier = "PLATINUM";
+                    else if (score >= 500) tier = "GOLD";
+
+                    // Inject Badge
+                    const badgeContainer = document.createElement('div');
+                    badgeContainer.innerHTML = `
+                        <span class="badge badge-tier-${tier.toLowerCase()}" style="display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;">
+                            <img src="assets/tiers/${tier.toLowerCase()}.png" class="tier-icon-sm"> ${tier} TIER
+                        </span>
+                    `;
+                    document.getElementById('dominant-type').parentNode.appendChild(badgeContainer);
+
                     // Stats
                     const stats = profile.intelligence || {};
                     const categories = ['logical', 'strategic', 'social', 'political', 'adaptive'];

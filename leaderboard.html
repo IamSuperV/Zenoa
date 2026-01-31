@@ -465,7 +465,10 @@
     <div class="player-info">
         <div class="player-name">
             ${u.username}
-            <span class="badge-pill ${tierClass}">${tier}</span>
+            <span class="badge-pill ${tierClass}" style="display: inline-flex; align-items: center; gap: 4px;">
+                <img src="assets/tiers/${tier.toLowerCase()}.png" class="tier-icon-sm" style="width: 20px; height: 20px;">
+                ${tier}
+            </span>
         </div>
         <div class="player-detail">
             ${u.dominantType || 'Unknown Style'} • ${u.college || u.city || 'Unknown Location'}

@@ -202,6 +202,22 @@ h1 {
 }
 
 /* --- BADGES & TIERS --- */
+/* --- BADGES & TIERS --- */
+.tier-icon-sm {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+.tier-icon-lg {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}
+
 .badge {
     padding: 0.3rem 0.8rem;
     font-size: 0.75rem;
@@ -209,7 +225,9 @@ h1 {
     text-transform: uppercase;
     letter-spacing: 1px;
     border-radius: 4px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .badge-tier-bronze {
@@ -309,6 +327,7 @@ select:focus {
 
     .grid-2 {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
     .container {

@@ -17,13 +17,15 @@
 
         <!-- HEADER / CODE -->
         <div style="text-align: center; margin-bottom: 4rem;">
-            <div class="badge badge-tier-gold"
-                style="font-size: 0.8rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite;">
-                MISSION BRIEFING
-            </div>
-            <div
-                style="font-family: var(--font-display); font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 0.5rem; letter-spacing: 4px;">
-                SECURE CHANNEL ESTABLISHED</div>
+            <a href="index.html" style="text-decoration: none;">
+                <div class="badge badge-tier-gold"
+                    style="font-size: 0.8rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; cursor: pointer;">
+                    MISSION BRIEFING
+                </div>
+                <div
+                    style="font-family: var(--font-display); font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 0.5rem; letter-spacing: 4px; cursor: pointer;">
+                    SECURE CHANNEL ESTABLISHED</div>
+            </a>
 
             <div class="room-code-display" id="room-code-display"
                 style="font-family: var(--font-display); font-size: 5rem; color: var(--gold-primary); text-shadow: 0 0 30px var(--gold-glow); letter-spacing: 10px; margin: 1rem 0;">
@@ -33,6 +35,10 @@
                 <button class="btn btn-secondary" id="copy-btn" style="min-width: 200px;">
                     COPY UPLINK
                 </button>
+                <a href="dashboard.html" class="btn btn-secondary"
+                    style="min-width: 200px; text-decoration: none; text-align: center; border-color: var(--text-muted); color: var(--text-muted);">
+                    ABORT / RETURN
+                </a>
                 <input type="text" id="share-link" readonly style="position: absolute; left: -9999px;">
             </div>
 

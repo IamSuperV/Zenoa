@@ -171,7 +171,13 @@
                         if (myResults.isPromoted) {
                             const promoBox = document.getElementById('tier-promo-msg');
                             promoBox.classList.remove('hidden');
-                            document.getElementById('new-tier-name').textContent = myResults.newTier;
+                            // Visual Badge
+                            document.getElementById('new-tier-name').innerHTML = `
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+                                    <img src="assets/tiers/${myResults.newTier.toLowerCase()}.png" class="tier-icon-lg">
+                                    <span class="text-gold">${myResults.newTier}</span>
+                                </div>
+                            `;
                         }
                     }
 

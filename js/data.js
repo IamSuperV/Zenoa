@@ -149,6 +149,42 @@ export const QUESTIONS_DB = [
         ],
         weights: { "0": { logical: -1 }, "1": { logical: 3 }, "2": { logical: -2 }, "3": { logical: -2 } }
     },
+    {
+        id: "log_013",
+        category: "Logical Intelligence",
+        scenario: "A box contains 5 red balls and 3 blue balls. You pick two without replacement. Probability both are red?",
+        options: [
+            "5/8 * 5/8",
+            "5/8 * 4/7",
+            "5/8 * 1/2",
+            "Cannot calculate."
+        ],
+        weights: { "0": { logical: -1 }, "1": { logical: 3 }, "2": { logical: -1 }, "3": { logical: -2 } }
+    },
+    {
+        id: "log_014",
+        category: "Logical Intelligence",
+        scenario: "All machines are loud. Some loud things are dangerous. Therefore...",
+        options: [
+            "All machines are dangerous.",
+            "Some machines are dangerous.",
+            "Some dangerous things are machines.",
+            "None of the above follows logically."
+        ],
+        weights: { "0": { logical: -2 }, "1": { logical: -1 }, "2": { logical: -1 }, "3": { logical: 3 } }
+    },
+    {
+        id: "log_015",
+        category: "Logical Intelligence",
+        scenario: "If A > B and B < C, what is the relationship between A and C?",
+        options: [
+            "A > C",
+            "A < C",
+            "A = C",
+            "Unknown"
+        ],
+        weights: { "0": { logical: -2 }, "1": { logical: -2 }, "2": { logical: -2 }, "3": { logical: 3 } }
+    },
 
     // ==========================================
     // 2. BUSINESS & STRATEGIC INTELLIGENCE
@@ -298,6 +334,42 @@ export const QUESTIONS_DB = [
             "Delegate everything."
         ],
         weights: { "0": { strategic: 1 }, "1": { strategic: 3 }, "2": { strategic: -2 }, "3": { strategic: 1 } }
+    },
+    {
+        id: "strat_013",
+        category: "Strategic Intelligence",
+        scenario: "A larger company wants to merge. You lose control but gain massive resources. Dominance is likely.",
+        options: [
+            "Accept. Scale is everything.",
+            "Reject. Control is everything.",
+            "Accept but demand autonomy clause.",
+            "Sell entirely and start over."
+        ],
+        weights: { "0": { strategic: 2, political: 1 }, "1": { strategic: 0 }, "2": { strategic: 3 }, "3": { strategic: 2 } }
+    },
+    {
+        id: "strat_014",
+        category: "Strategic Intelligence",
+        scenario: "You have a monopoly. The government threatens regulation.",
+        options: [
+            "Lobby against it.",
+            "Self-regulate to appease them.",
+            "Break up your own company into subsidiaries.",
+            "Ignore it until sued."
+        ],
+        weights: { "0": { strategic: 1, political: 2 }, "1": { strategic: 3 }, "2": { strategic: 2 }, "3": { strategic: -2 } }
+    },
+    {
+        id: "strat_015",
+        category: "Strategic Intelligence",
+        scenario: "Your product is popular but losing money. Raising prices will lose 30% of users.",
+        options: [
+            "Raise prices. Profitability is required.",
+            "Keep bleeding money to grow userbase.",
+            "Introduce ads/micro-transactions.",
+            "Shut it down."
+        ],
+        weights: { "0": { strategic: 2 }, "1": { strategic: -1 }, "2": { strategic: 3 }, "3": { strategic: -2 } }
     },
 
     // ==========================================
@@ -449,6 +521,42 @@ export const QUESTIONS_DB = [
         ],
         weights: { "0": { social: -1 }, "1": { social: -1 }, "2": { social: 3, political: 2 }, "3": { social: -2 } }
     },
+    {
+        id: "soc_013",
+        category: "Social Intelligence",
+        scenario: "A stranger is crying on a park bench next to you.",
+        options: [
+            "Ask if they are okay.",
+            "Offer a tissue silently.",
+            "Move to another bench to give privacy.",
+            "Ignore them perfectly."
+        ],
+        weights: { "0": { social: 2 }, "1": { social: 3 }, "2": { social: 1 }, "3": { social: -2 } }
+    },
+    {
+        id: "soc_014",
+        category: "Social Intelligence",
+        scenario: "You are invited to two weddings on the same day. One is family, one is a best friend.",
+        options: [
+            "Go to family. Blood first.",
+            "Go to friend. Choice matters.",
+            "Split the day (exhausting).",
+            "Skip both to avoid conflict."
+        ],
+        weights: { "0": { social: 2 }, "1": { social: 2 }, "2": { social: 3, adaptive: 2 }, "3": { social: -3 } }
+    },
+    {
+        id: "soc_015",
+        category: "Social Intelligence",
+        scenario: "A waiter drops food on you. It was an accident.",
+        options: [
+            "Yell at them.",
+            "Demand the manager.",
+            "Help them clean it up.",
+            "Laugh it off and say it's fine."
+        ],
+        weights: { "0": { social: -3 }, "1": { social: -2 }, "2": { social: 3 }, "3": { social: 3 } }
+    },
 
     // ==========================================
     // 4. POLITICAL & POWER INTELLIGENCE
@@ -598,6 +706,42 @@ export const QUESTIONS_DB = [
             "Lobby to change the rule."
         ],
         weights: { "0": { political: -1 }, "1": { political: 1 }, "2": { political: 2 }, "3": { political: 3 } }
+    },
+    {
+        id: "pol_013",
+        category: "Political Intelligence",
+        scenario: "An ally betrays you for a promotion. They eventually fail and ask for your help.",
+        options: [
+            "Help them. Be the bigger person.",
+            "Ignore them.",
+            "Publicly mock them.",
+            "Help them in exchange for a public apology."
+        ],
+        weights: { "0": { political: 1 }, "1": { political: 1 }, "2": { political: -1 }, "3": { political: 3 } }
+    },
+    {
+        id: "pol_014",
+        category: "Political Intelligence",
+        scenario: "You need a signature from a bureaucrat who hates you.",
+        options: [
+            "Beg.",
+            "Bribe them.",
+            "Find someone who knows them to mediate.",
+            "Threaten them."
+        ],
+        weights: { "0": { political: -2 }, "1": { political: 2, risk: 2 }, "2": { political: 3 }, "3": { political: -1 } }
+    },
+    {
+        id: "pol_015",
+        category: "Political Intelligence",
+        scenario: "Two departments are fighting. Productivity is zero. As manager, you:",
+        options: [
+            "Fire both leads.",
+            "Force them to work in the same room.",
+            "Create a common enemy (competitor).",
+            "Pick a side."
+        ],
+        weights: { "0": { political: 2, strategic: 1 }, "1": { political: 1 }, "2": { political: 3, strategic: 2 }, "3": { political: -2 } }
     },
 
 
@@ -749,5 +893,41 @@ export const QUESTIONS_DB = [
             "Wait for help."
         ],
         weights: { "0": { adaptive: 0 }, "1": { adaptive: 2 }, "2": { adaptive: 3 }, "3": { adaptive: 0 } }
+    },
+    {
+        id: "adt_013",
+        category: "Adaptive Intelligence",
+        scenario: "You wake up in a forest with no memory of how you got there.",
+        options: [
+            "Pick a direction and walk.",
+            "Climb a tree to look for landmarks.",
+            "Scream for help.",
+            "Build a shelter and wait."
+        ],
+        weights: { "0": { adaptive: 1 }, "1": { adaptive: 3 }, "2": { adaptive: -1 }, "3": { adaptive: 2 } }
+    },
+    {
+        id: "adt_014",
+        category: "Adaptive Intelligence",
+        scenario: "A fire alarm goes off during a crucial exam.",
+        options: [
+            "Keep writing until forced to leave.",
+            "Leave immediately.",
+            "Grab your bag and leave.",
+            "Wait for others to move."
+        ],
+        weights: { "0": { adaptive: -2, risk: 3 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: 0 } }
+    },
+    {
+        id: "adt_015",
+        category: "Adaptive Intelligence",
+        scenario: "Your flight is cancelled. You will miss the wedding.",
+        options: [
+            "Yell at the airline staff.",
+            "Rent a car and drive 15 hours.",
+            "Video call into the wedding.",
+            "Go home."
+        ],
+        weights: { "0": { adaptive: -2 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: 0 } }
     }
 ];

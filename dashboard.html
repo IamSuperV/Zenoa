@@ -91,24 +91,30 @@
             <!-- 3. SECONDARY ACTIONS GRID -->
             <div class="grid-2">
                 <!-- Join -->
-                <div class="card-glass" id="join-card-trigger" style="cursor: pointer; text-align: center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.8;">🗝️</div>
+                <div class="card-glass" id="join-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_join.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); animation: float 6s ease-in-out infinite;">
                     <h3 style="font-size: 1.2rem;">Join Lobby</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Enter code to sync with squad</p>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Sync with squad uplink.</p>
                 </div>
 
                 <!-- Host -->
-                <div class="card-glass" id="host-card-trigger" style="cursor: pointer; text-align: center;">
-                    <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.8;">📡</div>
+                <div class="card-glass" id="host-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_create.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); animation: float 6s ease-in-out infinite 1s;">
                     <h3 style="font-size: 1.2rem;">Create Lobby</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Host custom match scenarios</p>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host custom scenarios.</p>
                 </div>
 
                 <!-- Training -->
                 <div class="card-glass" id="solo-card-trigger"
-                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05);">
+                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05); transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_train.png"
+                        style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));">
                     <h3 style="font-size: 1.2rem; color: var(--text-secondary);">Training Simulation</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Practice against AI constructs</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Practice against AI constructs</p>
                 </div>
             </div>
 
@@ -162,6 +168,28 @@
                 </div>
             </div>
 
+            <div id="ranked-config-section" class="hidden" style="margin-top: 2rem; animation: float 0.5s forwards;">
+                <div class="card-glass" style="background: #000; border: 1px solid var(--gold-glow);">
+                    <h3 style="margin-bottom: 1rem; color: var(--gold-primary);">MATCH PARAMETERS</h3>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">SELECT
+                            PROTOCOL</label>
+                        <select id="ranked-category-select">
+                            <option value="Mix">Ranked Mix (Standard)</option>
+                            <option value="Logical Intelligence">Focus: Logical</option>
+                            <option value="Strategic Intelligence">Focus: Strategic</option>
+                            <option value="Social Intelligence">Focus: Social</option>
+                            <option value="Political Intelligence">Focus: Political</option>
+                            <option value="Adaptive Intelligence">Focus: Adaptive</option>
+                        </select>
+                    </div>
+                    <button id="confirm-ranked-btn" class="btn btn-primary" style="width: 100%;">
+                        SEARCH FOR MATCH
+                    </button>
+                </div>
+            </div>
+
         </main>
 
         <!-- Legacy Binding -->
@@ -188,8 +216,7 @@
             document.getElementById('host-section').classList.toggle('hidden');
             document.getElementById('join-section').classList.add('hidden');
         };
-        document.getElementById('solo-card-trigger').onclick = () => document.getElementById('solo-btn').click();
-        document.getElementById('quick-play-btn').onclick = () => document.getElementById('solo-btn').click();
+        document.getElementById('solo-card-trigger').onclick = () => document.getElementById('quick-play-btn').click();
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
@@ -225,7 +252,7 @@
 
                         // Update Badge
                         const badge = document.getElementById('user-tier-badge');
-                        badge.textContent = `${tier} TIER`;
+                        badge.innerHTML = `<img src="assets/tiers/${tier.toLowerCase()}.png" class="tier-icon-sm"> ${tier}`;
                         badge.className = `badge badge-tier-${tier.toLowerCase()}`;
 
                         // Update Bar
@@ -271,10 +298,21 @@
             }
         });
 
-        document.getElementById('solo-btn').addEventListener('click', async () => {
+        document.getElementById('quick-play-btn').onclick = () => {
+            document.getElementById('ranked-config-section').classList.remove('hidden');
+            document.getElementById('join-section').classList.add('hidden');
+            document.getElementById('host-section').classList.add('hidden');
+            // Scroll to it
+            document.getElementById('ranked-config-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // NEW: Actual Ranked Start Logic
+        document.getElementById('confirm-ranked-btn').addEventListener('click', async () => {
             if (!currentUser || !userProfile) return;
-            const btn = document.getElementById('quick-play-btn');
+
+            const btn = document.getElementById('confirm-ranked-btn');
             const originalText = btn.textContent;
+            const selectedCategory = document.getElementById('ranked-category-select').value;
 
             // Simulation Sequence
             const steps = [
@@ -293,8 +331,8 @@
             }
 
             try {
-                // Create 'Ranked' context implies simulated multiplayer in results
-                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Ranked (Sim)', 'Mix');
+                // Pass selectedCategory instead of hardcoded 'Mix'
+                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Ranked (Sim)', selectedCategory);
                 await startGame(roomId);
                 window.location.href = `play.html?roomId=${roomId}`;
             } catch (e) {
