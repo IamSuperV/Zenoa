@@ -91,27 +91,21 @@
             <!-- 3. SECONDARY ACTIONS GRID -->
             <div class="grid-2">
                 <!-- Join -->
-                <div class="cyber-card cyber-card-cyan" id="join-card-trigger">
-                    <span class="corner-accent c-tl"></span>
-                    <span class="corner-accent c-br"></span>
-                    <div class="cyber-icon-box">◈</div>
-                    <div class="cyber-card-content">
-                        <h3>JOIN LOBBY</h3>
-                        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase;">Sync with
-                            squad uplink</p>
-                    </div>
+                <div class="card-glass" id="join-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_join.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); animation: float 6s ease-in-out infinite;">
+                    <h3 style="font-size: 1.2rem;">Join Lobby</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Sync with squad uplink.</p>
                 </div>
 
                 <!-- Host -->
-                <div class="cyber-card cyber-card-pink" id="host-card-trigger">
-                    <span class="corner-accent c-tl"></span>
-                    <span class="corner-accent c-br"></span>
-                    <div class="cyber-icon-box">❖</div>
-                    <div class="cyber-card-content">
-                        <h3>CREATE LOBBY</h3>
-                        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase;">Host
-                            custom scenarios</p>
-                    </div>
+                <div class="card-glass" id="host-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_create.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); animation: float 6s ease-in-out infinite 1s;">
+                    <h3 style="font-size: 1.2rem;">Create Lobby</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host custom scenarios.</p>
                 </div>
 
                 <!-- Training -->
