@@ -68,20 +68,17 @@ h3,
 h4 {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-weight: 800;
-    /* Bolder */
-    letter-spacing: 3px;
-    /* More spaced */
+    font-weight: 700;
+    letter-spacing: 2px;
 }
 
 h1 {
-    font-size: 4rem;
-    /* Larger impact */
-    background: linear-gradient(180deg, #ffffff 0%, #888899 100%);
+    font-size: 3.5rem;
+    background: linear-gradient(180deg, #fff 0%, #aaa 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .text-gold {
@@ -127,26 +124,23 @@ h1 {
 }
 
 /* --- GLASS CARDS --- */
-/* --- HOLOGRAPHIC GLASS --- */
 .card-glass {
-    background: linear-gradient(145deg, rgba(20, 20, 25, 0.7) 0%, rgba(10, 10, 15, 0.8) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 4px;
-    /* Sharper corners for tech feel */
+    background: var(--glass-base);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s var(--ease-out);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s var(--ease-out), border-color 0.3s;
     position: relative;
     overflow: hidden;
 }
 
 .card-glass:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+    transform: translateY(-4px);
+    border-color: var(--glass-highlight);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 
 .card-glass::before {
@@ -154,15 +148,10 @@ h1 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 40px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-    transform: skewX(-20deg) translateX(-150%);
-    transition: transform 0.5s;
-}
-
-.card-glass:hover::before {
-    transform: skewX(-20deg) translateX(300%);
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+    opacity: 0.5;
 }
 
 /* --- BUTTONS --- */
@@ -199,6 +188,7 @@ h1 {
 .btn-secondary {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
     backdrop-filter: blur(4px);
 }
 
@@ -209,94 +199,18 @@ h1 {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
-/* --- HIGH-FIDELITY TECH BUTTONS --- */
-.tech-btn {
-    background: linear-gradient(135deg, rgba(10, 10, 15, 0.9) 0%, rgba(20, 20, 30, 0.95) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--text-secondary);
-    font-family: var(--font-ui);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    position: relative;
-    overflow: hidden;
-    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+.btn-neon {
+    background: rgba(0, 243, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
 }
 
-/* Internal Glow Line */
-.tech-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(180deg, transparent, var(--glass-highlight), transparent);
-    opacity: 0.5;
-    transition: all 0.3s;
-}
-
-/* Scanline Effect */
-.tech-btn::after {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    transition: top 0.4s;
-    pointer-events: none;
-}
-
-.tech-btn:hover {
-    background: linear-gradient(135deg, rgba(30, 30, 45, 0.95) 0%, rgba(40, 40, 60, 1) 100%);
-    border-color: var(--neon-blue);
+.btn-neon:hover {
+    background: rgba(0, 243, 255, 0.15);
     color: #fff;
-    box-shadow: 0 0 25px rgba(0, 243, 255, 0.15), inset 0 0 10px rgba(0, 243, 255, 0.05);
-    text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
-    transform: translateY(-2px);
-}
-
-.tech-btn:hover::after {
-    top: 100%;
-    /* Swipe effect */
-    transition: top 0.6s ease-in-out;
-}
-
-.tech-btn:active {
-    transform: scale(0.98) translateY(0);
-}
-
-/* Primary "Start Ranked" Variant */
-.tech-btn-primary {
-    background: linear-gradient(135deg, rgba(50, 40, 0, 0.8) 0%, rgba(20, 15, 0, 0.9) 100%);
-    border: 1px solid var(--gold-primary);
-    color: var(--gold-primary);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.tech-btn-primary:hover {
-    background: linear-gradient(135deg, var(--gold-primary) 0%, #b8860b 100%);
-    color: #000;
-    font-weight: 800;
-    box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.6);
-    border-color: #fff;
-    text-shadow: none;
-}
-
-.tech-btn-primary::before {
-    background: linear-gradient(180deg, transparent, var(--gold-primary), transparent);
-    width: 4px;
-    /* Thicker accent */
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px var(--neon-blue-glow);
 }
 
 /* --- BADGES & TIERS --- */
@@ -553,8 +467,7 @@ select:focus {
     /* Full Width Elements */
     .btn,
     input,
-    select,
-    .tech-btn {
+    select {
         width: 100%;
         height: 50px;
         /* Reliable touch target */
@@ -563,11 +476,6 @@ select:focus {
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    /* Force grids to single column on mobile */
-    div[style*="grid-template-columns"] {
-        grid-template-columns: 1fr !important;
     }
 
     /* Gameplay Specifics */

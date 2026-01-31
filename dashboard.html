@@ -16,152 +16,179 @@
     <div class="container">
 
         <!-- HEADER -->
-        <div class="flex-between">
+        <header class="flex-between"
+            style="padding: 1.5rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border);">
             <div class="flex-center" style="gap: 1rem;">
-                <!-- Logo -->
                 <div
                     style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); letter-spacing: 2px;">
-                    ZENOA
-                </div>
+                    ZENOA</div>
                 <div class="badge badge-tier-gold" style="font-size: 0.6rem;">LIVE</div>
             </div>
-        </div>
+            <nav class="flex-center" style="gap: 1rem;">
+                <a href="leaderboard.html" class="btn btn-secondary"
+                    style="padding: 0.5rem 1rem; font-size: 0.8rem;">RANKINGS</a>
+                <div id="nav-dynamic"></div>
+                <button id="logout-btn" class="btn btn-secondary"
+                    style="padding: 0.5rem 1rem; color: #ff4444; border-color: rgba(255,0,0,0.3);">LOGOUT</button>
+            </nav>
         </header>
 
-        <!-- COMPACT PROFILE BAR (BGMI Style) -->
-        <div id="operator-status-bar"
-            style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.6); border: 1px solid var(--glass-border); padding: 10px 15px; margin-bottom: 2rem; border-left: 3px solid var(--gold-primary);">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <!-- Avatar Small -->
-                <div
-                    style="width: 45px; height: 45px; background: #111; clip-path: polygon(25% 0, 100% 0, 100% 100%, 0% 100%, 0% 25%); display: flex; align-items: center; justify-content: center; border: 1px solid var(--text-muted);">
-                    👤
-                </div>
-                <div>
-                    <div id="display-name" style="font-family: var(--font-display); font-size: 1.2rem; line-height: 1;">
-                        LOADING...</div>
-                    <div
-                        style="font-size: 0.75rem; color: var(--text-secondary); letter-spacing: 1px; margin-top: 3px;">
-                        <span id="xp-current-text">0 XP</span>
-                    </div>
-                </div>
-            </div>
+        <main style="max-width: 900px; margin: 0 auto;">
 
-            <!-- Tier & Rank -->
-            <div style="text-align: right; display: flex; align-items: center; gap: 1rem;">
-                <div id="user-tier-badge" class="badge badge-tier-bronze" style="font-size: 0.7rem;">CALIBRATING</div>
-                <div class="xp-track" style="width: 80px; height: 4px; margin: 0;">
-                    <div class="xp-fill" style="width: 0%;"></div>
-                </div>
-            </div>
-        </div>
-        <!-- MAIN CONTROL DECK -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-
-            <!-- PRIMARY ACTION -->
-            <button id="quick-play-btn" class="tech-btn tech-btn-primary"
-                style="height: 100%; min-height: 120px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 1.5rem; background-image: linear-gradient(45deg, rgba(255, 215, 0, 0.1), transparent);">
-                <div style="font-size: 1.5rem; font-family: var(--font-display); margin-bottom: 0.5rem;">START RANKED
-                </div>
-                <div style="font-size: 0.8rem; color: var(--gold-primary); opacity: 0.8;">:: INSTANT MATCHMAKING</div>
-            </button>
-
-            <!-- SECONDARY ACTIONS (Vertical Stack) -->
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div id="nav-dynamic" style="display: contents;"></div> <!-- Nav injected here now -->
-                <a href="leaderboard.html" class="tech-btn" style="text-align: left; padding-left: 1rem;">
-                    <span style="color: var(--neon-blue);">//</span> LEADERS
-                </a>
-                <button id="logout-btn" class="tech-btn" style="text-align: left; padding-left: 1rem; color: #ff4444;">
-                    <span style="color: #ff4444;">//</span> LOGOUT
-                </button>
-            </div>
-        </div>
-
-        <!-- LOBBY CONTROLS (Row) -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 2rem;">
-            <button id="join-card-trigger" class="tech-btn">
-                KEY :: JOIN LOBBY
-            </button>
-            <button id="host-card-trigger" class="tech-btn">
-                CMD :: CREATE LOBBY
-            </button>
-            <button id="solo-card-trigger" class="tech-btn"
-                style="border-color: rgba(255,255,255,0.05); color: var(--text-muted);">
-                SIM :: TRAINING
-            </button>
-        </div>
-
-        <!-- HIDDEN SECTIONS (Interactive) -->
-        <div id="join-section" class="hidden" style="margin-top: 2rem; opacity: 0; animation: float 0.5s forwards;">
-            <div class="card-glass" style="background: #000;">
-                <h3 style="margin-bottom: 1rem;">ACCESS CODE</h3>
-                <form id="join-room-form">
-                    <input type="text" id="room-code" placeholder="ENTER CODE" required
-                        style="font-size: 1.5rem; text-align: center; letter-spacing: 5px; margin-bottom: 1rem; text-transform: uppercase; background: #111;">
-                    <button type="submit" class="btn btn-secondary" style="width: 100%;" id="join-btn">CONNECT</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="host-section" class="hidden" style="margin-top: 2rem;">
-            <div class="card-glass" style="background: #000;">
-                <h3 style="margin-bottom: 1rem;">LOBBY CONFIGURATION</h3>
-                <form id="create-room-form">
-                    <div style="margin-bottom: 1rem;">
-                        <label
-                            style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">CONTEXT</label>
-                        <div class="grid-2" style="gap: 10px;">
-                            <label
-                                style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
-                                <input type="radio" name="context" value="College" checked> College
-                            </label>
-                            <label
-                                style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
-                                <input type="radio" name="context" value="School"> School
-                            </label>
+            <!-- 1. HERO PLAYER CARD -->
+            <div class="card-glass" style="margin-bottom: 3rem; border: 1px solid var(--gold-glow);">
+                <div class="flex-between" style="align-items: flex-start;">
+                    <div class="flex-center" style="gap: 1.5rem;">
+                        <!-- Hex Avatar -->
+                        <div
+                            style="width: 80px; height: 80px; background: #111; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 1px solid var(--gold-primary); box-shadow: 0 0 15px var(--gold-glow);">
+                            👤
+                        </div>
+                        <div>
+                            <h2 id="display-name"
+                                style="margin: 0; font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
+                                LOADING...</h2>
+                            <div style="margin-top: 0.5rem;">
+                                <span id="user-tier-badge" class="badge badge-tier-bronze">CALIBRATING...</span>
+                            </div>
                         </div>
                     </div>
+                    <div style="text-align: right;">
+                        <div
+                            style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Global Rank</div>
+                        <div style="font-family: var(--font-display); font-size: 2.5rem; color: var(--gold-primary);">
+                            #--</div>
+                    </div>
+                </div>
 
+                <!-- XP Bar -->
+                <div style="margin-top: 2rem;">
+                    <div class="flex-between"
+                        style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                        <span id="xp-current-text">0 XP</span>
+                        <span id="xp-next-text">NEXT RANK</span>
+                    </div>
+                    <div class="xp-track">
+                        <div class="xp-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. MAIN ACTION -->
+            <div style="margin-bottom: 3rem; text-align: center;">
+                <button id="quick-play-btn" class="btn btn-primary"
+                    style="width: 100%; padding: 2rem; font-size: 1.5rem; letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                    START RANKED MATCH
+                </button>
+                <div
+                    style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                    <span style="color: var(--neon-blue);">●</span> Instant Matchmaking <span
+                        style="color: var(--gold-primary); margin-left: 10px;">●</span> Skill-Based
+                </div>
+            </div>
+
+            <!-- 3. SECONDARY ACTIONS GRID -->
+            <div class="grid-2">
+                <!-- Join -->
+                <div class="card-glass" id="join-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_join.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); animation: float 6s ease-in-out infinite;">
+                    <h3 style="font-size: 1.2rem;">Join Lobby</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Sync with squad uplink.</p>
+                </div>
+
+                <!-- Host -->
+                <div class="card-glass" id="host-card-trigger"
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_create.png"
+                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); animation: float 6s ease-in-out infinite 1s;">
+                    <h3 style="font-size: 1.2rem;">Create Lobby</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host custom scenarios.</p>
+                </div>
+
+                <!-- Training -->
+                <div class="card-glass" id="solo-card-trigger"
+                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05); transition: transform 0.3s;">
+                    <img src="assets/ui/lobby_train.png"
+                        style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));">
+                    <h3 style="font-size: 1.2rem; color: var(--text-secondary);">Training Simulation</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Practice against AI constructs</p>
+                </div>
+            </div>
+
+            <!-- HIDDEN SECTIONS (Interactive) -->
+            <div id="join-section" class="hidden" style="margin-top: 2rem; opacity: 0; animation: float 0.5s forwards;">
+                <div class="card-glass" style="background: #000;">
+                    <h3 style="margin-bottom: 1rem;">ACCESS CODE</h3>
+                    <form id="join-room-form">
+                        <input type="text" id="room-code" placeholder="ENTER CODE" required
+                            style="font-size: 1.5rem; text-align: center; letter-spacing: 5px; margin-bottom: 1rem; text-transform: uppercase; background: #111;">
+                        <button type="submit" class="btn btn-secondary" style="width: 100%;"
+                            id="join-btn">CONNECT</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="host-section" class="hidden" style="margin-top: 2rem;">
+                <div class="card-glass" style="background: #000;">
+                    <h3 style="margin-bottom: 1rem;">LOBBY CONFIGURATION</h3>
+                    <form id="create-room-form">
+                        <div style="margin-bottom: 1rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">CONTEXT</label>
+                            <div class="grid-2" style="gap: 10px;">
+                                <label
+                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
+                                    <input type="radio" name="context" value="College" checked> College
+                                </label>
+                                <label
+                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
+                                    <input type="radio" name="context" value="School"> School
+                                </label>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">PROTOCOL</label>
+                            <select id="game-mode">
+                                <option value="Mix">Ranked Mix (All Types)</option>
+                                <option value="Logical Intelligence">Drill: Logical</option>
+                                <option value="Strategic Intelligence">Drill: Strategic</option>
+                                <option value="Social Intelligence">Drill: Social</option>
+                                <option value="Political Intelligence">Drill: Political</option>
+                                <option value="Adaptive Intelligence">Drill: Adaptive</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;"
+                            id="create-btn">INITIALIZE</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="ranked-config-section" class="hidden" style="margin-top: 2rem; animation: float 0.5s forwards;">
+                <div class="card-glass" style="background: #000; border: 1px solid var(--gold-glow);">
+                    <h3 style="margin-bottom: 1rem; color: var(--gold-primary);">MATCH PARAMETERS</h3>
                     <div style="margin-bottom: 1.5rem;">
                         <label
-                            style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">PROTOCOL</label>
-                        <select id="game-mode">
-                            <option value="Mix">Ranked Mix (All Types)</option>
-                            <option value="Logical Intelligence">Drill: Logical</option>
-                            <option value="Strategic Intelligence">Drill: Strategic</option>
-                            <option value="Social Intelligence">Drill: Social</option>
-                            <option value="Political Intelligence">Drill: Political</option>
-                            <option value="Adaptive Intelligence">Drill: Adaptive</option>
+                            style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">SELECT
+                            PROTOCOL</label>
+                        <select id="ranked-category-select">
+                            <option value="Mix">Ranked Mix (Standard)</option>
+                            <option value="Logical Intelligence">Focus: Logical</option>
+                            <option value="Strategic Intelligence">Focus: Strategic</option>
+                            <option value="Social Intelligence">Focus: Social</option>
+                            <option value="Political Intelligence">Focus: Political</option>
+                            <option value="Adaptive Intelligence">Focus: Adaptive</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;"
-                        id="create-btn">INITIALIZE</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="ranked-config-section" class="hidden" style="margin-top: 2rem; animation: float 0.5s forwards;">
-            <div class="card-glass" style="background: #000; border: 1px solid var(--gold-glow);">
-                <h3 style="margin-bottom: 1rem; color: var(--gold-primary);">MATCH PARAMETERS</h3>
-                <div style="margin-bottom: 1.5rem;">
-                    <label
-                        style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">SELECT
-                        PROTOCOL</label>
-                    <select id="ranked-category-select">
-                        <option value="Mix">Ranked Mix (Standard)</option>
-                        <option value="Logical Intelligence">Focus: Logical</option>
-                        <option value="Strategic Intelligence">Focus: Strategic</option>
-                        <option value="Social Intelligence">Focus: Social</option>
-                        <option value="Political Intelligence">Focus: Political</option>
-                        <option value="Adaptive Intelligence">Focus: Adaptive</option>
-                    </select>
+                    <button id="confirm-ranked-btn" class="btn btn-primary" style="width: 100%;">
+                        SEARCH FOR MATCH
+                    </button>
                 </div>
-                <button id="confirm-ranked-btn" class="btn btn-primary" style="width: 100%;">
-                    SEARCH FOR MATCH
-                </button>
             </div>
-        </div>
 
         </main>
 
@@ -262,15 +289,15 @@
                         // Update Bar
                         const percent = Math.min(100, Math.max(0, (currentLevelScore / maxXP) * 100));
                         document.querySelector('.xp-fill').style.width = `${percent}%`;
-                        document.getElementById('xp-current-text').textContent = `${Math.floor(score)} XP`;
-                        // Removed next rank text for compact view
+                        document.getElementById('xp-current-text').textContent = `${Math.floor(score)} TOTAL XP`;
+                        document.getElementById('xp-next-text').textContent = `${Math.floor(maxXP - currentLevelScore)} XP TO UPGRADE`;
 
                         // NAV
                         const nav = document.getElementById('nav-dynamic');
                         if (userProfile.isGuest) {
-                            nav.innerHTML = `<a href="signup.html" class="tech-btn" style="text-align: left; padding-left: 1rem;"><span style="color: var(--neon-blue);">//</span> SAVE DATA</a>`;
+                            nav.innerHTML = `<a href="signup.html" class="btn btn-neon" style="padding: 0.5rem 1rem; font-size: 0.8rem;">SAVE DATA</a>`;
                         } else {
-                            nav.innerHTML = `<a href="profile.html" class="tech-btn" style="text-align: left; padding-left: 1rem;"><span style="color: var(--gold-primary);">//</span> PROFILE</a>`;
+                            nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">PROFILE</a>`;
                         }
                     }
                 } catch (e) {
