@@ -27,7 +27,21 @@
             <nav class="flex-center" style="gap: 1rem;">
                 <a href="leaderboard.html" class="btn btn-secondary"
                     style="padding: 0.5rem 1rem; font-size: 0.8rem;">RANKINGS</a>
-                <div id="nav-dynamic"></div>
+
+                <!-- Compact Profile View -->
+                <div class="flex-center"
+                    style="gap: 10px; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                    <div
+                        style="width: 32px; height: 32px; background: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold-primary);">
+                        👤</div>
+                    <div style="text-align: left; line-height: 1.2;">
+                        <div id="display-name" style="font-size: 0.8rem; font-weight: 700; color: #fff;">LOADING...
+                        </div>
+                        <div id="user-tier-badge" style="font-size: 0.6rem; color: var(--gold-primary);">...</div>
+                    </div>
+                </div>
+
+                <div id="nav-dynamic" class="hidden"></div> <!-- Hide legacy nav dynamic since we have profile here -->
                 <button id="logout-btn" class="btn btn-secondary"
                     style="padding: 0.5rem 1rem; color: #ff4444; border-color: rgba(255,0,0,0.3);">LOGOUT</button>
             </nav>
@@ -35,44 +49,12 @@
 
         <main style="max-width: 900px; margin: 0 auto;">
 
-            <!-- 1. HERO PLAYER CARD -->
-            <div class="card-glass" style="margin-bottom: 3rem; border: 1px solid var(--gold-glow);">
-                <div class="flex-between" style="align-items: flex-start;">
-                    <div class="flex-center" style="gap: 1.5rem;">
-                        <!-- Hex Avatar -->
-                        <div class="hex-avatar-responsive"
-                            style="background: #111; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 1px solid var(--gold-primary); box-shadow: 0 0 15px var(--gold-glow);">
-                            👤
-                        </div>
-                        <div>
-                            <h2 id="display-name"
-                                style="margin: 0; font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
-                                LOADING...</h2>
-                            <div style="margin-top: 0.5rem;">
-                                <span id="user-tier-badge" class="badge badge-tier-bronze">CALIBRATING...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-responsive">
-                        <div
-                            style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
-                            Global Rank</div>
-                        <div style="font-family: var(--font-display); font-size: 2.5rem; color: var(--gold-primary);">
-                            #--</div>
-                    </div>
-                </div>
-
-                <!-- XP Bar -->
-                <div style="margin-top: 2rem;">
-                    <div class="flex-between"
-                        style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                        <span id="xp-current-text">0 XP</span>
-                        <span id="xp-next-text">NEXT RANK</span>
-                    </div>
-                    <div class="xp-track">
-                        <div class="xp-fill" style="width: 0%;"></div>
-                    </div>
-                </div>
+            <!-- 1. HERO PLAYER CARD REMOVED (Relocated to Header) -->
+            <!-- Hidden elements for script compatibility -->
+            <div style="display: none;">
+                <div class="xp-fill"></div>
+                <span id="xp-current-text"></span>
+                <span id="xp-next-text"></span>
             </div>
 
             <!-- 2. MAIN ACTION -->
@@ -92,20 +74,28 @@
             <div class="grid-2">
                 <!-- Join -->
                 <div class="card-glass" id="join-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_join.png"
-                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); animation: float 6s ease-in-out infinite;">
-                    <h3 style="font-size: 1.2rem;">Join Lobby</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Sync with squad uplink.</p>
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: all 0.3s; border: 1px solid rgba(0, 243, 255, 0.3); background: linear-gradient(135deg, rgba(0, 243, 255, 0.05) 0%, transparent 100%); display: flex; flex-direction: column; justify-content: center; height: 180px; position: relative;">
+                    <div
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);">
+                    </div>
+                    <h3
+                        style="font-size: 1.8rem; letter-spacing: 2px; color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue-glow); margin-bottom: 0.5rem; font-family: var(--font-display);">
+                        JOIN LOBBY</h3>
+                    <p style="font-size: 0.9rem; color: #fff; opacity: 0.8; letter-spacing: 1px;">Sync with squad
+                        uplink.</p>
                 </div>
 
                 <!-- Host -->
                 <div class="card-glass" id="host-card-trigger"
-                    style="cursor: pointer; text-align: center; overflow: hidden; transition: transform 0.3s;">
-                    <img src="assets/ui/lobby_create.png"
-                        style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0.5rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); animation: float 6s ease-in-out infinite 1s;">
-                    <h3 style="font-size: 1.2rem;">Create Lobby</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host custom scenarios.</p>
+                    style="cursor: pointer; text-align: center; overflow: hidden; transition: all 0.3s; border: 1px solid rgba(255, 215, 0, 0.3); background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 100%); display: flex; flex-direction: column; justify-content: center; height: 180px; position: relative;">
+                    <div
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-primary);">
+                    </div>
+                    <h3
+                        style="font-size: 1.8rem; letter-spacing: 2px; color: var(--gold-primary); text-shadow: 0 0 15px var(--gold-glow); margin-bottom: 0.5rem; font-family: var(--font-display);">
+                        CREATE LOBBY</h3>
+                    <p style="font-size: 0.9rem; color: #fff; opacity: 0.8; letter-spacing: 1px;">Host custom scenarios.
+                    </p>
                 </div>
 
                 <!-- Training -->
