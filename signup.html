@@ -4,43 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - ZENOA</title>
+    <title>Enlist - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <div class="container flex-center" style="min-height: 100vh;">
-        <div class="auth-container" style="width: 100%;">
-            <h2 style="text-align: center;">Join ZENOA</h2>
+    <div class="overlay"></div>
+    <div class="container flex-center" style="min-height: 100vh; padding: 2rem 0;">
+
+        <div class="card-glass"
+            style="max-width: 450px; margin: 0 auto; width: 100%; border-top: 2px solid var(--neon-blue);">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div
+                    style="font-size: 0.8rem; letter-spacing: 3px; color: var(--neon-blue); margin-bottom: 0.5rem; text-transform: uppercase;">
+                    New Recruit</div>
+                <h2 style="font-size: 2.5rem; margin: 0; text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);">ENLIST</h2>
+            </div>
+
             <form id="signup-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required placeholder="e.g. Neo">
+                    <label for="username" style="color: var(--text-secondary); letter-spacing: 1px;">CODENAME</label>
+                    <input type="text" id="username" required placeholder="e.g. Neo"
+                        style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff; font-family: var(--font-ui); letter-spacing: 1px;">
+                </div>
+                <div class="grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label for="college" style="color: var(--text-secondary); letter-spacing: 1px;">ACADEMY</label>
+                        <input type="text" id="college" required placeholder="e.g. MIT"
+                            style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                    </div>
+                    <div class="form-group">
+                        <label for="city" style="color: var(--text-secondary); letter-spacing: 1px;">SECTOR</label>
+                        <input type="text" id="city" required placeholder="e.g. NYC"
+                            style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="college">College / School</label>
-                    <input type="text" id="college" required placeholder="e.g. MIT, Hogwarts">
+                    <label for="email" style="color: var(--text-secondary); letter-spacing: 1px;">CONTACT
+                        (EMAIL)</label>
+                    <input type="email" id="email" required
+                        style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                 </div>
                 <div class="form-group">
-                    <label for="city">City</label>
-                    <input type="text" id="city" required placeholder="e.g. Gotham, New York">
+                    <label for="password" style="color: var(--text-secondary); letter-spacing: 1px;">SECURE
+                        CIPHER</label>
+                    <input type="password" id="password" required minlength="6"
+                        style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                 </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required minlength="6">
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                <button type="submit" class="btn btn-primary btn-block"
+                    style="padding: 1rem; margin-top: 1rem; background: var(--neon-blue); border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue-glow);">ESTABLISH
+                    IDENTITY</button>
             </form>
-            <p style="text-align: center; margin-top: 1rem;">
-                Already have an account? <a href="login.html" style="color: var(--text-primary);">Log In</a>
-            </p>
+
             <div style="text-align: center; margin-top: 2rem;">
-                <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">←
-                    Back to Home</a>
+                <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                    ALREADY ACTIVE? <a href="login.html"
+                        style="color: var(--neon-blue); text-decoration: none; font-weight: 700;">ACCESS TERMINAL</a>
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <a href="index.html"
+                    style="color: var(--text-secondary); text-decoration: none; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">←
+                    Abort Registration</a>
             </div>
         </div>
     </div>
@@ -59,7 +88,16 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            signUpUser(email, password, username, college, city);
+            const btn = signupForm.querySelector('button[type="submit"]');
+            btn.innerHTML = "PROCESSING...";
+            btn.disabled = true;
+
+            signUpUser(email, password, username, college, city).catch(err => {
+                btn.innerHTML = "ESTABLISH IDENTITY";
+                btn.disabled = false;
+                console.error(err);
+                alert(err.message);
+            });
         });
     </script>
 </body>

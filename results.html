@@ -6,108 +6,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Match Report - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
-</head>
-
-<body style="padding-top: 4rem;">
-    <div class="container" style="max-width: 900px;">
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <div style="text-transform: uppercase; letter-spacing: 2px; color: var(--text-secondary);">Mission Complete
-            </div>
-            <h1 style="font-size: 3rem; margin-top: 0.5rem; text-shadow: 0 0 30px rgba(255,255,255,0.2);">After-Action
-                Report</h1>
-        </div>
-
-        <div class="match-report-grid">
-            <!-- PERFORMANCE CARD -->
-            <div class="card"
-                style="border: 1px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <h2 style="margin: 0;">Performance</h2>
-                    <div id="new-badges"></div>
-                </div>
-
-                <div style="text-align: center; padding: 2rem 0;">
-                    <div style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase;">Dominant
-                        Intelligence</div>
-                    <div id="dominant-hero"
-                        style="font-size: 2.5rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px var(--accent-color); margin: 0.5rem 0;">
-                        CALCULATING...
-                    </div>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
-                    <div class="stat-row"><span>Logical</span> <span id="r-logical" style="font-weight: 700;">0</span>
-                    </div>
-                    <div class="stat-row"><span>Strategic</span> <span id="r-strategic"
-                            style="font-weight: 700;">0</span></div>
-                    <div class="stat-row"><span>Social</span> <span id="r-social" style="font-weight: 700;">0</span>
-                    </div>
-                    <div class="stat-row"><span>Political</span> <span id="r-political"
-                            style="font-weight: 700;">0</span></div>
-                    <div class="stat-row"><span>Adaptive</span> <span id="r-adaptive" style="font-weight: 700;">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- XP & RANKING CARD -->
-            <div style="display: flex; flex-direction: column; gap: 2rem;">
-                <!-- XP GAIN -->
-                <div class="card">
-                    <h2 style="font-size: 1.2rem; color: var(--text-secondary);">Progression</h2>
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
-                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">+ <span
-                                id="xp-gained">0</span> XP</span>
-                        <span id="new-total-score" style="font-size: 0.9rem;">Total: 0</span>
-                    </div>
-                    <!-- Animated Bar Placeholder -->
-                    <div class="xp-container">
-                        <div id="xp-bar-fill" class="xp-fill" style="width: 100%; background: var(--success-color);">
-                        </div>
-                    </div>
-
-                    <div id="tier-promo-msg" class="hidden"
-                        style="margin-top: 1rem; text-align: center; padding: 1rem; background: rgba(255,215,0,0.1); border: 1px solid var(--tier-gold); color: var(--tier-gold); border-radius: 4px; font-weight: 700;">
-                        🏆 PROMOTED TO <span id="new-tier-name">GOLD</span> TIER
-                    </div>
-                </div>
-
-                <!-- LEADERBOARD -->
-                <div class="card" style="flex: 1;">
-                    <h2 style="font-size: 1.2rem; color: var(--text-secondary);">Squad Ranking</h2>
-                    <div id="leaderboard-list"
-                        style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem;">
-                        <!-- JS Injected -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 3rem; margin-bottom: 4rem;">
-            <a href="dashboard.html" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">RETURN TO
-                BASE</a>
-        </div>
-    </div>
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <style>
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem;
+            padding: 0.8rem;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 4px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: background 0.3s;
+        }
+
+        .stat-row:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .rank-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.8rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid transparent;
+            margin-bottom: 0.5rem;
             border-radius: 4px;
-            border-left: 2px solid transparent;
         }
     </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="container" style="max-width: 1000px; padding-top: 3rem;">
+
+        <!-- HEADER -->
+        <div style="text-align: center; margin-bottom: 3rem; animation: float 3s ease-in-out infinite;">
+            <div class="badge badge-tier-bronze" style="margin-bottom: 1rem;">MISSION COMPLETE</div>
+            <h1 style="font-size: 3rem; text-shadow: 0 0 30px rgba(255,255,255,0.2);">AFTER-ACTION REPORT</h1>
+        </div>
+
+        <div class="grid-2">
+            <!-- PERFORMANCE CARD -->
+            <div class="card-glass" style="border-top: 3px solid var(--gold-primary);">
+                <div class="flex-between" style="align-items: start; margin-bottom: 2rem;">
+                    <h2 style="margin: 0; font-size: 1.2rem; color: var(--text-secondary);">PERFORMANCE METRICS</h2>
+                    <div id="new-badges"></div>
+                </div>
+
+                <div
+                    style="text-align: center; padding: 1.5rem 0; background: linear-gradient(180deg, rgba(255,215,0,0.05) 0%, transparent 100%); border-radius: 8px; margin-bottom: 2rem; border: 1px solid var(--glass-border);">
+                    <div style="font-size: 0.8rem; color: var(--gold-dim); letter-spacing: 2px;">DOMINANT ARCHETYPE
+                    </div>
+                    <div id="dominant-hero"
+                        style="font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; color: #fff; text-shadow: 0 0 20px var(--gold-glow); margin-top: 0.5rem;">
+                        CALCULATING...
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                    <div class="stat-row"><span>LOGICAL</span> <span id="r-logical" class="text-neon"
+                            style="font-weight: 700;">0</span></div>
+                    <div class="stat-row"><span>STRATEGIC</span> <span id="r-strategic" class="text-neon"
+                            style="font-weight: 700;">0</span></div>
+                    <div class="stat-row"><span>SOCIAL</span> <span id="r-social" class="text-neon"
+                            style="font-weight: 700;">0</span></div>
+                    <div class="stat-row"><span>POLITICAL</span> <span id="r-political" class="text-neon"
+                            style="font-weight: 700;">0</span></div>
+                    <div class="stat-row"><span>ADAPTIVE</span> <span id="r-adaptive" class="text-neon"
+                            style="font-weight: 700;">0</span></div>
+                </div>
+            </div>
+
+            <!-- PROGRESSION & SQUAD -->
+            <div class="flex-col" style="gap: 2rem;">
+                <!-- XP GAIN -->
+                <div class="card-glass">
+                    <h2 style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">CAREER
+                        PROGRESSION</h2>
+                    <div class="flex-between" style="align-items: flex-end; margin-bottom: 0.8rem;">
+                        <span
+                            style="font-size: 2rem; font-weight: 700; color: var(--gold-primary); text-shadow: 0 0 15px var(--gold-glow);">+<span
+                                id="xp-gained">0</span> XP</span>
+                        <span id="new-total-score" style="font-size: 0.9rem; color: var(--text-muted);">Total: 0</span>
+                    </div>
+
+                    <div class="xp-track">
+                        <div id="xp-bar-fill" class="xp-fill" style="width: 100%; background: var(--gold-primary);">
+                        </div>
+                    </div>
+
+                    <div id="tier-promo-msg" class="hidden"
+                        style="margin-top: 1.5rem; text-align: center; padding: 1.5rem; background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(0,0,0,0)); border: 1px solid var(--tier-gold); color: #fff; box-shadow: 0 0 20px var(--gold-glow);">
+                        <div style="font-size: 0.8rem; letter-spacing: 2px; color: var(--gold-primary);">FIELD PROMOTION
+                        </div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; margin-top: 0.5rem;">
+                            RANK UP: <span id="new-tier-name" class="text-gold">GOLD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEADERBOARD -->
+                <div class="card-glass" style="flex: 1;">
+                    <h2 style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1rem;">SQUAD RANKINGS
+                    </h2>
+                    <div id="leaderboard-list">
+                        <!-- JS Injected -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem; margin-bottom: 4rem;">
+            <a href="dashboard.html" class="btn btn-primary"
+                style="padding: 1.2rem 4rem; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">
+                RETURN TO COMMAND
+            </a>
+        </div>
+    </div>
 
     <script type="module">
         import { auth, db } from './js/firebase.js';
@@ -131,20 +147,11 @@
                 let myResults = null;
                 try {
                     myResults = await calculateAndSaveResults(roomId, user.uid);
-                    console.log("Calculation result:", myResults);
                 } catch (e) {
                     console.error("Calculation failed:", e);
-                    document.getElementById('dominant-hero').textContent = "DATA ERROR";
-                    document.getElementById('dominant-hero').style.color = "var(--danger-color)";
-                    document.getElementById('dominant-hero').style.fontSize = "1.5rem";
-
-                    // Create detailed error msg
-                    const errMsg = document.createElement('div');
-                    errMsg.style.fontSize = "0.8rem";
-                    errMsg.style.marginTop = "1rem";
-                    errMsg.style.color = "#ff6b6b";
-                    errMsg.textContent = "Sync failed. Please try refreshing or play a new match.";
-                    document.getElementById('dominant-hero').parentNode.appendChild(errMsg);
+                    document.getElementById('dominant-hero').textContent = "DATA SYNC ERROR";
+                    document.getElementById('dominant-hero').style.color = "#ff4444";
+                    document.getElementById('dominant-hero').style.fontSize = "1.2rem";
                 }
 
                 if (myResults) {
@@ -159,19 +166,12 @@
                     // XP & Tiers
                     if (myResults.xpGained) {
                         document.getElementById('xp-gained').textContent = myResults.xpGained;
-                        // document.getElementById('new-total-score').textContent = `Total: ${Math.floor(myResults.newTotalScore)}`;
-                        // Removed total score text to keep it clean, or can uncomment if needed.
-                        // Actually, I'll keep it as user might want to see total.
                         document.getElementById('new-total-score').textContent = `Total: ${Math.floor(myResults.newTotalScore)}`;
 
                         if (myResults.isPromoted) {
                             const promoBox = document.getElementById('tier-promo-msg');
                             promoBox.classList.remove('hidden');
                             document.getElementById('new-tier-name').textContent = myResults.newTier;
-                            promoBox.className = `tier-badge tier-${myResults.newTier.toLowerCase()}`;
-                            promoBox.style.display = 'block';
-                            promoBox.style.fontSize = '1.2rem';
-                            promoBox.style.marginTop = '1rem';
                         }
                     }
 
@@ -180,8 +180,9 @@
                         myResults.badges.forEach(b => {
                             const sp = document.createElement('span');
                             sp.textContent = b;
-                            sp.className = 'tier-badge tier-gold'; // Reusing gold style for new badges
-                            sp.style.fontSize = '0.7rem';
+                            sp.className = 'badge badge-tier-gold';
+                            sp.style.fontSize = '0.6rem';
+                            sp.style.marginLeft = '5px';
                             bag.appendChild(sp);
                         });
                     }
@@ -206,21 +207,25 @@
             leaderboard.forEach((p, idx) => {
                 const div = document.createElement('div');
                 div.className = 'rank-item';
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
 
                 if (p.uid === currentUid) {
-                    div.style.background = 'rgba(0, 242, 255, 0.1)';
-                    div.style.borderLeftColor = 'var(--accent-color)';
+                    div.style.background = 'rgba(0, 243, 255, 0.1)';
+                    div.style.borderLeft = '3px solid var(--neon-blue)';
+                } else {
+                    div.style.borderLeft = '3px solid transparent';
                 }
 
                 div.innerHTML = `
-                    <div style="display:flex; align-items:center gap: 1rem;">
-                        <span style="font-weight: 700; color: #888; width: 25px;">#${idx + 1}</span>
+                    <div style="display:flex; align-items:center; gap: 1rem;">
+                        <span style="font-weight: 700; color: var(--text-muted); font-family: var(--font-display); font-size: 1.2rem;">#${idx + 1}</span>
                         <div>
-                            <div style="font-weight:700; font-size: 0.95rem;">${p.username}</div>
-                            <div style="font-size:0.7rem; color:var(--text-secondary); text-transform: uppercase;">${p.dominantType}</div>
+                            <div style="font-weight:700; font-size: 0.95rem; color: #fff;">${p.username}</div>
+                            <div style="font-size:0.6rem; color:var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;">${p.dominantType}</div>
                         </div>
                     </div>
-                    <div style="font-weight:700; color: var(--accent-color);">${p.score}</div>
+                    <div style="font-weight:700; color: var(--gold-primary); font-family: var(--font-display);">${p.score}</div>
                 `;
                 list.appendChild(div);
             });

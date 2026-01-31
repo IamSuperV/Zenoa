@@ -13,48 +13,53 @@
 
 <body>
     <div class="container">
-        <nav class="flex-center" style="justify-content: space-between; padding: 2rem 0;">
-            <div style="font-weight: 700; font-size: 1.5rem; letter-spacing: -0.05em;">ZENOA</div>
+        <nav class="flex-between" style="padding: 2rem 0; border-bottom: 1px solid var(--glass-border);">
+            <div
+                style="font-family: var(--font-display); font-size: 1.8rem; color: var(--gold-primary); letter-spacing: 3px;">
+                ZENOA
+            </div>
             <div>
-                <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Log
-                    In</a>
+                <a href="login.html" class="btn btn-secondary"
+                    style="padding: 0.6rem 1.5rem; font-size: 0.8rem;">LOGIN</a>
             </div>
         </nav>
 
-        <main class="hero-section" style="padding: 6rem 0; animation: slideUp 0.8s ease-out;">
-            <div style="margin-bottom: 2rem;">
-                <span class="tier-badge tier-legend">Season 1: Awakening</span>
+        <main class="flex-center flex-col" style="min-height: 80vh; text-align: center;">
+            <div class="animate-float" style="margin-bottom: 2rem;">
+                <span class="badge badge-tier-legend">SEASON 1: AWAKENING</span>
             </div>
 
-            <h1 style="font-size: 4rem; line-height: 1; text-shadow: 0 0 20px var(--accent-glow);">
-                TEST YOUR<br>
-                <span style="color: var(--accent-color);">INTELLIGENCE</span>
+            <h1 style="margin-bottom: 1.5rem;">
+                MEASURE YOUR <br>
+                <span class="text-gold">INTELLIGENCE</span>
             </h1>
 
-            <p style="font-size: 1.2rem; max-width: 600px; margin: 2rem auto; color: var(--text-secondary);">
-                Compete in real-time psychological strategy games. <br>
-                Outsmart your friends. Climb the Ranks. Become a Legend.
+            <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem;">
+                Enter the arena of psychological warfare.
+                Compete in real-time. Make critical decisions.
+                <span style="color: #fff; font-weight: 700;">Prove your worth.</span>
             </p>
 
-            <div class="cta-group" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                <a href="login.html" class="btn btn-primary" style="min-width: 200px;">ENTER ARENA</a>
-                <button id="home-guest-btn" class="btn btn-secondary">Quick Play</button>
+            <div class="flex-center" style="gap: 1.5rem; flex-wrap: wrap;">
+                <a href="login.html" class="btn btn-primary" style="min-width: 200px;">
+                    ENTER THE ARENA
+                </a>
+                <button id="home-guest-btn" class="btn btn-secondary" style="min-width: 180px;">
+                    QUICK PLAY (GUEST)
+                </button>
             </div>
         </main>
 
-        <section id="about"
-            style="margin-top: 4rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-            <div class="card" style="border-top: 3px solid var(--tier-bronze);">
-                <h3 style="color: var(--tier-bronze);">Hard Decisions</h3>
-                <p>No trivia. Brutal scenarios that reveal your true character.</p>
+        <section class="grid-2" style="margin-bottom: 6rem; gap: 2rem;">
+            <div class="card-glass">
+                <h3 class="text-gold">Live Multiplayer</h3>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">Sync with others in real-time. Every second
+                    counts. Your decisions are judged instantly.</p>
             </div>
-            <div class="card" style="border-top: 3px solid var(--tier-gold);">
-                <h3 style="color: var(--tier-gold);">Live Multiplayer</h3>
-                <p>Sync with friends. Answer together. Judge their choices immediately.</p>
-            </div>
-            <div class="card" style="border-top: 3px solid var(--tier-champion);">
-                <h3 style="color: var(--tier-champion);">Global Rank</h3>
-                <p>Earn XP across 5 Intelligence Pillars. Reach the Top 1%.</p>
+            <div class="card-glass">
+                <h3 class="text-neon">Global Dominance</h3>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">Earn XP across 5 pillars of intelligence.
+                    Climb the hierarchy from Bronze to Legend.</p>
             </div>
         </section>
     </div>
@@ -73,8 +78,8 @@
         const guestBtn = document.getElementById('home-guest-btn');
         if (guestBtn) {
             guestBtn.addEventListener('click', () => {
-                guestBtn.textContent = "Entering...";
-                guestBtn.disabled = true;
+                guestBtn.textContent = "INITIALIZING...";
+                guestBtn.style.opacity = "0.7";
                 loginAsGuest();
             });
         }

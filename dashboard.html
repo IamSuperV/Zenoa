@@ -4,180 +4,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - ZENOA</title>
+    <title>Command Center - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
+    <div class="overlay"></div>
     <div class="container">
-        <header
-            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--border-color);">
-            <div style="font-weight: 700; font-size: 1.5rem;">ZENOA</div>
-            <nav style="display: flex; gap: 1rem;">
+
+        <!-- HEADER -->
+        <header class="flex-between"
+            style="padding: 1.5rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border);">
+            <div class="flex-center" style="gap: 1rem;">
+                <div
+                    style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-primary); letter-spacing: 2px;">
+                    ZENOA</div>
+                <div class="badge badge-tier-gold" style="font-size: 0.6rem;">LIVE</div>
+            </div>
+            <nav class="flex-center" style="gap: 1rem;">
                 <a href="leaderboard.html" class="btn btn-secondary"
-                    style="padding: 0.5rem 1rem; font-size: 0.9rem;">Rankings</a>
+                    style="padding: 0.5rem 1rem; font-size: 0.8rem;">RANKINGS</a>
                 <div id="nav-dynamic"></div>
                 <button id="logout-btn" class="btn btn-secondary"
-                    style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: var(--danger-color); color: var(--danger-color);">Log
-                    Out</button>
+                    style="padding: 0.5rem 1rem; color: #ff4444; border-color: rgba(255,0,0,0.3);">LOGOUT</button>
             </nav>
         </header>
 
-        <main style="padding-top: 1rem; max-width: 800px; margin: 0 auto; padding-bottom: 4rem;">
+        <main style="max-width: 900px; margin: 0 auto;">
 
-            <!-- 1. PLAYER CARD (TOP) -->
-            <div class="card"
-                style="margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem; border: 1px solid var(--accent-color); box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.8));">
-                <div style="flex: 1;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                            <!-- Hexagon Avatar Placeholder -->
-                            <div
-                                style="width: 60px; height: 60px; background: var(--surface-border); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                👤
-                            </div>
-                            <div>
-                                <h1 style="text-align: left; margin: 0; font-size: 2rem; line-height: 1.2;">
-                                    <span id="display-name" style="color: #fff;">Loading...</span>
-                                </h1>
-                                <span class="tier-badge tier-gold" id="user-tier-badge"
-                                    style="font-size: 0.7rem; padding: 2px 6px;">GOLD TIER</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">
-                                Rank</div>
-                            <div style="font-size: 1.5rem; font-weight: 700;">#42</div>
-                        </div>
-                    </div>
-
-                    <!-- XP BAR -->
-                    <div style="margin-top: 1.5rem;">
+            <!-- 1. HERO PLAYER CARD -->
+            <div class="card-glass" style="margin-bottom: 3rem; border: 1px solid var(--gold-glow);">
+                <div class="flex-between" style="align-items: flex-start;">
+                    <div class="flex-center" style="gap: 1.5rem;">
+                        <!-- Hex Avatar -->
                         <div
-                            style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.3rem; color: var(--text-secondary);">
-                            <span id="xp-current-text">0 XP</span>
-                            <span id="xp-next-text">1000 XP</span>
+                            style="width: 80px; height: 80px; background: #111; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 1px solid var(--gold-primary); box-shadow: 0 0 15px var(--gold-glow);">
+                            👤
                         </div>
-                        <div class="xp-container" style="height: 6px;">
-                            <div class="xp-fill" style="width: 0%;"></div>
+                        <div>
+                            <h2 id="display-name"
+                                style="margin: 0; font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);">
+                                LOADING...</h2>
+                            <div style="margin-top: 0.5rem;">
+                                <span id="user-tier-badge" class="badge badge-tier-bronze">CALIBRATING...</span>
+                            </div>
                         </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div
+                            style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">
+                            Global Rank</div>
+                        <div style="font-family: var(--font-display); font-size: 2.5rem; color: var(--gold-primary);">
+                            #--</div>
+                    </div>
+                </div>
+
+                <!-- XP Bar -->
+                <div style="margin-top: 2rem;">
+                    <div class="flex-between"
+                        style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                        <span id="xp-current-text">0 XP</span>
+                        <span id="xp-next-text">NEXT RANK</span>
+                    </div>
+                    <div class="xp-track">
+                        <div class="xp-fill" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. ONE BIG BUTTON (START MATCH) -->
-            <div style="margin-bottom: 3rem;">
+            <!-- 2. MAIN ACTION -->
+            <div style="margin-bottom: 3rem; text-align: center;">
                 <button id="quick-play-btn" class="btn btn-primary"
-                    style="width: 100%; padding: 2.5rem; font-size: 2rem; letter-spacing: 3px; border-radius: 12px; background: linear-gradient(90deg, var(--accent-color), #2563eb); text-shadow: 0 0 10px rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3); transition: transform 0.2s;">
-                    START MATCH
+                    style="width: 100%; padding: 2rem; font-size: 1.5rem; letter-spacing: 4px; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                    START RANKED MATCH
                 </button>
-                <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    Instant Matchmaking • Ranked • Global
+                <div
+                    style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                    <span style="color: var(--neon-blue);">●</span> Instant Matchmaking <span
+                        style="color: var(--gold-primary); margin-left: 10px;">●</span> Skill-Based
                 </div>
             </div>
 
-            <!-- 3. SECONDARY ACTIONS (Grid) -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-
-                <!-- JOIN ROOM -->
-                <div class="card" style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s;"
-                    id="join-card-trigger">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">🚪</div>
-                    <h3 style="margin-bottom: 0.5rem;">Join Room</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Enter code to join friends</p>
+            <!-- 3. SECONDARY ACTIONS GRID -->
+            <div class="grid-2">
+                <!-- Join -->
+                <div class="card-glass" id="join-card-trigger" style="cursor: pointer; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.8;">🗝️</div>
+                    <h3 style="font-size: 1.2rem;">Join Lobby</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Enter code to sync with squad</p>
                 </div>
 
-                <!-- HOST ROOM -->
-                <div class="card" style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s;"
-                    id="host-card-trigger">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">📡</div>
-                    <h3 style="margin-bottom: 0.5rem;">Create Room</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Host a private lobby</p>
+                <!-- Host -->
+                <div class="card-glass" id="host-card-trigger" style="cursor: pointer; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.8;">📡</div>
+                    <h3 style="font-size: 1.2rem;">Create Lobby</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Host custom match scenarios</p>
                 </div>
 
-                <!-- SOLO / TRAINING -->
-                <div class="card"
-                    style="text-align: center; padding: 2rem; cursor: pointer; transition: all 0.2s; grid-column: span 2;"
-                    id="solo-card-trigger">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--tier-champion);">Training Mode</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Practice specific intelligence types
-                        against AI</p>
+                <!-- Training -->
+                <div class="card-glass" id="solo-card-trigger"
+                    style="cursor: pointer; text-align: center; grid-column: span 2; border-color: rgba(255,255,255,0.05);">
+                    <h3 style="font-size: 1.2rem; color: var(--text-secondary);">Training Simulation</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Practice against AI constructs</p>
                 </div>
             </div>
 
-            <!-- HIDDEN FORMS (Modals/Expandable) -->
-            <div id="join-section" class="hidden" style="margin-top: 2rem; animation: slideDown 0.3s ease-out;">
-                <div class="card">
-                    <h2>Join Match</h2>
+            <!-- HIDDEN SECTIONS (Interactive) -->
+            <div id="join-section" class="hidden" style="margin-top: 2rem; opacity: 0; animation: float 0.5s forwards;">
+                <div class="card-glass" style="background: #000;">
+                    <h3 style="margin-bottom: 1rem;">ACCESS CODE</h3>
                     <form id="join-room-form">
-                        <div class="form-group">
-                            <input type="text" id="room-code" placeholder="CODE" required
-                                style="text-transform: uppercase; letter-spacing: 4px; font-weight: 800; text-align: center; font-size: 1.5rem; background: rgba(0,0,0,0.5);">
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-block" id="join-btn">CONNECT</button>
+                        <input type="text" id="room-code" placeholder="ENTER CODE" required
+                            style="font-size: 1.5rem; text-align: center; letter-spacing: 5px; margin-bottom: 1rem; text-transform: uppercase; background: #111;">
+                        <button type="submit" class="btn btn-secondary" style="width: 100%;"
+                            id="join-btn">CONNECT</button>
                     </form>
                 </div>
             </div>
 
-            <div id="host-section" class="hidden" style="margin-top: 2rem; animation: slideDown 0.3s ease-out;">
-                <div class="card">
-                    <h2>Host Match</h2>
+            <div id="host-section" class="hidden" style="margin-top: 2rem;">
+                <div class="card-glass" style="background: #000;">
+                    <h3 style="margin-bottom: 1rem;">LOBBY CONFIGURATION</h3>
                     <form id="create-room-form">
-                        <div class="form-group">
-                            <label>Lobby Context</label>
-                            <div style="display: flex; gap: 0.5rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">CONTEXT</label>
+                            <div class="grid-2" style="gap: 10px;">
                                 <label
-                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
-                                    <input type="radio" name="context" value="College" checked style="display: none;">
-                                    College
+                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
+                                    <input type="radio" name="context" value="College" checked> College
                                 </label>
                                 <label
-                                    style="flex: 1; cursor: pointer; text-align: center; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--surface-border);">
-                                    <input type="radio" name="context" value="School" style="display: none;">
-                                    School
+                                    style="background: rgba(255,255,255,0.05); padding: 10px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border);">
+                                    <input type="radio" name="context" value="School"> School
                                 </label>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="game-mode">Mode</label>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label
+                                style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">PROTOCOL</label>
                             <select id="game-mode">
                                 <option value="Mix">Ranked Mix (All Types)</option>
                                 <option value="Logical Intelligence">Drill: Logical</option>
                                 <option value="Strategic Intelligence">Drill: Strategic</option>
-                                <option value="Social Intelligence">Drill: Social</option>
-                                <option value="Political Intelligence">Drill: Political</option>
-                                <option value="Adaptive Intelligence">Drill: Adaptive</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block" id="create-btn">CREATE LOBBY</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;"
+                            id="create-btn">INITIALIZE</button>
                     </form>
                 </div>
             </div>
 
         </main>
 
-        <script>
-            // Simple interactions for the new dashboard
-            document.getElementById('join-card-trigger').onclick = () => {
-                document.getElementById('join-section').classList.toggle('hidden');
-                document.getElementById('host-section').classList.add('hidden');
-            };
-            document.getElementById('host-card-trigger').onclick = () => {
-                document.getElementById('host-section').classList.toggle('hidden');
-                document.getElementById('join-section').classList.add('hidden');
-            };
-            document.getElementById('solo-card-trigger').onclick = () => {
-                document.getElementById('solo-btn').click(); // Reuse existing solo logic
-            };
-            // Quick Play = Create Solo for now, or Matchmaking? 
-            // Let's make Quick Play = Join Random or Create Solo. For now, let's map it to Solo (Training).
-            document.getElementById('quick-play-btn').onclick = () => {
-                document.getElementById('solo-btn').click();
-            };
-        </script>
-
-        <!-- Hidden legacy button for binding -->
+        <!-- Legacy Binding -->
         <button id="solo-btn" class="hidden"></button>
     </div>
 
@@ -190,92 +174,85 @@
         let currentUser = null;
         let userProfile = null;
 
+        // UI Toggles
+        document.getElementById('join-card-trigger').onclick = () => {
+            const s = document.getElementById('join-section');
+            s.classList.toggle('hidden');
+            s.style.opacity = 1;
+            document.getElementById('host-section').classList.add('hidden');
+        };
+        document.getElementById('host-card-trigger').onclick = () => {
+            document.getElementById('host-section').classList.toggle('hidden');
+            document.getElementById('join-section').classList.add('hidden');
+        };
+        document.getElementById('solo-card-trigger').onclick = () => document.getElementById('solo-btn').click();
+        document.getElementById('quick-play-btn').onclick = () => document.getElementById('solo-btn').click();
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
             } else {
                 currentUser = user;
-                // OPTIMISTIC RENDER: Show Guest UI immediately without waiting for db
                 if (user.isAnonymous) {
-                    document.getElementById('display-name').textContent = "Guest (Loading...)";
+                    document.getElementById('display-name').textContent = "Unknown Guest";
                     const nav = document.getElementById('nav-dynamic');
-                    nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
+                    nav.innerHTML = `<a href="signup.html" class="btn btn-neon" style="padding: 0.5rem 1rem; font-size: 0.8rem;">SAVE DATA</a>`;
                 }
 
-                // Background Data Fetch & Sync
                 try {
                     userProfile = await getUserProfile(user.uid);
+                    if (!userProfile && user.isAnonymous) userProfile = await createGuestProfile(user);
 
-                    // DATA REPAIR: If Guest has no profile, create it now
-                    if (!userProfile && user.isAnonymous) {
-                        console.log("Guest profile missing. Auto-creating...");
-                        userProfile = await createGuestProfile(user);
-                    }
-
-                    // Final UI Update (in case name changed or non-guest)
                     if (userProfile) {
+                        // Update Name
                         const dn = document.getElementById('display-name');
                         dn.textContent = userProfile.username;
 
-                        // --- GAMIFICATION SYNC ---
+                        // Calculate Tier
                         const score = userProfile.totalScore || 0;
                         let tier = "BRONZE";
-                        let progress = 0;
                         let maxXP = 500;
-                        let currentLevelScore = score; // Score within current tier
+                        let currentLevelScore = score;
 
                         if (score >= 5000) { tier = "LEGEND"; maxXP = 10000; currentLevelScore = score - 5000; }
-                        else if (score >= 3000) { tier = "CHAMPION"; maxXP = 2000; currentLevelScore = score - 3000; } // 3000-5000
-                        else if (score >= 1500) { tier = "PLATINUM"; maxXP = 1500; currentLevelScore = score - 1500; } // 1500-3000
-                        else if (score >= 500) { tier = "GOLD"; maxXP = 1000; currentLevelScore = score - 500; } // 500-1500
+                        else if (score >= 3000) { tier = "CHAMPION"; maxXP = 2000; currentLevelScore = score - 3000; }
+                        else if (score >= 1500) { tier = "PLATINUM"; maxXP = 1500; currentLevelScore = score - 1500; }
+                        else if (score >= 500) { tier = "GOLD"; maxXP = 1000; currentLevelScore = score - 500; }
                         else { tier = "BRONZE"; maxXP = 500; currentLevelScore = score; }
 
                         // Update Badge
                         const badge = document.getElementById('user-tier-badge');
                         badge.textContent = `${tier} TIER`;
-                        badge.className = `tier-badge tier-${tier.toLowerCase()}`;
+                        badge.className = `badge badge-tier-${tier.toLowerCase()}`;
 
                         // Update Bar
                         const percent = Math.min(100, Math.max(0, (currentLevelScore / maxXP) * 100));
                         document.querySelector('.xp-fill').style.width = `${percent}%`;
-                        document.querySelector('.xp-container + div').innerHTML = `
-                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-secondary);">
-                                <span>${Math.floor(score)} Total XP</span>
-                                <span>Next Tier: ${Math.floor(maxXP - currentLevelScore)} XP</span>
-                            </div>
-                        `; // Replace text below bar or adjust helper text
+                        document.getElementById('xp-current-text').textContent = `${Math.floor(score)} TOTAL XP`;
+                        document.getElementById('xp-next-text').textContent = `${Math.floor(maxXP - currentLevelScore)} XP TO UPGRADE`;
 
+                        // NAV
                         const nav = document.getElementById('nav-dynamic');
                         if (userProfile.isGuest) {
-                            nav.innerHTML = `<a href="signup.html" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Save Progress</a>`;
-                            if (!dn.textContent.includes("(Guest)")) dn.textContent += " (Guest)";
+                            nav.innerHTML = `<a href="signup.html" class="btn btn-neon" style="padding: 0.5rem 1rem; font-size: 0.8rem;">SAVE DATA</a>`;
                         } else {
-                            nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">My Profile</a>`;
+                            nav.innerHTML = `<a href="profile.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">PROFILE</a>`;
                         }
                     }
                 } catch (e) {
-                    console.error("Background profile sync failed:", e);
+                    console.error("Sync error:", e);
                 }
             }
         });
 
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', logoutUser);
 
-        // Create Room
         document.getElementById('create-room-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser) {
-                alert("You are not logged in!");
-                return;
-            }
-            if (!userProfile) {
-                alert("Profile is still loading... please wait a second and try again.");
-                return;
-            }
+            if (!currentUser || !userProfile) return;
 
             const btn = document.getElementById('create-btn');
-            btn.textContent = "Creating...";
+            btn.textContent = "INITIALIZING...";
             btn.disabled = true;
 
             const context = document.querySelector('input[name="context"]:checked').value;
@@ -285,57 +262,35 @@
                 const roomId = await createRoom(currentUser.uid, userProfile.username, context, gameMode);
                 window.location.href = `room.html?roomId=${roomId}`;
             } catch (error) {
-                console.error(error);
-                alert("Failed to create room: " + error.message);
-                btn.textContent = "Host Room";
+                alert("Failed: " + error.message);
+                btn.textContent = "INITIALIZE";
                 btn.disabled = false;
             }
         });
 
-        // Solo Mode
         document.getElementById('solo-btn').addEventListener('click', async () => {
-            if (!currentUser || !userProfile) {
-                alert("Please wait for profile to load...");
-                return;
-            }
-
-            const btn = document.getElementById('solo-btn');
-            btn.textContent = "Starting...";
-            btn.disabled = true;
+            if (!currentUser || !userProfile) return;
+            const btn = document.getElementById('quick-play-btn');
+            btn.textContent = "SEARCHING...";
 
             try {
-                // 1. Create Private Room
                 const roomId = await createRoom(currentUser.uid, userProfile.username, 'Solo', 'Mix');
-
-                // 2. Auto-Start Game
-                // We need to import startGame but it wasn't imported in module script yet.
-                // We can't import dynamic easily here without changing top imports. 
-                // Let's rely on room.html logic? No, we want to skip it.
-                // I will update imports in a separate tool call to be safe or assuming startGame is available/exported.
-                // Wait, I need to check imports.
-
-                // Assuming I will add startGame to imports below.
                 await startGame(roomId);
-
                 window.location.href = `play.html?roomId=${roomId}`;
             } catch (e) {
                 console.error(e);
-                alert("Error starting solo: " + e.message);
-                btn.textContent = "Play Solo";
-                btn.disabled = false;
+                btn.textContent = "START RANKED MATCH";
             }
         });
 
-        // Join Room
         document.getElementById('join-room-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || !userProfile) return;
-
             const codeInput = document.getElementById('room-code');
             const roomId = codeInput.value.trim().toUpperCase();
 
             const btn = document.getElementById('join-btn');
-            btn.textContent = "Joining...";
+            btn.textContent = "SYNCING...";
             btn.disabled = true;
 
             try {
@@ -343,7 +298,7 @@
                 window.location.href = `room.html?roomId=${roomId}`;
             } catch (error) {
                 alert(error.message);
-                btn.textContent = "Join Game";
+                btn.textContent = "CONNECT";
                 btn.disabled = false;
             }
         });

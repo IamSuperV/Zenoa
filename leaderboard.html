@@ -6,97 +6,289 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Rankings - ZENOA</title>
     <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --gold-primary: #FFD700;
+            --gold-glow: rgba(255, 215, 0, 0.5);
+            --dark-bg: #0a0a0a;
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: #000 url('https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=2069&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--gold-primary);
+            text-shadow: 0 0 15px var(--gold-glow);
+            letter-spacing: 2px;
+        }
+
+        .btn-glow {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 0.5rem 1.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-glow:hover {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* TITLE SECTION */
+        .page-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            background: linear-gradient(180deg, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: 4px;
+        }
+
+        .page-title p {
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            color: #888;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-color: var(--gold-primary);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0));
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        /* FILTER DROPDOWN */
+        #filter-select {
+            background: #000;
+            color: var(--gold-primary);
+            border: 1px solid var(--gold-primary);
+            padding: 0.8rem 2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            outline: none;
+            width: 300px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* LEADERBOARD CARDS */
         .rank-card {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid transparent;
-            margin-bottom: 0.8rem;
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.6));
+            border-left: 3px solid transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
         .rank-card:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.06);
+            transform: scale(1.02);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.8));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .rank-number {
-            font-size: 1.5rem;
-            font-weight: 900;
-            width: 50px;
-            text-align: center;
-            color: var(--text-secondary);
-            margin-right: 1rem;
-        }
-
-        /* Top 3 Styling */
+        /* Rank 1 (Gold) */
         .rank-1 {
-            border: 1px solid var(--tier-gold);
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0));
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+            border-left: 3px solid var(--gold-primary);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(0, 0, 0, 0.8));
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
         }
 
-        .rank-1 .rank-number {
-            color: var(--tier-gold);
-            text-shadow: 0 0 10px var(--tier-gold);
+        .rank-1 .rank-display {
+            color: var(--gold-primary);
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .rank-1::after {
+            content: '👑';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+
+        /* Rank 2 (Silver) */
+        .rank-2 {
+            border-left: 3px solid #C0C0C0;
+            background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(0, 0, 0, 0.8));
+        }
+
+        .rank-2 .rank-display {
+            color: #C0C0C0;
             font-size: 2rem;
         }
 
-        .rank-2 {
-            border: 1px solid #c0c0c0;
-            /* Silver */
-            background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(0, 0, 0, 0));
+        /* Rank 3 (Bronze) */
+        .rank-3 {
+            border-left: 3px solid #CD7F32;
+            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(0, 0, 0, 0.8));
         }
 
-        .rank-2 .rank-number {
-            color: #c0c0c0;
-            text-shadow: 0 0 8px #c0c0c0;
+        .rank-3 .rank-display {
+            color: #CD7F32;
             font-size: 1.8rem;
         }
 
-        .rank-3 {
-            border: 1px solid #cd7f32;
-            /* Bronze */
-            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(0, 0, 0, 0));
+        /* Default Ranks */
+        .rank-display {
+            width: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #555;
+            margin-right: 1.5rem;
+            font-family: 'Cinzel', serif;
         }
 
-        .rank-3 .rank-number {
-            color: #cd7f32;
-            text-shadow: 0 0 5px #cd7f32;
-            font-size: 1.6rem;
-        }
-
-        .user-avatar-hex {
+        .hex-avatar {
             width: 50px;
             height: 50px;
-            background: var(--surface-border);
+            background: #222;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 1.5rem;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .tab-btn {
-            opacity: 0.5;
-            transition: opacity 0.2s;
+        .player-info {
+            flex: 1;
         }
 
-        .tab-btn:hover {
-            opacity: 0.8;
-        }
-
-        .tab-btn.active {
-            opacity: 1;
-            border-color: var(--accent-color);
-            background: var(--accent-color);
-            color: #000;
+        .player-name {
+            font-size: 1.4rem;
             font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-detail {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .score-display {
+            text-align: right;
+        }
+
+        .xp-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .xp-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* Tier Badges */
+        .badge-pill {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .badge-gold {
+            border-color: var(--gold-primary);
+            color: var(--gold-primary);
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .hidden {
@@ -106,45 +298,33 @@
 </head>
 
 <body>
-    <div class="container" style="max-width: 900px;">
-        <header
-            style="display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color);">
-            <div style="font-weight: 700; font-size: 1.5rem;">ZENOA <span
-                    style="font-size: 0.8rem; color: var(--text-secondary);">// GLOBAL INTEL</span></div>
-            <a href="dashboard.html" class="btn btn-secondary" style="padding: 0.5rem 1rem;">RETURN TO BASE</a>
+    <div class="overlay"></div>
+    <div class="container">
+        <header>
+            <div class="logo">ZENOA</div>
+            <a href="dashboard.html" class="btn-glow">Return to Base</a>
         </header>
 
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h1 style="font-size: 3rem; margin-bottom: 0.5rem; text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);">Dominance
-                Hierarchy</h1>
-            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Top operatives ranked by total
-                intelligence output.</p>
+        <div class="page-title">
+            <h1>DOMINANCE HIERARCHY</h1>
+            <p>Measure Your Decision-Making Intelligence</p>
         </div>
 
-        <!-- TABS -->
-        <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
-            <button class="btn btn-secondary tab-btn active" id="tab-global" data-tab="Global"
-                style="min-width: 120px;">Global</button>
-            <button class="btn btn-secondary tab-btn" id="tab-college" data-tab="College"
-                style="min-width: 120px;">College</button>
-            <button class="btn btn-secondary tab-btn" id="tab-city" data-tab="City"
-                style="min-width: 120px;">City</button>
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-global" data-tab="Global">Global</button>
+            <button class="tab-btn" id="tab-college" data-tab="College">College</button>
+            <button class="tab-btn" id="tab-city" data-tab="City">City</button>
         </div>
 
-        <!-- Filter Select (Initially Hidden) -->
-        <div id="filter-container" class="hidden" style="text-align: center; margin-bottom: 2rem;">
-            <select id="filter-select"
-                style="padding: 0.8rem 1.5rem; border-radius: 4px; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid var(--surface-border); min-width: 250px;">
+        <div id="filter-container" class="hidden" style="text-align: center;">
+            <select id="filter-select">
                 <option value="">Select Sector...</option>
-                <!-- Filled by JS -->
             </select>
         </div>
 
-        <!-- LEADERBOARD LIST -->
         <div id="leaderboard-container">
-            <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">Initialize link...</div>
+            <div style="text-align: center; padding: 4rem; opacity: 0.5;">Accessing Global Database...</div>
         </div>
-
     </div>
 
     <script type="module">
@@ -257,7 +437,7 @@
 
         function renderLeaderboard(users, container) {
             if (users.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--text-secondary);">No operatives found in this sector.</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: #666; font-family: \'Rajdhani\';">NO OPERATIVES FOUND IN THIS SECTOR.</div>';
                 return;
             }
 
@@ -274,28 +454,27 @@
                 const div = document.createElement('div');
                 div.className = `rank-card ${rankClass}`;
 
-                // Tier Badge Style (Assuming standardized names)
-                const tierClass = `tier-${(u.tier || 'BRONZE').toLowerCase()}`;
+                // Tier Badge
+                const tier = u.tier || 'BRONZE';
+                const tierClass = tier === 'GOLD' || tier === 'LEGEND' || tier === 'CHAMPION' ? 'badge-gold' : 'badge-pill';
 
                 div.innerHTML = `
-                    <div class="rank-number">${rank}</div>
-                    <div class="user-avatar-hex">👤</div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="font-weight: 700; font-size: 1.2rem; color: #fff;">
-                                ${u.username}
-                                <span class="tier-badge ${tierClass}" style="font-size: 0.6rem; vertical-align: middle; margin-left: 0.5rem;">${u.tier || 'BRONZE'}</span>
-                            </div>
-                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-color); text-shadow: 0 0 10px rgba(0,242,255,0.5);">${Math.floor(u.displayScore)} XP</div>
+                    <div class="rank-display">#${rank}</div>
+                    <div class="hex-avatar">
+                        <span style="font-size: 1.5rem;">👤</span>
+                    </div>
+                    <div class="player-info">
+                        <div class="player-name">
+                            ${u.username}
+                            <span class="badge-pill ${tierClass}">${tier}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 0.2rem;">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">
-                                ${u.dominantType || 'Unknown Type'}
-                            </div>
-                            <div style="font-size: 0.8rem; color: #666;">
-                                ${u.college || u.city || 'Unknown Location'}
-                            </div>
+                        <div class="player-detail">
+                            ${u.dominantType || 'Unknown Style'} • ${u.college || u.city || 'Unknown Location'}
                         </div>
+                    </div>
+                    <div class="score-display">
+                        <div class="xp-val">${Math.floor(u.displayScore)}</div>
+                        <div class="xp-label">INTEL XP</div>
                     </div>
                 `;
                 container.appendChild(div);
