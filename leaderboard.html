@@ -148,17 +148,34 @@
     </div>
 
     <script type="module">
-        import { getGlobalLeaderboard, getUniqueFilterValues } from './js/leaderboard.js';
-        // Note: getUniqueFilterValues might not exist, I'll mock it or check logic
+        import { subscribeToLeaderboard } from './js/leaderboard.js';
 
         let currentTab = 'Global';
+        let currentFilter = null;
+        let unsubscribe = null; // To stop listener when switching
 
-        // Mock data for filters since we might not have a distinct query ready
-        const MOCK_COLLEGES = ['Harvard', 'MIT', 'Stanford', 'Unknown', 'Yale', 'Princeton'];
-        const MOCK_CITIES = ['New York', 'San Francisco', 'London', 'Boston', 'Chicago'];
+        // Curated College Lists
+        const COLLEGES_MUMBAI = [
+            'IIT Bombay',
+            'NMIMS',
+            'St. Xavier’s College',
+            'DJ Sanghvi',
+            'KJ Somaiya'
+        ];
+
+        const COLLEGES_PUNE = [
+            'COEP',
+            'VIT Pune',
+            'MIT WPU',
+            'Symbiosis',
+            'Fergusson College'
+        ];
+
+        // City List (Simple)
+        const CITIES = ['Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Hyderabad'];
 
         // Initial Load
-        loadLeaderboard('Global');
+        initLeaderboard('Global');
 
         // Tab Switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -169,19 +186,23 @@
 
                 currentTab = e.target.dataset.tab;
                 const filterCont = document.getElementById('filter-container');
-                const filterSel = document.getElementById('filter-select');
 
                 if (currentTab === 'Global') {
                     filterCont.classList.add('hidden');
-                    loadLeaderboard('Global');
+                    initLeaderboard('Global');
                 } else {
                     filterCont.classList.remove('hidden');
-                    // Populate filter options
-                    if (currentTab === 'College') populateFilters(MOCK_COLLEGES);
-                    if (currentTab === 'City') populateFilters(MOCK_CITIES);
 
-                    // Reset View until filter selected? Or show top indiscriminately?
-                    // Let's clear and ask for selection
+                    if (currentTab === 'College') {
+                        // Merge lists for dropdown, sorted
+                        const allColleges = [...COLLEGES_MUMBAI, ...COLLEGES_PUNE].sort();
+                        populateFilters(allColleges);
+                    } else if (currentTab === 'City') {
+                        populateFilters(CITIES);
+                    }
+
+                    // Reset View -> Ask for selection
+                    stopListening();
                     document.getElementById('leaderboard-container').innerHTML = `<div style="text-align: center; padding: 3rem; color: var(--text-secondary);">Select a ${currentTab} to view rankings.</div>`;
                 }
             });
@@ -189,7 +210,7 @@
 
         document.getElementById('filter-select').addEventListener('change', (e) => {
             if (e.target.value) {
-                loadLeaderboard(currentTab, e.target.value);
+                initLeaderboard(currentTab, e.target.value);
             }
         });
 
@@ -204,55 +225,81 @@
             });
         }
 
-        async function loadLeaderboard(type, filterVal = null) {
+        function stopListening() {
+            if (unsubscribe) {
+                unsubscribe();
+                unsubscribe = null;
+            }
+        }
+
+        function initLeaderboard(type, filterVal = null) {
             const container = document.getElementById('leaderboard-container');
-            container.innerHTML = '<div style="text-align: center; padding: 4rem;">Decrypting...</div>';
+            container.innerHTML = '<div style="text-align: center; padding: 4rem;">Connecting to Global Intel...</div>';
 
-            try {
-                // Call the existing function from Step 642
-                const users = await getGlobalLeaderboard(type, filterVal, 'totalScore');
+            stopListening();
 
-                if (users.length === 0) {
-                    container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--text-secondary);">No operatives found in this sector.</div>';
-                    return;
+            unsubscribe = subscribeToLeaderboard(
+                type,
+                filterVal,
+                'totalScore',
+                (users) => { renderLeaderboard(users, container); },
+                (error) => {
+                    console.error(error);
+                    // Use a more user-friendly error message if it's an index error
+                    if (error.code === 'failed-precondition' || error.message.includes('index')) {
+                        container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger-color);">System Calibration Required (Code: INDEX). <br>Administrator has been notified.</div>';
+                    } else {
+                        container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--danger-color);">Connection Lost. Retrying...</div>`;
+                    }
                 }
+            );
+        }
 
-                container.innerHTML = '';
-                users.forEach((u, index) => {
-                    const rank = index + 1; // Rank is just index + 1 for the fetched list
+        function renderLeaderboard(users, container) {
+            if (users.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--text-secondary);">No operatives found in this sector.</div>';
+                return;
+            }
 
-                    let rankClass = '';
-                    if (rank === 1) rankClass = 'rank-1';
-                    else if (rank === 2) rankClass = 'rank-2';
-                    else if (rank === 3) rankClass = 'rank-3';
+            container.innerHTML = '';
+            users.forEach((u, index) => {
+                const rank = index + 1;
 
-                    const div = document.createElement('div');
-                    div.className = `rank-card ${rankClass}`;
-                    div.innerHTML = `
-                        <div class="rank-number">${rank}</div>
-                        <div class="user-avatar-hex">👤</div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <div style="font-weight: 700; font-size: 1.2rem; color: #fff;">${u.username}</div>
-                                <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-color); text-shadow: 0 0 10px rgba(0,242,255,0.5);">${Math.floor(u.displayScore)} XP</div>
+                // Styling Top 3
+                let rankClass = '';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                const div = document.createElement('div');
+                div.className = `rank-card ${rankClass}`;
+
+                // Tier Badge Style (Assuming standardized names)
+                const tierClass = `tier-${(u.tier || 'BRONZE').toLowerCase()}`;
+
+                div.innerHTML = `
+                    <div class="rank-number">${rank}</div>
+                    <div class="user-avatar-hex">👤</div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-weight: 700; font-size: 1.2rem; color: #fff;">
+                                ${u.username}
+                                <span class="tier-badge ${tierClass}" style="font-size: 0.6rem; vertical-align: middle; margin-left: 0.5rem;">${u.tier || 'BRONZE'}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between; margin-top: 0.2rem;">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">
-                                    ${u.dominantType || 'Unknown Type'}
-                                </div>
-                                <div style="font-size: 0.8rem; color: #666;">
-                                    ${u.city || u.college || 'Unknown Location'}
-                                </div>
+                            <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent-color); text-shadow: 0 0 10px rgba(0,242,255,0.5);">${Math.floor(u.displayScore)} XP</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.2rem;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">
+                                ${u.dominantType || 'Unknown Type'}
+                            </div>
+                            <div style="font-size: 0.8rem; color: #666;">
+                                ${u.college || u.city || 'Unknown Location'}
                             </div>
                         </div>
-                    `;
-                    container.appendChild(div);
-                });
-
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger-color);">Error retrieving data. Secure line failed.</div>';
-            }
+                    </div>
+                `;
+                container.appendChild(div);
+            });
         }
     </script>
 </body>

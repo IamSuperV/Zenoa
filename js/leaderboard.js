@@ -3,14 +3,7 @@ import {
     doc,
     updateDoc,
     getDoc,
-    getDocs,
-    collection,
-    query,
-    where,
-    orderBy,
-    limit,
-    increment,
-    arrayUnion
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 import { QUESTIONS_DB } from './data.js';
 
@@ -209,85 +202,83 @@ export const getRoomLeaderboard = async (roomId) => {
     return calculateRoomLeaderboard(roomSnap.data());
 };
 
-// NEW: Global Leaderboard Fetcher
-// NEW: Global Leaderboard Fetcher
-export const getGlobalLeaderboard = async (type = 'Global', filterValue = null, categoryField = 'totalScore') => {
+// NEW: Real-Time Global/College/City Leaderboard
+export const subscribeToLeaderboard = (type, filterValue, categoryField, onUpdate, onError) => {
     const usersRef = collection(db, "users");
     let q;
 
     // Mapping categoryField to Firestore field
-    // 'totalScore' -> 'totalScore'
-    // 'Logical' -> 'intelligence.logical'
     let dbField = categoryField;
     if (categoryField !== 'totalScore') {
         dbField = `intelligence.${categoryField.toLowerCase()}`;
     }
 
     try {
+        // Strategy: Use a simple query and sort client-side if needed to avoid index issues with many colleges
+        // For Global, we can try robust server-side sorting.
+        // For Specific Filters, fetching a slightly larger set and filtering might be safer if indexes are missing,
+        // but for scalability, let's try the direct query first. If it fails, the onError callback handles it.
+
         if (type === 'Global') {
+            // Global: Show top 50, strictly sorted
             q = query(usersRef, where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
-        } else if (type === 'College') {
-            q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
-        } else if (type === 'City') {
-            q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
+        } else {
+            // Filtered: Might strictly require an index. 
+            // IMPROVEMENT: To avoid index hell for every college, we will ONLY filter by 'isGuest' 
+            // and perform client-side filtering logic inside the snapshot if the dataset isn't huge.
+            // But wait, if we have 1000 users, downloading all is bad.
+            // Let's stick to the specific query. If it fails, the User (Dev) sees it in Console.
+            // Actually, let's use a "Safer" approach for filters:
+            // Query strictly by the Filter field, order by totalScore.
+            if (type === 'College') {
+                q = query(usersRef, where("college", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
+            } else if (type === 'City') {
+                q = query(usersRef, where("city", "==", filterValue), where("isGuest", "==", false), orderBy(dbField, "desc"), limit(50));
+            }
         }
 
-        const querySnapshot = await getDocs(q);
-        const users = [];
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const users = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
 
-            // Get the specific score we are sorting by for display
-            let displayScore = 0;
-            if (categoryField === 'totalScore') {
-                displayScore = data.totalScore || 0;
-            } else {
-                displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
-            }
+                // Get display score
+                let displayScore = 0;
+                if (categoryField === 'totalScore') {
+                    displayScore = data.totalScore || 0;
+                } else {
+                    displayScore = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
+                }
 
-            users.push({
-                uid: data.uid,
-                username: data.username,
-                college: data.college,
-                city: data.city,
-                displayScore: displayScore, // Generalize the score
-                dominantType: data.dominantType
+                users.push({
+                    uid: data.uid,
+                    username: data.username,
+                    college: data.college,
+                    city: data.city,
+                    displayScore: displayScore,
+                    dominantType: data.dominantType,
+                    tier: getTierFromScore(data.totalScore || 0)
+                });
             });
+            onUpdate(users);
+        }, (error) => {
+            console.error("Leaderboard Stream Error:", error);
+            if (onError) onError(error);
         });
-        return users;
+
+        return unsubscribe;
 
     } catch (e) {
-        console.error("Firestore Index / Query Error:", e);
-        console.warn("Falling back to client-side sort due to missing index.");
-
-        const fallbackQ = query(usersRef, where("isGuest", "==", false), limit(100));
-        const snap = await getDocs(fallbackQ);
-        let users = [];
-        snap.forEach(doc => {
-            const data = doc.data();
-            let score = 0;
-            if (categoryField === 'totalScore') {
-                score = data.totalScore || 0;
-            } else {
-                score = data.intelligence ? (data.intelligence[categoryField.toLowerCase()] || 0) : 0;
-            }
-
-            users.push({
-                ...data,
-                displayScore: score
-            });
-        });
-
-        // Manual Filter
-        if (type === 'College') {
-            users = users.filter(u => u.college === filterValue);
-        } else if (type === 'City') {
-            users = users.filter(u => u.city === filterValue);
-        }
-
-        // Manual Sort
-        users.sort((a, b) => b.displayScore - a.displayScore);
-
-        return users.slice(0, 50);
+        console.error("Setup Error:", e);
+        if (onError) onError(e);
+        return () => { };
     }
+};
+
+const getTierFromScore = (score) => {
+    if (score >= 5000) return "LEGEND";
+    if (score >= 3000) return "CHAMPION";
+    if (score >= 1500) return "PLATINUM";
+    if (score >= 500) return "GOLD";
+    return "BRONZE";
 };
