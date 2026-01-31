@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* --- CORE PALETTE --- */
-    --bg-deep: #050505;
-    --bg-hex: #0a0a0f;
-    --glass-base: rgba(20, 20, 28, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-highlight: rgba(255, 255, 255, 0.15);
+    /* --- CORE PALETTE (AAA GAME LOBBY) --- */
+    --bg-deep: #020202;
+    --bg-hex: #08080a;
+
+    /* Solid Panel System */
+    --panel-bg: #0a0a0f;
+    --panel-border: #333;
+    --panel-highlight: rgba(255, 215, 0, 0.1);
 
     /* --- LUXURY ACCENTS --- */
     --gold-primary: #FFD700;
     --gold-dim: #b8860b;
-    --gold-glow: rgba(255, 215, 0, 0.4);
+    --gold-glow: rgba(255, 215, 0, 0.6);
+    --gold-gradient: linear-gradient(180deg, #ffd700 0%, #b8860b 100%);
 
     --neon-blue: #00f3ff;
-    --neon-blue-glow: rgba(0, 243, 255, 0.4);
+    --neon-blue-glow: rgba(0, 243, 255, 0.5);
 
     --text-primary: #ffffff;
-    --text-secondary: #a0a0b0;
-    --text-muted: #555566;
+    --text-secondary: #aaaaaa;
+    --text-muted: #666666;
 
     /* --- TIERS --- */
     --tier-bronze: #cd7f32;
@@ -41,11 +44,12 @@
 }
 
 body {
-    /* App-Mode Base */
+    /* AAA Game Lobby Base */
     background-color: var(--bg-deep);
     background-image:
-        radial-gradient(circle at 50% 0%, rgba(20, 30, 60, 0.4) 0%, transparent 60%),
-        url('https://www.transparenttextures.com/patterns/cubes.png');
+        radial-gradient(circle at 50% 0%, rgba(255, 150, 0, 0.15) 0%, transparent 70%),
+        radial-gradient(circle at 50% 100%, rgba(0, 100, 255, 0.1) 0%, transparent 60%),
+        url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     color: var(--text-primary);
     font-family: var(--font-ui);
     min-height: 100vh;
@@ -55,7 +59,6 @@ body {
     overflow-x: hidden;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
-    /* Prevent selection for app-feel */
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -74,21 +77,11 @@ h4 {
 
 h1 {
     font-size: 3.5rem;
-    background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+    background: linear-gradient(180deg, #fff 0%, #ffd700 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.text-gold {
-    color: var(--gold-primary);
-    text-shadow: 0 0 15px var(--gold-glow);
-}
-
-.text-neon {
-    color: var(--neon-blue);
-    text-shadow: 0 0 15px var(--neon-blue-glow);
+    text-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
 }
 
 /* --- CONTAINERS & LAYOUT --- */
@@ -120,38 +113,40 @@ h1 {
 .grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
-/* --- GLASS CARDS --- */
+/* --- SOLID GAME PANELS (Replaces Glass) --- */
 .card-glass {
-    background: var(--glass-base);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s var(--ease-out), border-color 0.3s;
+    background: #0e0e12;
+    border: 1px solid #333;
+    border-top: 1px solid #555;
+    border-radius: 4px;
+    /* Sharper corners for tactical feel */
+    padding: 1.5rem;
+    box-shadow:
+        0 4px 0 rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.1s, border-color 0.2s;
     position: relative;
     overflow: hidden;
 }
 
-.card-glass:hover {
-    transform: translateY(-4px);
-    border-color: var(--glass-highlight);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+.card-glass:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .card-glass::before {
+    /* Corner Accent */
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-    opacity: 0.5;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+    pointer-events: none;
 }
 
 /* --- BUTTONS --- */
