@@ -206,17 +206,48 @@
         let userProfile = null;
 
         // UI Toggles
-        document.getElementById('join-card-trigger').onclick = () => {
-            const s = document.getElementById('join-section');
-            s.classList.toggle('hidden');
-            s.style.opacity = 1;
-            document.getElementById('host-section').classList.add('hidden');
+        // UI Toggles - Mutual Exclusion
+        const sections = {
+            'join': document.getElementById('join-section'),
+            'host': document.getElementById('host-section'),
+            'ranked': document.getElementById('ranked-config-section')
         };
-        document.getElementById('host-card-trigger').onclick = () => {
-            document.getElementById('host-section').classList.toggle('hidden');
-            document.getElementById('join-section').classList.add('hidden');
+
+        function toggleSection(targetId) {
+            // Close all others first
+            Object.keys(sections).forEach(key => {
+                if (key !== targetId) {
+                    sections[key].classList.add('hidden');
+                    sections[key].style.opacity = 0;
+                }
+            });
+
+            // Toggle target
+            const s = sections[targetId];
+            if (s.classList.contains('hidden')) {
+                s.classList.remove('hidden');
+                // Small timeout to allow display:block to apply before opacity transition
+                setTimeout(() => s.style.opacity = 1, 10);
+
+                // Scroll to view on mobile
+                if (window.innerWidth <= 768) {
+                    s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                s.style.opacity = 0;
+                setTimeout(() => s.classList.add('hidden'), 300); // Wait for fade out
+            }
+        }
+
+        document.getElementById('join-card-trigger').onclick = () => toggleSection('join');
+        document.getElementById('host-card-trigger').onclick = () => toggleSection('host');
+
+        document.getElementById('quick-play-btn').onclick = () => {
+            // For Ranked, we just want to open it, basically same logic
+            toggleSection('ranked');
         };
-        document.getElementById('solo-card-trigger').onclick = () => document.getElementById('quick-play-btn').click();
+
+        document.getElementById('solo-card-trigger').onclick = () => toggleSection('ranked');
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
