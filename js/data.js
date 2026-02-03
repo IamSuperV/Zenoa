@@ -185,6 +185,102 @@ export const QUESTIONS_DB = [
         ],
         weights: { "0": { logical: -2 }, "1": { logical: -2 }, "2": { logical: -2 }, "3": { logical: 3 } }
     },
+    {
+        id: "log_016",
+        category: "Logical Intelligence",
+        scenario: "Classic Monty Hall: 3 doors. Prize behind one. You pick Door 1. Host opens Door 3 (Goat). Do you switch to Door 2?",
+        options: [
+            "Yes, always switch.",
+            "No, stick with original choice.",
+            "It doesn't matter (50/50).",
+            "Flip a coin."
+        ],
+        weights: { "0": { logical: 3 }, "1": { logical: -1 }, "2": { logical: -2 }, "3": { logical: -1 } }
+    },
+    {
+        id: "log_017",
+        category: "Logical Intelligence",
+        scenario: "Sequence: 2, 6, 12, 20, 30, ... What is next?",
+        options: [
+            "40",
+            "42",
+            "36",
+            "48"
+        ],
+        weights: { "0": { logical: -1 }, "1": { logical: 3 }, "2": { logical: -2 }, "3": { logical: -1 } }
+    },
+    {
+        id: "log_018",
+        category: "Logical Intelligence",
+        scenario: "Five machines take 5 minutes to make 5 widgets. How long do 100 machines take to make 100 widgets?",
+        options: [
+            "100 minutes",
+            "5 minutes",
+            "20 minutes",
+            "50 minutes"
+        ],
+        weights: { "0": { logical: -2 }, "1": { logical: 3 }, "2": { logical: -1 }, "3": { logical: -1 } }
+    },
+    {
+        id: "log_019",
+        category: "Logical Intelligence",
+        scenario: "You have a 3L jug and a 5L jug. You need exactly 4L of water. Is it possible?",
+        options: [
+            "Yes, fill 5, pour to 3, dump 3, pour 2 to 3, fill 5, pour to 3.",
+            "No, you need a 4L jug.",
+            "Yes, estimate half of the 5L jug.",
+            "Yes, fill both and pour out half."
+        ],
+        weights: { "0": { logical: 3 }, "1": { logical: -2 }, "2": { logical: -1 }, "3": { logical: -1 } }
+    },
+    {
+        id: "log_020",
+        category: "Logical Intelligence",
+        scenario: "If 'All Bloops are Glerks' is FALSE, what must be true?",
+        options: [
+            "No Bloops are Glerks.",
+            "Some Bloops are not Glerks.",
+            "All Glerks are Bloops.",
+            "Some Glerks are not Bloops."
+        ],
+        weights: { "0": { logical: -1 }, "1": { logical: 3 }, "2": { logical: -2 }, "3": { logical: -1 } }
+    },
+    {
+        id: "log_021",
+        category: "Logical Intelligence",
+        scenario: "A bat is red. Anything red is hot. Therefore...",
+        options: [
+            "The bat is hot.",
+            "Hot things are bats.",
+            "Some bats are not hot.",
+            "Red things are bats."
+        ],
+        weights: { "0": { logical: 3 }, "1": { logical: -2 }, "2": { logical: -3 }, "3": { logical: -2 } }
+    },
+    {
+        id: "log_022",
+        category: "Logical Intelligence",
+        scenario: "You are in a race. You pass the person in 2nd place. What place are you in?",
+        options: [
+            "1st",
+            "2nd",
+            "3rd",
+            "Dead last"
+        ],
+        weights: { "0": { logical: -2 }, "1": { logical: 3 }, "2": { logical: -2 }, "3": { logical: -3 } }
+    },
+    {
+        id: "log_023",
+        category: "Logical Intelligence",
+        scenario: "Mary's father has 5 daughters: Nana, Nene, Nini, Nono. What is the name of the 5th daughter?",
+        options: [
+            "Nunu",
+            "Mary",
+            "Nina",
+            "Nana"
+        ],
+        weights: { "0": { logical: -2, adaptive: -1 }, "1": { logical: 3 }, "2": { logical: -1 }, "3": { logical: -2 } }
+    },
 
     // ==========================================
     // 2. BUSINESS & STRATEGIC INTELLIGENCE
@@ -370,6 +466,102 @@ export const QUESTIONS_DB = [
             "Shut it down."
         ],
         weights: { "0": { strategic: 2 }, "1": { strategic: -1 }, "2": { strategic: 3 }, "3": { strategic: -2 } }
+    },
+    {
+        id: "strat_016",
+        category: "Strategic Intelligence",
+        scenario: "You have limited fuel. You can save 3 people nearby or drive further to potentially save 10 people (50% chance fuel runs out).",
+        options: [
+            "Save the 3 (Guaranteed win).",
+            "Risk it for the 10 (Max utility).",
+            "Call for backup and wait.",
+            "Save 1 then try for others."
+        ],
+        weights: { "0": { strategic: 2 }, "1": { strategic: 3, risk: 2 }, "2": { strategic: -1 }, "3": { strategic: 0 } }
+    },
+    {
+        id: "strat_017",
+        category: "Strategic Intelligence",
+        scenario: "Market conditions change. Your 5-year plan is now obsolete in Year 2.",
+        options: [
+            "Stick to the plan (Consistency).",
+            "Scrap it and start over.",
+            "Adapt existing plan to new reality.",
+            "Blame the market."
+        ],
+        weights: { "0": { strategic: -2 }, "1": { strategic: 0 }, "2": { strategic: 3, adaptive: 2 }, "3": { strategic: -3 } }
+    },
+    {
+        id: "strat_018",
+        category: "Strategic Intelligence",
+        scenario: "You can automate a job but it requires firing a loyal employee.",
+        options: [
+            "Automate. Progress is inevitable.",
+            "Keep employee. Loyalty is rare.",
+            "Automate and retrain employee.",
+            "Delay automation."
+        ],
+        weights: { "0": { strategic: 1, social: -2 }, "1": { strategic: -1, social: 2 }, "2": { strategic: 3, social: 1 }, "3": { strategic: -1 } }
+    },
+    {
+        id: "strat_019",
+        category: "Strategic Intelligence",
+        scenario: "You are winning a war but your supply lines are overextended. Enemy is retreating.",
+        options: [
+            "Chase them down (Total Victory).",
+            "Halt and fortify. Secure gains.",
+            "Retreat to better position.",
+            "Send a small squad to chase."
+        ],
+        weights: { "0": { strategic: -2, risk: 3 }, "1": { strategic: 3 }, "2": { strategic: 0 }, "3": { strategic: 1 } }
+    },
+    {
+        id: "strat_020",
+        category: "Strategic Intelligence",
+        scenario: "You can buy a competitor for cheap, but their tech is outdated (Legacy code).",
+        options: [
+            "Buy them for their userbase (migration).",
+            "Buy them to shut them down.",
+            "Don't buy. Bad tech is a liability.",
+            "Buy and try to fix their tech."
+        ],
+        weights: { "0": { strategic: 3 }, "1": { strategic: 2 }, "2": { strategic: 1 }, "3": { strategic: -2 } }
+    },
+    {
+        id: "strat_021",
+        category: "Strategic Intelligence",
+        scenario: "Your main product is illegal in a new huge market. You can tweak it to be legal but less fun.",
+        options: [
+            "Tweak it. Access the market.",
+            "Keep it as is. Niche but premium.",
+            "Launch a separate 'Lite' version.",
+            "Bribe the regulators."
+        ],
+        weights: { "0": { strategic: 1 }, "1": { strategic: 1 }, "2": { strategic: 3, adaptive: 2 }, "3": { strategic: -3, political: -2 } }
+    },
+    {
+        id: "strat_022",
+        category: "Strategic Intelligence",
+        scenario: "You have 1 shot to pitch to an investor. Do you pitch the Safe realistic plan or the Moonshot?",
+        options: [
+            "Safe plan (Show competence).",
+            "Moonshot (Show vision).",
+            "A mix of both (Confusing).",
+            "Ask them what they want first."
+        ],
+        weights: { "0": { strategic: 1 }, "1": { strategic: 2, risk: 2 }, "2": { strategic: -2 }, "3": { strategic: 3, social: 1 } }
+    },
+    {
+        id: "strat_023",
+        category: "Strategic Intelligence",
+        scenario: "A crisis hits. 50% revenue drop. Do you cut marketing or R&D?",
+        options: [
+            "Cut Marketing (Save cash now).",
+            "Cut R&D (Save future).",
+            "Cut salaries across board.",
+            "Cut neither, borrow money."
+        ],
+        weights: { "0": { strategic: 2 }, "1": { strategic: -3 }, "2": { strategic: 1, social: -1 }, "3": { strategic: 0, risk: 2 } }
     },
 
     // ==========================================
@@ -557,6 +749,102 @@ export const QUESTIONS_DB = [
         ],
         weights: { "0": { social: -3 }, "1": { social: -2 }, "2": { social: 3 }, "3": { social: 3 } }
     },
+    {
+        id: "soc_016",
+        category: "Social Intelligence",
+        scenario: "You forget a person's name immediately after introduction.",
+        options: [
+            "Fake it and hope.",
+            "Ask them to repeat it immediately.",
+            "Ask a third person later.",
+            "Never address them by name again."
+        ],
+        weights: { "0": { social: -1 }, "1": { social: 3 }, "2": { social: 2 }, "3": { social: -2 } }
+    },
+    {
+        id: "soc_017",
+        category: "Social Intelligence",
+        scenario: "A friend is venting. You know exactly how to fix their problem.",
+        options: [
+            "Give the solution immediately.",
+            "Listen and validate feelings first.",
+            "Tell them they are overreacting.",
+            "Change the subject."
+        ],
+        weights: { "0": { social: -1 }, "1": { social: 3 }, "2": { social: -3 }, "3": { social: -2 } }
+    },
+    {
+        id: "soc_018",
+        category: "Social Intelligence",
+        scenario: "You are the third wheel on a date.",
+        options: [
+            "Make it about you.",
+            "Engage both equally.",
+            "Find an excuse to leave early.",
+            "Sit silently on your phone."
+        ],
+        weights: { "0": { social: -3 }, "1": { social: 1 }, "2": { social: 3 }, "3": { social: -2 } }
+    },
+    {
+        id: "soc_019",
+        category: "Social Intelligence",
+        scenario: "You break an expensive vase at a friend's house. No one saw you.",
+        options: [
+            "Clean it up and confess immediately.",
+            "Hide the pieces and leave.",
+            "Blame the cat.",
+            "Wait for them to find it."
+        ],
+        weights: { "0": { social: 3 }, "1": { social: -3 }, "2": { social: -2 }, "3": { social: -1 } }
+    },
+    {
+        id: "soc_020",
+        category: "Social Intelligence",
+        scenario: "A coworker has terrible body odor. It's affecting the team.",
+        options: [
+            "Leave anonymous hygiene products on their desk.",
+            "Tell them privately and gently.",
+            "Complain to HR.",
+            "Publicly make a joke about the smell."
+        ],
+        weights: { "0": { social: -1 }, "1": { social: 3 }, "2": { social: 1 }, "3": { social: -3 } }
+    },
+    {
+        id: "soc_021",
+        category: "Social Intelligence",
+        scenario: "You realize you've been talking about yourself for 20 minutes.",
+        options: [
+            "Keep going, it's a good story.",
+            "Stop abruptly and apologize.",
+            "Ask 'But enough about me, how are you?'",
+            "Pretend to get a phone call."
+        ],
+        weights: { "0": { social: -3 }, "1": { social: 1 }, "2": { social: 3 }, "3": { social: -1 } }
+    },
+    {
+        id: "soc_022",
+        category: "Social Intelligence",
+        scenario: "Your friend asks for a loan. You know they won't pay it back.",
+        options: [
+            "Give it freely as a gift.",
+            "Lie and say you are broke.",
+            "Lecture them on finance.",
+            "Say 'I don't lend money to friends'."
+        ],
+        weights: { "0": { social: 2 }, "1": { social: 1 }, "2": { social: -2 }, "3": { social: 3 } }
+    },
+    {
+        id: "soc_023",
+        category: "Social Intelligence",
+        scenario: "Someone insults your partner in public.",
+        options: [
+            "Punch them.",
+            "Insult them back cleverly.",
+            "Take your partner and leave (De-escalate).",
+            "Laugh it off."
+        ],
+        weights: { "0": { social: -2, risk: 2 }, "1": { social: 1 }, "2": { social: 3 }, "3": { social: -1 } }
+    },
 
     // ==========================================
     // 4. POLITICAL & POWER INTELLIGENCE
@@ -742,6 +1030,102 @@ export const QUESTIONS_DB = [
             "Pick a side."
         ],
         weights: { "0": { political: 2, strategic: 1 }, "1": { political: 1 }, "2": { political: 3, strategic: 2 }, "3": { political: -2 } }
+    },
+    {
+        id: "pol_016",
+        category: "Political Intelligence",
+        scenario: "You are asked to give feedback on a peer. They are good but threaten your promotion.",
+        options: [
+            "Praises them highly (Earn trust).",
+            "Criticize them subtly (Sabotage).",
+            "Give neutral, forgettable feedback.",
+            "Decline to comment."
+        ],
+        weights: { "0": { political: 2, social: 1 }, "1": { political: 3, social: -2 }, "2": { political: 1 }, "3": { political: 0 } }
+    },
+    {
+        id: "pol_017",
+        category: "Political Intelligence",
+        scenario: "A powerful person makes a mistake in a meeting.",
+        options: [
+            "Correct them immediately.",
+            "Correct them privately later.",
+            "Let it slide.",
+            "Agree with the mistake."
+        ],
+        weights: { "0": { political: -2 }, "1": { political: 3 }, "2": { political: 1 }, "3": { political: 2 } }
+    },
+    {
+        id: "pol_018",
+        category: "Political Intelligence",
+        scenario: "Your team fails. The boss is looking for a scapegoat.",
+        options: [
+            "Volunteer yourself (Sacrifice).",
+            "Blame the process/system.",
+            "Blame the weakest member.",
+            "Stay silent."
+        ],
+        weights: { "0": { political: 2, social: 2 }, "1": { political: 3 }, "2": { political: -2 }, "3": { political: 0 } }
+    },
+    {
+        id: "pol_019",
+        category: "Political Intelligence",
+        scenario: "Budget cuts. You have to fire one person: The hardworking novice or the lazy genius.",
+        options: [
+            "Fire Novice (Meritocracy).",
+            "Fire Genius (Culture fit).",
+            "Fire neither, cut everyone's pay.",
+            "Resign in protest."
+        ],
+        weights: { "0": { political: 1, strategic: 2 }, "1": { political: 2, social: 2 }, "2": { political: -2 }, "3": { political: -1 } }
+    },
+    {
+        id: "pol_020",
+        category: "Political Intelligence",
+        scenario: "You are offered a bribe to approve a safe building project faster.",
+        options: [
+            "Take it. It's safe anyway.",
+            "Refuse and process normally.",
+            "Refuse and report them.",
+            "Ask for more money."
+        ],
+        weights: { "0": { political: -2, risk: 2 }, "1": { political: 1 }, "2": { political: 3 }, "3": { political: -3 } }
+    },
+    {
+        id: "pol_021",
+        category: "Political Intelligence",
+        scenario: "Your project failed. A rival department offers to 'absorb' your team.",
+        options: [
+            "Accept. Save your team's jobs.",
+            "Fight it. Maintain independence.",
+            "Negotiate a merger of equals.",
+            "Quit."
+        ],
+        weights: { "0": { political: 2, social: 2 }, "1": { political: 1, risk: 2 }, "2": { political: 3 }, "3": { political: -2 } }
+    },
+    {
+        id: "pol_022",
+        category: "Political Intelligence",
+        scenario: "The CEO asks for your honest opinion on their bad idea.",
+        options: [
+            "Lie. Say it's great.",
+            "Tell the brutal truth.",
+            "Give a 'feedback sandwich' (Compliment-Critique-Compliment).",
+            "Ask clarifying questions to make them realize it's bad."
+        ],
+        weights: { "0": { political: 2 }, "1": { political: -2 }, "2": { political: 1 }, "3": { political: 3, social: 2 } }
+    },
+    {
+        id: "pol_023",
+        category: "Political Intelligence",
+        scenario: "A journalist asks for a comment on a company scandal.",
+        options: [
+            "Deny everything.",
+            "Say 'No comment'.",
+            "Leaking the real story anonymously.",
+            "Give a controlled, vague statement."
+        ],
+        weights: { "0": { political: -2 }, "1": { political: 1 }, "2": { political: 2, risk: 2 }, "3": { political: 3 } }
     },
 
 
@@ -929,5 +1313,101 @@ export const QUESTIONS_DB = [
             "Go home."
         ],
         weights: { "0": { adaptive: -2 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: 0 } }
+    },
+    {
+        id: "adt_016",
+        category: "Adaptive Intelligence",
+        scenario: "You prepared a speech. The teleprompter breaks instantly.",
+        options: [
+            "Freeze and stare.",
+            "Wing it / Speak from heart.",
+            "Read from paper notes (if available).",
+            "Ask to restart.",
+        ],
+        weights: { "0": { adaptive: -3 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: -1 } }
+    },
+    {
+        id: "adt_017",
+        category: "Adaptive Intelligence",
+        scenario: "Your key tool breaks mid-job. No replacement parts.",
+        options: [
+            "Quit for the day.",
+            "MacGyver a solution with duct tape.",
+            "Order a new one over rush shipping.",
+            "Ask a neighbor to borrow theirs."
+        ],
+        weights: { "0": { adaptive: -2 }, "1": { adaptive: 3 }, "2": { adaptive: 0 }, "3": { adaptive: 2 } }
+    },
+    {
+        id: "adt_018",
+        category: "Adaptive Intelligence",
+        scenario: "You are dropped in a random city with $0.",
+        options: [
+            "Beg for money.",
+            "Find a job/gig immediately.",
+            "Find a police station.",
+            "Cry."
+        ],
+        weights: { "0": { adaptive: 0 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: -2 } }
+    },
+    {
+        id: "adt_019",
+        category: "Adaptive Intelligence",
+        scenario: "You break your dominant hand right before a tennis match.",
+        options: [
+            "Play with the other hand.",
+            "Forfeit.",
+            "Tape the racket to your cast.",
+            "Reschedule."
+        ],
+        weights: { "0": { adaptive: 3 }, "1": { adaptive: -1 }, "2": { adaptive: 2 }, "3": { adaptive: 0 } }
+    },
+    {
+        id: "adt_020",
+        category: "Adaptive Intelligence",
+        scenario: "You are cooking dinner for 10. The oven breaks.",
+        options: [
+            "Order Pizza.",
+            "Change menu to salad/sushi (No cook).",
+            "Try to cook 10 meals on a camping stove.",
+            "Cancel dinner."
+        ],
+        weights: { "0": { adaptive: 1 }, "1": { adaptive: 3 }, "2": { adaptive: 2 }, "3": { adaptive: -2 } }
+    },
+    {
+        id: "adt_021",
+        category: "Adaptive Intelligence",
+        scenario: "Your luggage is lost. You have a meeting in 1 hour in sweatpants.",
+        options: [
+            "Buy closest suit (likely ill-fitting).",
+            "Own the look. 'Silicon Valley Chic'.",
+            "Borrow clothes from hotel staff.",
+            "Cancel meeting."
+        ],
+        weights: { "0": { adaptive: 1 }, "1": { adaptive: 3, social: 2 }, "2": { adaptive: 2 }, "3": { adaptive: -2 } }
+    },
+    {
+        id: "adt_022",
+        category: "Adaptive Intelligence",
+        scenario: "A power outage hits while you are working on a deadline (unsaved).",
+        options: [
+            "Scream.",
+            "Switch to pen and paper to outline ideas.",
+            "Drive to a cafe with power.",
+            "Wait for power to return."
+        ],
+        weights: { "0": { adaptive: -2 }, "1": { adaptive: 2 }, "2": { adaptive: 3 }, "3": { adaptive: 0 } }
+    },
+    {
+        id: "adt_023",
+        category: "Adaptive Intelligence",
+        scenario: "You get lost in a dangerous neighborhood. GPS is dead.",
+        options: [
+            "Walk fast and look confident.",
+            "Hide until multiple cops appear.",
+            "Ask a local for directions.",
+            "Run."
+        ],
+        weights: { "0": { adaptive: 3 }, "1": { adaptive: 1 }, "2": { adaptive: 2 }, "3": { adaptive: -1 } }
     }
 ];
