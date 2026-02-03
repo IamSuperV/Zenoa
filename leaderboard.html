@@ -363,6 +363,89 @@
         .hidden {
             display: none !important;
         }
+
+        /* --- FILTERS DROPDOWN --- */
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .custom-select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            color: #dec0f0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 30px;
+        }
+
+        .custom-select:hover {
+            border-color: #cdb4db;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: rgba(20, 15, 30, 0.95);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 50px rgba(120, 50, 255, 0.2);
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 5px 0 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #443366, #b185ff);
+            width: 0%;
+            transition: width 1s ease-out;
+        }
     </style>
 </head>
 
@@ -392,11 +475,22 @@
                 <div class="current-tier-title">
                     <img src="assets/tiers/platinum.png" class="tier-icon-sm" id="current-tier-icon"
                         style="display:none;">
-                    <span id="current-view-label">Global Rankings</span>
+                    <div style="display:flex; flex-direction:column; align-items:flex-start;">
+                        <span id="current-view-label" style="line-height:1;">Global Rankings</span>
+
+                        <!-- FILTER DROPDOWN -->
+                        <div id="filter-dropdown-container" class="hidden" style="margin-top: 5px;">
+                            <select id="dynamic-filter" class="custom-select">
+                                <option value="ALL">All Sectors</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="toggle-opt active" id="toggle-global" onclick="switchScope('Global')">Global</div>
-                <div class="toggle-opt" id="toggle-college" onclick="switchScope('College')">College</div>
-                <div class="toggle-opt" id="toggle-local" onclick="switchScope('Local')">Local</div>
+                <div class="toggle-pill">
+                    <div class="toggle-opt active" id="toggle-global" onclick="switchScope('Global')">Global</div>
+                    <div class="toggle-opt" id="toggle-college" onclick="switchScope('College')">College</div>
+                    <div class="toggle-opt" id="toggle-local" onclick="switchScope('Local')">Local</div>
+                </div>
             </div>
         </div>
 
@@ -435,9 +529,66 @@
     </div>
     </div>
 
-    <!-- Hidden native filter for logic compatibility -->
-    <div id="filter-container" class="hidden">
-        <select id="filter-select"></select>
+    <!-- PROFILE MODAL -->
+    <div class="modal-overlay" id="profile-modal" onclick="closeProfile(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <button onclick="closeProfile()"
+                style="position: absolute; top: 1rem; right: 1rem; background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div
+                    style="width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; border: 3px solid var(--gold-primary); background: #000; display:flex; align-items:center; justify-content:center; font-size: 2rem;">
+                    <img id="m-tier-img" src="" style="width:100%; height:100%; border-radius:50%; display:none;">
+                    <span id="m-avatar-stub">👤</span>
+                </div>
+                <h2 id="m-username" style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin: 0;">
+                    USERNAME</h2>
+                <div id="m-college" style="font-size: 0.9rem; color: #888; margin-top: 5px;">COLLEGE NAME</div>
+                <div class="badge badge-tier-gold" id="m-tier-badge" style="margin-top: 10px; display:inline-block;">
+                    TIER</div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <div class="flex-between" style="font-size: 0.9rem; color: #ccc; margin-bottom: 2px;">
+                    <span>LOGICAL</span>
+                    <span id="val-logical">0%</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="bar-logical"></div>
+                </div>
+
+                <div class="flex-between" style="font-size: 0.9rem; color: #ccc; margin-bottom: 2px;">
+                    <span>STRATEGIC</span>
+                    <span id="val-strategic">0%</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="bar-strategic"></div>
+                </div>
+
+                <div class="flex-between" style="font-size: 0.9rem; color: #ccc; margin-bottom: 2px;">
+                    <span>SOCIAL</span>
+                    <span id="val-social">0%</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="bar-social"></div>
+                </div>
+
+                <div class="flex-between" style="font-size: 0.9rem; color: #ccc; margin-bottom: 2px;">
+                    <span>ADAPTIVE</span>
+                    <span id="val-adaptive">0%</span>
+                </div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="bar-adaptive"></div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #fff; text-shadow: 0 0 20px var(--neon-blue);">
+                    💎 <span id="m-score">0</span>
+                </div>
+                <div style="font-size: 0.8rem; color: #888; letter-spacing: 2px;">TOTAL SCORE</div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -462,20 +613,52 @@
             document.getElementById('toggle-college').className = scope === 'College' ? 'toggle-opt active' : 'toggle-opt';
             document.getElementById('toggle-local').className = scope === 'Local' ? 'toggle-opt active' : 'toggle-opt';
 
+            const filterContainer = document.getElementById('filter-dropdown-container');
+            const select = document.getElementById('dynamic-filter');
+
             if (scope === 'Local') {
-                // For demo, just pick a random college or prompt
-                // In real app, this would use user's profile location.
-                // We'll simulate by picking a City
+                filterContainer.classList.remove('hidden');
+                populateFilter(INDIAN_CITIES, "Select City");
+                // Default
+                select.value = "Mumbai";
                 initBoard('City', 'Mumbai');
-                document.getElementById('current-view-label').textContent = "Mumbai Sector";
+                document.getElementById('current-view-label').textContent = "City: Mumbai";
             } else if (scope === 'College') {
+                filterContainer.classList.remove('hidden');
+                populateFilter(INDIAN_COLLEGES, "Select College");
+                // Default
+                select.value = "IIT Bombay";
                 initBoard('College', 'IIT Bombay');
-                document.getElementById('current-view-label').textContent = "IIT Bombay Sector";
+                document.getElementById('current-view-label').textContent = "College: IIT Bombay";
             } else {
+                filterContainer.classList.add('hidden');
                 initBoard('Global');
                 document.getElementById('current-view-label').textContent = "Global Rankings";
             }
         };
+
+        function populateFilter(items, placeholder) {
+            const select = document.getElementById('dynamic-filter');
+            select.innerHTML = '';
+            items.sort().forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+            // Trigger change listener manually if needed, or rely on default
+        }
+
+        document.getElementById('dynamic-filter').addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (currentScope === 'Local') {
+                initBoard('City', val);
+                document.getElementById('current-view-label').textContent = `City: ${val}`;
+            } else if (currentScope === 'College') {
+                initBoard('College', val);
+                document.getElementById('current-view-label').textContent = `College: ${val}`;
+            }
+        });
 
         // Tier Tabs
         document.querySelectorAll('.tier-tab').forEach(tab => {
@@ -532,6 +715,9 @@
 
                 const div = document.createElement('div');
                 div.className = `rank-row rank-${rank}`;
+                div.style.cursor = 'pointer'; // Make clickable
+                div.onclick = () => openProfile(u);
+
                 div.innerHTML = `
                     <div class="r-rank">${rank}</div>
                     <div class="r-avatar">
@@ -558,6 +744,57 @@
                 document.getElementById('my-name').textContent = foundMe.username;
                 document.getElementById('my-score').textContent = Math.floor(foundMe.score);
             }
+        }
+
+        // --- PROFILE MODAL LOGIC ---
+        window.openProfile = (user) => {
+            const modal = document.getElementById('profile-modal');
+            const score = user.score || user.displayScore || 0;
+            const tier = user.tier || 'BRONZE';
+
+            document.getElementById('m-username').textContent = user.username;
+            document.getElementById('m-college').textContent = user.college || user.city || "Unknown Location";
+            document.getElementById('m-score').textContent = Math.floor(score);
+
+            const badge = document.getElementById('m-tier-badge');
+            badge.textContent = tier;
+            badge.className = `badge badge-tier-${tier.toLowerCase()}`;
+
+            // Set Avatar
+            const img = document.getElementById('m-tier-img');
+            img.src = `assets/tiers/${tier.toLowerCase()}.png`;
+            img.style.display = 'block';
+            document.getElementById('m-avatar-stub').style.display = 'none';
+
+            // Generate Stats (Fake if not present)
+            // Seed pseudo-randomness with name length to be consistent for same user in session
+            const seed = user.username.length;
+            const logical = user.stats?.logical || (Math.random() * 40 + 60);
+            const strategic = user.stats?.strategic || (Math.random() * 40 + 60);
+            const social = user.stats?.social || (Math.random() * 40 + 60);
+            const adaptive = user.stats?.adaptive || (Math.random() * 40 + 60);
+
+            animateBar('bar-logical', 'val-logical', logical);
+            animateBar('bar-strategic', 'val-strategic', strategic);
+            animateBar('bar-social', 'val-social', social);
+            animateBar('bar-adaptive', 'val-adaptive', adaptive);
+
+            modal.classList.add('active');
+        };
+
+        window.closeProfile = (e) => {
+            document.getElementById('profile-modal').classList.remove('active');
+        };
+
+        function animateBar(barId, textId, value) {
+            const bar = document.getElementById(barId);
+            const txt = document.getElementById(textId);
+            bar.style.width = '0%';
+
+            setTimeout(() => {
+                bar.style.width = `${Math.min(100, value)}%`;
+                txt.textContent = `${Math.floor(value)}%`;
+            }, 100);
         }
     </script>
 </body>
