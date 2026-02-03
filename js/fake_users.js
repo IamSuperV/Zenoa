@@ -89,6 +89,21 @@ export function generateFakeUsers() {
     return users.sort((a, b) => b.score - a.score);
 }
 
+export function getFakeOpponent(collegeFilter = null) {
+    const name = `${getRandom(NAMES)} ${getRandom(SURNAMES)}`;
+    // If collegeFilter is provided, use it. Else random college.
+    const college = collegeFilter && collegeFilter !== 'Any' ? collegeFilter : getRandom(INDIAN_COLLEGES);
+
+    // Slight chance of being from the same college if "Any" is processed? 
+    // For now simple logic.
+
+    return {
+        username: name,
+        college: college,
+        tier: getRandom(["BRONZE", "SILVER", "GOLD", "PLATINUM"])
+    };
+}
+
 function getRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }

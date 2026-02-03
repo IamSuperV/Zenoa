@@ -177,6 +177,18 @@
             <div id="ranked-config-section" class="hidden" style="margin-top: 2rem; animation: float 0.5s forwards;">
                 <div class="card-glass" style="background: #000; border: 1px solid var(--gold-glow);">
                     <h3 style="margin-bottom: 1rem; color: var(--gold-primary);">MATCH PARAMETERS</h3>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">OPPONENT
+                            SOURCE</label>
+                        <select id="ranked-college-select"
+                            style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 4px;">
+                            <option value="Any">Any College (Global)</option>
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+
                     <div style="margin-bottom: 1.5rem;">
                         <label
                             style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">SELECT
@@ -196,6 +208,89 @@
                 </div>
             </div>
 
+            <!-- VS SCREEN OVERLAY (Hidden by default) -->
+            <div id="vs-screen" class="hidden"
+                style="position: fixed; inset: 0; z-index: 2000; background: #0b0514; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <!-- VS Background -->
+                <div
+                    style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 60%);">
+                </div>
+
+                <div class="flex-center" style="gap: 4rem; position: relative; z-index: 2;">
+                    <!-- Player -->
+                    <div style="text-align: center; animation: slideRight 0.5s ease-out;">
+                        <div
+                            style="width: 100px; height: 100px; background: #111; border: 3px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 20px var(--neon-blue);">
+                            <span style="font-size: 3rem;">👤</span>
+                        </div>
+                        <h2 id="vs-p1-name"
+                            style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.2rem;">ME</h2>
+                        <div id="vs-p1-college" style="color: #888; font-size: 0.9rem;">MY COLLEGE</div>
+                    </div>
+
+                    <!-- VS Text -->
+                    <div
+                        style="font-family: var(--font-display); font-size: 5rem; font-style: italic; color: #fff; text-shadow: 0 0 20px red; animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                        VS
+                    </div>
+
+                    <!-- Opponent -->
+                    <div style="text-align: center; animation: slideLeft 0.5s ease-out;">
+                        <div
+                            style="width: 100px; height: 100px; background: #111; border: 3px solid #ff4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; box-shadow: 0 0 20px #ff4444;">
+                            <span style="font-size: 3rem;">🕵️</span>
+                        </div>
+                        <h2 id="vs-p2-name"
+                            style="color: #ff4444; font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.2rem;">
+                            OPPONENT</h2>
+                        <div id="vs-p2-college" style="color: #888; font-size: 0.9rem;">COLLEGE</div>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 3rem; color: #fff; letter-spacing: 3px; font-size: 0.8rem; animation: pulse 1s infinite;">
+                    CONNECTING NEURAL LINK...
+                </div>
+            </div>
+
+            <style>
+                @keyframes slideRight {
+                    from {
+                        transform: translateX(-100px);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideLeft {
+                    from {
+                        transform: translateX(100px);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes zoomIn {
+                    from {
+                        transform: scale(0);
+                        opacity: 0;
+                    }
+
+                    to {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+            </style>
+
         </main>
 
         <!-- Legacy Binding -->
@@ -207,6 +302,7 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
         import { logoutUser, getUserProfile, createGuestProfile } from './js/auth.js';
         import { createRoom, joinRoom, startGame } from './js/rooms.js';
+        import { getFakeOpponent, INDIAN_COLLEGES } from './js/fake_users.js';
 
         let currentUser = null;
         let userProfile = null;
@@ -341,6 +437,17 @@
             document.getElementById('host-section').classList.add('hidden');
             // Scroll to it
             document.getElementById('ranked-config-section').scrollIntoView({ behavior: 'smooth' });
+
+            // Populate Colleges if empty
+            const sel = document.getElementById('ranked-college-select');
+            if (sel.options.length <= 1) {
+                INDIAN_COLLEGES.sort().forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    sel.appendChild(opt);
+                });
+            }
         };
 
         // NEW: Actual Ranked Start Logic
@@ -350,6 +457,7 @@
             const btn = document.getElementById('confirm-ranked-btn');
             const originalText = btn.textContent;
             const selectedCategory = document.getElementById('ranked-category-select').value;
+            const selectedCollege = document.getElementById('ranked-college-select').value;
 
             // Simulation Sequence
             const steps = [
@@ -368,8 +476,26 @@
             }
 
             try {
-                // Pass selectedCategory instead of hardcoded 'Mix'
-                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Ranked (Sim)', selectedCategory);
+                // 1. Generate Fake Opponent Details
+                const opponent = getFakeOpponent(selectedCollege);
+
+                // 2. Show VS Screen
+                const vsScreen = document.getElementById('vs-screen');
+                document.getElementById('vs-p1-name').textContent = userProfile.username;
+                document.getElementById('vs-p1-college').textContent = userProfile.college || "Unknown";
+
+                document.getElementById('vs-p2-name').textContent = opponent.username;
+                document.getElementById('vs-p2-college').textContent = opponent.college;
+
+                // Hide Config, Show VS
+                vsScreen.classList.remove('hidden');
+                vsScreen.style.display = 'flex'; // Enforce flex
+
+                // Wait for VS Animation (3s)
+                await new Promise(r => setTimeout(r, 3000));
+
+                // 3. Create & Start
+                const roomId = await createRoom(currentUser.uid, userProfile.username, 'Ranked (VS)', selectedCategory);
                 await startGame(roomId);
                 window.location.href = `play.html?roomId=${roomId}`;
             } catch (e) {
@@ -377,6 +503,8 @@
                 alert("Connection failed. Retrying...");
                 btn.textContent = originalText;
                 btn.disabled = false;
+                document.getElementById('vs-screen').classList.add('hidden');
+                document.getElementById('vs-screen').style.display = 'none';
             }
         });
 
