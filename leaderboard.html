@@ -683,6 +683,7 @@
                 // Merge Data
                 let fakeSubset = FAKE_DATABASE;
                 if (type === 'City' && filterVal) fakeSubset = FAKE_DATABASE.filter(u => u.city === filterVal);
+                if (type === 'College' && filterVal) fakeSubset = FAKE_DATABASE.filter(u => u.college === filterVal);
 
                 const normalizedReal = realUsers.map(u => ({ ...u, score: u.displayScore || 0, isReal: true }));
                 const normalizedFake = fakeSubset.map(u => ({ ...u, displayScore: u.score || 0 }));
