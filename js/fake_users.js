@@ -67,7 +67,7 @@ export function generateFakeUsers() {
         users.push({
             uid: `fake_city_${i}`,
             username: name,
-            college: "", // No college for pure city players
+            college: getRandom(INDIAN_COLLEGES), // Now everyone has an Alma Mater
             city: getRandom(INDIAN_CITIES),
             dominantType: getRandom(ARCHETYPES),
             score: sc,
@@ -84,7 +84,7 @@ export function generateFakeUsers() {
     users.push({ uid: 'fake_legend_2', username: "Zara Khan", college: "BITS Pilani", city: "Bangalore", dominantType: "Logical", score: l2, tier: getTier(l2), isFake: true });
 
     const l3 = 11200;
-    users.push({ uid: 'fake_legend_3', username: "Arjun Reddy", college: "", city: "Hyderabad", dominantType: "Ruthless", score: l3, tier: getTier(l3), isFake: true });
+    users.push({ uid: 'fake_legend_3', username: "Arjun Reddy", college: "IIIT Hyderabad", city: "Hyderabad", dominantType: "Ruthless", score: l3, tier: getTier(l3), isFake: true });
 
     return users.sort((a, b) => b.score - a.score);
 }
