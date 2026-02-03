@@ -394,46 +394,45 @@
                         style="display:none;">
                     <span id="current-view-label">Global Rankings</span>
                 </div>
-                <div class="toggle-pill">
-                    <div class="toggle-opt active" id="toggle-global" onclick="switchScope('Global')">Global</div>
-                    <div class="toggle-opt" id="toggle-local" onclick="switchScope('Local')">Local</div>
-                </div>
-            </div>
-
-            <!-- SCROLLABLE LIST -->
-            <div class="rank-list" id="rank-list">
-                <!-- Rows injected here -->
-                <div style="text-align: center; padding: 3rem; color: #888;">Scanning Neural Network...</div>
-            </div>
-
-            <!-- FOOTER TOOLBAR -->
-            <div class="user-footer" id="user-footer">
-                <div class="footer-row">
-                    <div class="r-rank" style="color: #fff;">#--</div>
-                    <div class="r-avatar">👤</div>
-                    <div class="r-info">
-                        <div class="r-name" id="my-name">Guest</div>
-                        <div class="r-sub">
-                            <div
-                                style="width: 100px; height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-right: 5px;">
-                                <div
-                                    style="width: 60%; height: 100%; background: #00f3ff; box-shadow: 0 0 5px #00f3ff;">
-                                </div>
-                            </div>
-                            Level --
-                        </div>
-                    </div>
-                    <div class="r-score">
-                        💎 <span id="my-score">---</span>
-                    </div>
-                </div>
-                <div class="footer-actions">
-                    <button class="f-btn f-btn-profile" onclick="window.location.href='profile.html'">View
-                        Profile</button>
-                    <button class="f-btn f-btn-challenge">Challenge</button>
-                </div>
+                <div class="toggle-opt active" id="toggle-global" onclick="switchScope('Global')">Global</div>
+                <div class="toggle-opt" id="toggle-college" onclick="switchScope('College')">College</div>
+                <div class="toggle-opt" id="toggle-local" onclick="switchScope('Local')">Local</div>
             </div>
         </div>
+
+        <!-- SCROLLABLE LIST -->
+        <div class="rank-list" id="rank-list">
+            <!-- Rows injected here -->
+            <div style="text-align: center; padding: 3rem; color: #888;">Scanning Neural Network...</div>
+        </div>
+
+        <!-- FOOTER TOOLBAR -->
+        <div class="user-footer" id="user-footer">
+            <div class="footer-row">
+                <div class="r-rank" style="color: #fff;">#--</div>
+                <div class="r-avatar">👤</div>
+                <div class="r-info">
+                    <div class="r-name" id="my-name">Guest</div>
+                    <div class="r-sub">
+                        <div
+                            style="width: 100px; height: 4px; background: #333; border-radius: 2px; overflow: hidden; margin-right: 5px;">
+                            <div style="width: 60%; height: 100%; background: #00f3ff; box-shadow: 0 0 5px #00f3ff;">
+                            </div>
+                        </div>
+                        Level --
+                    </div>
+                </div>
+                <div class="r-score">
+                    💎 <span id="my-score">---</span>
+                </div>
+            </div>
+            <div class="footer-actions">
+                <button class="f-btn f-btn-profile" onclick="window.location.href='profile.html'">View
+                    Profile</button>
+                <button class="f-btn f-btn-challenge">Challenge</button>
+            </div>
+        </div>
+    </div>
     </div>
 
     <!-- Hidden native filter for logic compatibility -->
@@ -460,6 +459,7 @@
         window.switchScope = (scope) => {
             currentScope = scope;
             document.getElementById('toggle-global').className = scope === 'Global' ? 'toggle-opt active' : 'toggle-opt';
+            document.getElementById('toggle-college').className = scope === 'College' ? 'toggle-opt active' : 'toggle-opt';
             document.getElementById('toggle-local').className = scope === 'Local' ? 'toggle-opt active' : 'toggle-opt';
 
             if (scope === 'Local') {
@@ -468,6 +468,9 @@
                 // We'll simulate by picking a City
                 initBoard('City', 'Mumbai');
                 document.getElementById('current-view-label').textContent = "Mumbai Sector";
+            } else if (scope === 'College') {
+                initBoard('College', 'IIT Bombay');
+                document.getElementById('current-view-label').textContent = "IIT Bombay Sector";
             } else {
                 initBoard('Global');
                 document.getElementById('current-view-label').textContent = "Global Rankings";
@@ -538,8 +541,11 @@
                         <div class="r-name">${u.username}</div>
                         <div class="r-sub">Level ${level} • ${tier}</div>
                     </div>
-                    <div class="r-score">
-                        <span>💎</span> ${Math.floor(u.score || u.displayScore)}
+                    <div class="r-score" style="gap: 15px;">
+                        <span style="font-size: 0.8rem; color: #888; font-weight: normal; text-transform: uppercase; letter-spacing: 1px;">${u.college || 'Unknown'}</span>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span>💎</span> ${Math.floor(u.score || u.displayScore)}
+                        </div>
                     </div>
                 `;
                 list.appendChild(div);
